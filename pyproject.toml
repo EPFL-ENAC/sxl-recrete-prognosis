@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "recrete-prognosis"
 version = "0.0.1"
-authors = ["RE:CRETE Prognosis <regis.longchamp@epfl.ch>"]
+authors = [{name = "recrete-prognosis"}]
 description =  "Prognosis of building stock potential for the upcycling reuse of cast-in-place reinforced concrete panels."
 readme = "README.md"
 keywords = ["python"]
@@ -21,7 +21,11 @@ classifiers = [
 # Environment settings
 requires-python = ">=3.8"
 dependencies = [
-	"click"
+	"click",
+	"pandas",
+	"openpyxl",
+	"plotly-express",
+	"kaleido"
 ]
 
 
@@ -38,7 +42,8 @@ dev = [
 	"sphinx_rtd_theme",
 	"nbsphinx",
 	"sphinx-pyproject",
-	"sphinx-mdinclude"
+	"sphinx-mdinclude",
+	"streamlit"
 	]
 
 # Linter settings

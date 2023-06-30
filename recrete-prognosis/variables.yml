@@ -1,0 +1,65 @@
+#masses volumiques
+massevol_BA: 2500
+massevol_metal: 7850
+massevol_beton: 2300
+massevol_armature: 7850
+massevol_panneaux: 453
+massevol_mortier: 1400
+massevol_jointpoly: 1600
+massevol_caoutchouc: 1100
+epaisseur_caoutchouc: 0.004
+
+# caractérstiques du donneur
+tauxarmature0 : 0.015 #taux d'armature dans la dalle donneuse
+y_Gslab0: 1.35  # coefficient de sécurité nouvelles charges permanentes
+Grev0: 1  # charge de nouvelle chappe [kN/m2]
+y_rev0: 1.35  # coefficient de sécurité nouvelles charges permanentes
+y_Q0: 1.5  # coefficient de sécurité charges utiles
+Ebeton: 15000  # Module d'elasticite fissuré env. Econc/3 [N/mm2]
+
+# caractérstiques du receveur
+y_Gslab1: 1.2  # coefficient de sécurité charges permanentes existantes
+y_rev1: 1.35  # coefficient de sécurité charge permannentes nouvelles
+Grev1: 1  # charge de la nouvelle chappe [kN/m2]
+y_Q1: 1.5  # coefficient de sécurité charges utiles
+Psi_1: 0.3  # facteur psi pour la charge quasi perm pour un logement ou bureau SIA 260
+profileE: 205000  # module elasticité profilé [N/mm2]
+masse_lin_corn2:  59.9 #[kg/m] masse linéaire d'une cornière LNP200x20
+
+# calculs pour impact levage selon la GRAVITE
+efficacitegrue: 0.36  # efficacité de la grue
+ener_levage1kg1m: 9.8  # énergie pour lever 1kg de 1m [J/m/kg]
+kgco2_energiegrue: 0.325  # kgco2/kwH Gasoil pour engin de chantier, sans FAP KBOB 61.001 -->> A CHANGER POUR MACHINE OPERATION (pour le moment, néglige l'usure de la grue)
+hlevage: 7  # hauteur moyenne de levage [m]
+
+# calculs pour impact sciage
+surfsciable_1disque: 40  # [m2] surface sciable par un disque
+vitesse_sciage: 40  # [m2/heure] vitesse de sciages
+surfsciable_1machine: 700  # [m2/machine] surface sciable par une machine
+vol_1disque: 0.001385442  # [m3/disque] volume d'un disque de 600 mm de diamètre et 4,9 mm d'épaisseur
+kgco2_prodetelimi_acier: 0.738  # [kgco2/kg] émissions pour la production et l'élimination d'un kg acier KBOB 06.012
+kgco2_prod_machine: 5.5  # [kgco2/kg] émissions pour la production de machines industrielles (ADEME)
+masse_1machine: 15  # [kg/machine]
+facteur_elimi_machine: 0.20  # coefficient pour inclure l'élimination de la machine industrielle (selon observation KBOB)
+kgco2_prodenergie_sciage: 0.41  # kgco2/m2 lié à la consommation d'électricité pour la scie -> identique à Re:crete --> EVENTUELLEMENT A VERIFIER
+
+
+
+# impacts carbone unitaires
+kgco2_tp_camion3240t: 0.118  # kgCO2/tkm pour tp pour camion 32-40t KBOB 62.010
+kgco2_prod_profilmetal: 0.731  # kgCO2/kg de profilé métallique nu (production) KBOB 06.012
+kgco2_prod_panneauxcoffrage: 0.415  # kgCO2/kg Bois massif 3 et 5 plis KBOB 07.001
+kgco2_prod_beton: 0.0888  # kgCO2/kg béton non armé neuf (production) KBOB 01.002
+kgco2_prod_armature: 1.125   # 1.5 * 0.75 kgCO2/kg d'acier d'armature (production) KBOB 06.003 + facteur de correction KBOB 2022 KORR
+kgco2_prod_revpulvacier: 4.39  # kgCO2/m2 de revêtement pulvérisé sur l'acier KBOB 14.006
+kgco2_elimi_beton: 0.0127  # kgCO2/kg de béton éliminé KBOB 01.002
+kgco2_elimi_armature: 0.0093   # 0.0124 * 0.75 kgCO2/kg d'acier d'armature éliminé KBOB 06.003 + facteur de correction KBOB 2022 KORR
+kgco2_coulage_beton: 1  # kgCO2/m3 de béton coulé OKOBAUDAT 9.1.02 (concrete pumping)
+kgco2_elimi_profilmetal: 0.00699  # kgCO2/kg de profilé métallique nu (élimination) KBOB 06.012
+kgco2_sandblasting: 0.054055226  # kgCO2/m2 de profilé métallique de réemploi à sabler E&Bpaper
+kgco2_degraissage: 0.0079018061  # kgCO2/m2 de profilé métallique à dégraisser E&Bpaper
+kgco2_welding: 0.16264047  # kgCO2/m de soudure sur métal E&Bpaper
+kgco2_prod_mortier: 0.393  # kgCO2/kg de Colle de construction/mortier d'enrobage minéral(e) KBOB 04.008
+kgco2_prod_jointpoly: 1.53  # kgCO2/kg de joint en mousse polyéthylène KBOB 08.004
+kgco2_prod_caoutchouc: 2.74  # kgCO2/kg de Lé d'étanchéité caoutchouc (EPDM) KBOB 09.004
+
