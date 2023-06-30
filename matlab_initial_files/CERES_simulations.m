@@ -1,6 +1,6 @@
 % Trigger fun_CERES
 clear all
-clc 
+clc
 
 delta_save=[];
 delta1_save=[];
@@ -31,7 +31,7 @@ for Q0=2:3 %charge utiles donneur [kN/m2] --> VARIABLE
 for Q1=2:3 %charge utiles recevru [kN/m2] --> VARIABLE
 for tpdist_beton_reuse=100 %0:100:100 %0:100:100 %100 %distance de tranport béton de réemploi  --> VARIABLE
 for tpdist_metal_reuse=100 %0:100:100 %100 %distance de transport acier de réemploi --> VARIABLE
-    
+
 Para_save=[Para_save; hsreuse,year, steelprofile_type, beamposition, Q0, Q1, tpdist_beton_reuse, tpdist_metal_reuse];
 
 [delta,delta1, delta2,alpha,Select_alpha,Select_syst,Select_sol,Para_L0,Para_L1,Para_hsreuse,Para_year,Para_steelprofile_type,Para_beamposition,Para_Q0,Para_Q1,Para_tpdist_beton_reuse,Para_tpdist_metal_reuse,impactreuse_m2,impactnew_m2]=fun_CERES(hsreuse, year,steelprofile_type,beamposition,Q0,Q1,tpdist_beton_reuse,tpdist_metal_reuse);
@@ -77,7 +77,7 @@ dlmwrite('results.csv',titles,'-append','delimiter',' ','roffset',0)
 % dlmwrite('results.csv',titles,'-append','delimiter',' ','roffset',0)
 % Continue adding data
 dlmwrite('results.csv',delta,'delimiter',',','-append','roffset',-4,'coffset',1);
-end 
+end
 end
 end
 end

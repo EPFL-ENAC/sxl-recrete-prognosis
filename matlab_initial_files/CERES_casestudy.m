@@ -1,5 +1,5 @@
 clear all
-clc 
+clc
 
 steelprofile_type=2; %type acier: newsteel=1; reusedsteel=2; --> VARIABLE
 L1=6; %receveur de 3 ou 6 mètres --> VARIABLE
@@ -16,7 +16,7 @@ beamposition=1; %scénario receveur: ; belowconcrete=1; concreteplane=2 --> VARI
 %% données de bases donneur et receveur
 %masses volumiques
 massevol_BA=2500; %[kg/m3]
-massevol_metal=7850; %masse volumique métal [kg/m3] KBOB 06.003 
+massevol_metal=7850; %masse volumique métal [kg/m3] KBOB 06.003
 massevol_beton=2300; %masse volumique béton [kg/m3] KBOB 01.002
 massevol_armature=7850; %masse volumique acier armature [kg/m3] KBOB 06.003
 massevol_panneaux=453; %masse volumique des panneaux de coffrage [kg/m3] KBOB 07.001
@@ -96,7 +96,7 @@ end
 if steelprofile_type==2 %reusedsteel
     profile_unwelding=data(:,8); %[m/profilé] mètre à dé-souder pour démonter un profilé
     profile_sandblastedsurf=data(:,9); %[m2/m] surface sandblastée par mètre de profilé de réemploi
-end 
+end
 if beamposition==1 %belowconcrete
    beam_selfweight=1.03; %facteur à rajouter à la charge sur les poutres liées à leur poids propre
 end
@@ -165,7 +165,7 @@ tpdist_beton=60; %distance de transport du béton [km] --> DISTANCE A VERIFIER
 tpdist_arma=60; %distance de transport de l'acier d'armature [km] --> DISTANCE A VERIFIER
 
 %calculs pour impact levage selon la GRAVITE
-efficacitegrue=0.36; %efficacité de la grue 
+efficacitegrue=0.36; %efficacité de la grue
 ener_levage1kg1m=9.8; %energie pour lever 1kg de 1m [J/m/kg]
 energrue_levage1kg1m=ener_levage1kg1m/efficacitegrue; %energie utilisée par une grue pour lever 1 kg de 1m [J/m/kg]
 hlevage=7; %hauteur moyenne de levage [m]
@@ -208,7 +208,7 @@ kgco2_prod_caoutchouc=2.74; %kgco2/kg de Lé d'étanchéité caoutchouc (EPDM)KB
 L0=3.1
 i=L0
 L_alpha=L0*alpha;
-        
+
             %% IMPACT NEW (SYSTEM 0)
             %quantité béton armé neuf
             if L1<4
@@ -229,12 +229,12 @@ L_alpha=L0*alpha;
 
             %impact du transport des matériaux d'étayage et de coffrage
             masse_poutrelles=L1*massesurf_poutrelles; %[kg/m] quantité de poutrelles sous étais
-            masse_etais=L1*masse_lin_etais; %[kg/m] quantité d'étais 
+            masse_etais=L1*masse_lin_etais; %[kg/m] quantité d'étais
             impact_tp_coffrageetayage_new0=kgco2_tp_camion3240t*tpdist_coffrageetayage*(masse_panneaux/n_uti_chantier_panneaux+masse_poutrelles/n_uti_chantier_poutrelles+masse_etais/n_uti_chantier_etais)/1000; %[kgco2/m2]
 
             %impact du levage et de la dépose des matériaux d'étayage et de coffrage
             impact_levageetdepose_coffrageetetayage_new0=kgco2_levage*(masse_panneaux/n_uti_chantier_panneaux+masse_poutrelles/n_uti_chantier_poutrelles+masse_etais/n_uti_chantier_etais); %[kgco2/m]
-            
+
             %impact de la production du béton
             impact_prod_betonneuf_new0=kgco2_prod_beton*massebeton; %[kgco2/m]
 
@@ -246,7 +246,7 @@ L_alpha=L0*alpha;
 
             %impact du transport des armatures
             impact_tp_armaneuf_new0=kgco2_tp_camion3240t*tpdist_arma*massearmature/1000; %[kgco2/m]
-            
+
             %impact du levage des armatures
             impact_levage_armaneuf_new0=kgco2_levage*massearmature; %[kgco2/m]
 
@@ -259,24 +259,24 @@ L_alpha=L0*alpha;
             %impact new
             impactnew_prod=impact_prod_coffr_new0+impact_tp_coffrageetayage_new0+impact_levageetdepose_coffrageetetayage_new0+impact_prod_betonneuf_new0+impact_tp_betonneuf_new0+impact_prod_armaneuf_new0+impact_tp_armaneuf_new0+impact_levage_armaneuf_new0+impact_levage_betonneuf_new0+impact_coulage_betonneuf_new0; %[kgco2/m]
 
-        
+
         %% IMPACT SYSTEM 1 - dalles simples uniquement (zones 1 et 3)
         if L1<=L_armamin && L1<=L0 || L1<=L_alpha && L1>L_armamin %conditions de la zone 1 et de la zone 3
 %          if L1<=L_armamin && L1<=L0 || L1<=L_alpha %NOUVELLES conditions de la zone 1 et de la zone 3
             L_decoupeL0=L1;
             syst=0;
             Selection_beam_sol=0;
-      
-            %quantité béton armé de réemploi 
-            masselin_beton_reuse1=L1*hsreuse*massevol_BA; %masse BA dalle de réemploi par m [kg/m]            
-            
+
+            %quantité béton armé de réemploi
+            masselin_beton_reuse1=L1*hsreuse*massevol_BA; %masse BA dalle de réemploi par m [kg/m]
+
             %impact du transport des étais pour le donneur
-            masse_etais_reuse1=masse_lin_etais_reuse*L1; %[kg/m] quantité étais pour découpe donneur par mètre linéaire receveur 
+            masse_etais_reuse1=masse_lin_etais_reuse*L1; %[kg/m] quantité étais pour découpe donneur par mètre linéaire receveur
             impact_tp_etai_reuse1=masse_etais_reuse1/1000*tpdist_coffrageetayage*kgco2_tp_camion3240t; %[kgco2/m]
-            
+
             %impact du levage et de la dépose des étais pour le donneur
             impact_levageeetdepose_etais_reuse1=kgco2_levage*2*masse_etais_reuse1; %[kgco2/m]
-            
+
             %impact du sciage du béton
             n_bloc_reuse1=1/largcamion; %nombre de bloc de béton par mètre linéaire [n/m]
             surfsciage_reuse1=((n_bloc_reuse1*L1)+1)*2*hsreuse; %surface de béton sciée par mètre linéaire [m2/m] --> ne prend pas en compte les économies possibles liées au fait que un trait de coupe puisse servir à deux blocs
@@ -292,7 +292,7 @@ L_alpha=L0*alpha;
             if hsreuse==0.14 %hauteur de la cornière = largeur de la cornière = hauteur de la dalle de réemploi
                epaisseurcorn=0.013; %épaisseur de la cornière selon la table des LNP (cornière la plus fine)
                hcorn=hsreuse;
-            end 
+            end
             if  hsreuse==0.15
                epaisseurcorn=0.015;
                hcorn=hsreuse;
@@ -325,46 +325,46 @@ L_alpha=L0*alpha;
             n_plaque_reuse1=(2+ceil(L1/2))/largcamion; %nombre de plaque par mètre linéaire [plaque/m] (avec une plaque tous les 1,5 mètes min sur la longueur, et 2 plaques aux appuis de chaque plaque de chaque côté
             massemetalplaque_reuse1=vol_1plaque*n_plaque_reuse1*massevol_metal; %volume linéaire de métal pour les plaques [kg/m]
             impact_prod_metalneuf_plaque_reuse1=massemetalplaque_reuse1*kgco2_prod_profilmetal; %[kgco2/m]
-            
+
             %impact du transport des cornières métalliques
             impact_tp_metalneuf_corn_reuse1=massemetalcorn_reuse1/1000*tpdist_metal*kgco2_tp_camion3240t; %[kgco2/m]
 
             %impact du transport des plaques métalliques
             impact_tp_metalneuf_plaque_reuse1=massemetalplaque_reuse1/1000*tpdist_metal*kgco2_tp_camion3240t; %[kgco2/m]
-            
+
             %impact de la production de la peinture protectrice
             surfacepeintparcorn=hcorn; %surface à peindre par m de cornière [m2/m]
             surfacepeinttot_reuse1=surfacepeintparcorn*n_cor*qcorniere; %surface linéaire à peindre pour les cornières [m2/m]
             impact_prod_revpulvacier_reuse1=kgco2_prod_revpulvacier*surfacepeinttot_reuse1; %[kgco2/m
-            
+
             %impact de la production du caoutchouc
             surfacecaoutchoucparcorn=hcorn; %surface à peindre par m de cornière = surface à doubler par caoutchouc par m de cornière [m2/m]
             volumecaoutchouctot_reuse1=surfacecaoutchoucparcorn*epaisseur_caoutchouc*n_cor*qcorniere; %volume de caoutchouc pour doubler les cornières [m3/m]
             impact_prod_caoutchouc_reuse1=massevol_caoutchouc*volumecaoutchouctot_reuse1*kgco2_prod_caoutchouc; %impact de la production du caoutchouc [kgco2/m]
-     
+
             %impact du dégraissage de l'acier
             impact_degraissage_metalneuf_reuse1=kgco2_degraissage*surfacepeinttot_reuse1; %[kgco2/m]
 
             %impact du levage des cornières métalliques
             impact_levage_metalneuf_corn_reuse1=kgco2_levage*massemetalcorn_reuse1; %[kgco2/m]
-            
+
             %impact du levage des plaques métalliques
             impact_levage_metalneuf_plaque_reuse1=kgco2_levage*massemetalplaque_reuse1; %[kgco2/m]
 
             %impact du levage  du béton
             impact_levage_betonreused_reuse1=kgco2_levage*masselin_beton_reuse1; %[kgco2/m]
-            
+
             %impact du joint
             volumejointpoly=0.02*0.02*L1/largcamion; %[m3/m]
             impact_prod_jointpolyneuf_reuse1=kgco2_prod_jointpoly*massevol_jointpoly*volumejointpoly; %[kgco2/m]
-            
+
             %impact du mortier dans les joints entre les pieces de beton
             volumemortier=(hsreuse-0.03)*0.02*L1/largcamion; %[m3/m]
             impact_prod_mortierneuf_reuse1=volumemortier*massevol_mortier*kgco2_prod_mortier; %[kgco2/m]
-            
+
             %impact EVITE de l'élimination du béton réutilisé
             impact_EVITE_elimi_betonreused_reuse1=kgco2_elimi_beton*masselin_beton_reuse1; %[kgco2/m]
-            
+
             %impact EVITE de l'élimination de l'acier d'armature réutilisé
             volarma0=L1*hsreuse*tauxarmature0; %volume des armatures réutilisées  [m3/m]
             massearma0=massevol_armature*volarma0; %masse des armatures réutilisées [m3/m]
@@ -372,39 +372,39 @@ L_alpha=L0*alpha;
 
             %impact réemploi
             impactreuse1=impact_tp_etai_reuse1+impact_levageeetdepose_etais_reuse1+impact_sciage_betonreused_reuse1+impact_depose_betonreused_reuse1+impact_tp_betonreused_reuse1+impact_levage_betonreused_reuse1+impact_prod_metalneuf_corn_reuse1+impact_prod_metalneuf_plaque_reuse1+impact_tp_metalneuf_corn_reuse1+impact_tp_metalneuf_plaque_reuse1+impact_degraissage_metalneuf_reuse1+impact_prod_revpulvacier_reuse1+impact_levage_metalneuf_plaque_reuse1+impact_levage_metalneuf_corn_reuse1+impact_prod_jointpolyneuf_reuse1+impact_prod_caoutchouc_reuse1+impact_prod_mortierneuf_reuse1; %impact solution réemploi dalles simples [kgco2/m]
-            
+
             %distribution des impacts (réemploi et new)
             impactreuse1_matrice=[impact_tp_etai_reuse1+impact_levageeetdepose_etais_reuse1+impact_depose_betonreused_reuse1+impact_levage_betonreused_reuse1+impact_tp_metalneuf_corn_reuse1+impact_tp_metalneuf_plaque_reuse1+impact_degraissage_metalneuf_reuse1+impact_levage_metalneuf_plaque_reuse1+impact_levage_metalneuf_corn_reuse1,impact_prod_revpulvacier_reuse1,impact_prod_jointpolyneuf_reuse1,+impact_prod_caoutchouc_reuse1,impact_prod_mortierneuf_reuse1,0,impact_prod_metalneuf_corn_reuse1,impact_prod_metalneuf_plaque_reuse1,0,0,0,impact_sciage_betonreused_reuse1,impact_tp_betonreused_reuse1,0];
             impactnew1_matrice=[impact_tp_armaneuf_new0+impact_levage_armaneuf_new0+impact_levage_betonneuf_new0+impact_coulage_betonneuf_new0+impact_prod_coffr_new0+impact_tp_coffrageetayage_new0+impact_levageetdepose_coffrageetetayage_new0+impact_EVITE_elimi_armareused_reuse1,0,0,0,0,impact_prod_armaneuf_new0,0,0,0,impact_prod_betonneuf_new0,impact_tp_betonneuf_new0,0,0,impact_EVITE_elimi_betonreused_reuse1,];
             impactreuse=impactreuse1;
-            
+
             %impact neuf
             impactnew=impactnew_prod+impact_EVITE_elimi_betonreused_reuse1+impact_EVITE_elimi_armareused_reuse1;
-      
+
             %% DELTA NEW/REUSE
             delta=(impactnew-impactreuse)/impactnew;
             delta1=(impactnew-impactreuse1)/impactnew;
             delta2=0;
 
-            
-               
+
+
 %             x1=[-impact_EVITE_elimi_betonreused_reuse1 -impact_EVITE_elimi_armareused_reuse1 impact_tp_etai_reuse1 impact_levageeetdepose_etais_reuse1 impact_sciage_betonreused_reuse1 impact_depose_betonreused_reuse1 impact_tp_betonreused_reuse1 impact_levage_betonreused_reuse1 impact_prod_metalneuf_corn_reuse1 impact_prod_metalneuf_plaque_reuse1 impact_tp_metalneuf_corn_reuse1 impact_tp_metalneuf_plaque_reuse1 impact_degraissage_metalneuf_reuse1 impact_prod_revpulvacier_reuse1 impact_levage_metalneuf_plaque_reuse1 impact_levage_metalneuf_corn_reuse1 impact_prod_jointpolyneuf_reuse1 impact_prod_mortierneuf_reuse1;impact_prod_coffr_new0 impact_tp_coffrageetayage_new0 impact_levageetdepose_coffrageetetayage_new0 impact_prod_betonneuf_new0 impact_tp_betonneuf_new0 impact_prod_armaneuf_new0 impact_tp_armaneuf_new0 impact_levage_armaneuf_new0 impact_levage_betonneuf_new0 impact_coulage_betonneuf_new0 0 0 0 0 0 0 0 0];
 %             bar(x1,'stacked')
-        else             
+        else
         %% IMPACT SYSTEM 2 - grille de poutres avec dalles simples (zones 2,4,5)
             if L0<=L_armamin && L1>L0 %conditions de la zone 2
                L_decoupeL0=L0;
             elseif L1>L0 && L0>L_armamin || L1<=L0 && L1>L_alpha && L1>L_armamin %conditions de la zone 4 et de la zone 5
                L_decoupeL0=max(L_alpha,L_armamin);
             end
-            if beamposition==1 %belowconcrete 
+            if beamposition==1 %belowconcrete
             syst=1;
             end
 %             if beamposition==2 %concreteplane
 %             syst=2;
 %             end
             %charge sur la cornière
-            Qlin=L_decoupeL0*Qtotsurfacique1*beam_selfweight; %[kN/m]            
+            Qlin=L_decoupeL0*Qtotsurfacique1*beam_selfweight; %[kN/m]
 
             %% SELECTION PROFILE - SELECTIONS CARACT. A COMPLETER
             Med=Qlin*L1^2/8;%Nmm
@@ -422,7 +422,7 @@ L_alpha=L0*alpha;
                 flecheBeam_freq=(L_decoupeL0+Selection_beam_largeurentrepiece/1000)*Q1*(L1*1000)^4/profileE/(Selection_I)*5/384; %mm
                 flecheBeton_freq=Q1*(L_decoupeL0*1000)^4/Ebeton/Ibeton*5/384; %mm
                 flechetot_freq=flecheBeam_freq+flecheBeton_freq;
-                if flechetot_freq<=flechemax_freq 
+                if flechetot_freq<=flechemax_freq
                     test=test+1;
                 else
                     it=it+1;
@@ -446,7 +446,7 @@ L_alpha=L0*alpha;
                     test=test+1;
                 end
             end
-            
+
             Selection_W=profile_W(sel);
             Selection_I=profile_I(sel);
             Selection_profile_mass=profile_mass(sel);
@@ -461,9 +461,9 @@ L_alpha=L0*alpha;
             Selection_beam_largeurentrepiece=beam_largeurentrepiece(sel);
             Selection_beam_vol_betonremplissage=beam_vol_betonremplissage(sel);
             Selection_beam_caoutchoucwidth=beam_caoutchoucwidth(sel);
-            
+
             sol=Selection_beam_sol;
- 
+
             %% IMPACTS COMMUN A TOUS LES SYSTEMES 2
             %ratio dalle:poutre
             if beamposition==1 %belowconcrete
@@ -472,95 +472,95 @@ L_alpha=L0*alpha;
             if beamposition==2 %concrete plane
                qdalle=1/(L_decoupeL0+Selection_beam_largeurentrepiece/1000)*L_decoupeL0;
             end
-            
+
             %quantité de métal pour les plaques métalliques
             vol_1plaque=0.2*0.15*0.01+3.14*0.008^2*hsreuse*4; %volume par plaque avec boulons [m3/plaque]
             n_plaque_reuse2=(2*ceil(L1/largcamion)+ceil(L_decoupeL0/1.5))/L_decoupeL0*qdalle; %nombre de plaque par mètre linéaire [plaque/m]
             massemetalplaque_reuse2=vol_1plaque*n_plaque_reuse2*massevol_metal; %masse linéaire de métal pour les plaques [kg/m]
-            
+
             %surface de béton sciée
             n_bloc_reuse2=ceil(L1/largcamion); %nombre de blocs nécessaires pour couvrir L1
             surfsciage_reuse2=(L1/L_decoupeL0*2+(n_bloc_reuse2*2))*hsreuse*qdalle; %surface de béton sciée par mètre linéaire [m2/m]  --> ne prend pas en compte les économies possibles liées au fait que un trait de coupe puisse servir à deux blocs
-            
+
             %impact du transport des étais pour le donneur
             masse_etais_reuse2=masse_lin_etais_reuse*L1*qdalle; %quantité étais pour découpe donneur par mètre linéaire receveur
             impact_tp_etais_reuse2=masse_etais_reuse2/1000*tpdist_coffrageetayage*kgco2_tp_camion3240t; %[kgco2/m]
-            
+
             %impact du levage et de la dépose des étais
             impact_levageetdepose_etais_reuse2=kgco2_levage*masse_etais_reuse2; %[kgco2/m]
-         
+
             %impact du sciage du béton
             impact_sciage_betonreused_reuse2=kgco2_sciage_beton*surfsciage_reuse2; %[kgco2/m]
 
             %impact du joint entre les pièces de béton
             volumejointpoly2=0.02*0.02*n_bloc_reuse2; %[m3/m]
             impact_prod_jointpolyneuf_reuse2=kgco2_prod_jointpoly*massevol_jointpoly*volumejointpoly2*qdalle; %[kgco2/m]
-            
+
             %impact du mortier dans les joints entre les pieces de beton
             volumemortier2=(hsreuse-0.03)*0.02*n_bloc_reuse2; %[m3/m]
             impact_prod_mortierneuf_reuse2=volumemortier2*massevol_mortier*kgco2_prod_mortier*qdalle; %[kgco2/m]
-            
+
             %quantité de métal pour les poutres
             qpoutreparmlin=1/(L_decoupeL0+(Selection_beam_largeurentrepiece/1000)); %nombre moyen de poutre par mètre (de large) de plancher
             masselin_poutre=qpoutreparmlin*Selection_profile_mass*100*L1; %masse de métal moyenne par mètre linéaire de plancher [kg/m] !! ATTENTION A LA CONVERSION
-            
+
             %quantité de béton de réemploi
             lbetonparmlin=1-((Selection_beam_largeurentrepiece/1000)*qpoutreparmlin); %longueur de béton par m linéaire [m/m] A VERIFIER
             masselin_beton_reuse2=L1*hsreuse*lbetonparmlin*massevol_BA; %masse BA dalle de réemploi par m [kg/m]
-            
+
             %impact pour la dépose au sol (//levage) du béton scié
             impact_depose_betonreused_reuse2=kgco2_levage*masselin_beton_reuse2; %[kgco2/m]
 
             %impact du transport du béton
             impact_tp_betonreused_reuse2= masselin_beton_reuse2/1000*tpdist_beton_reuse*kgco2_tp_camion3240t; %[kgco2/m]
-            
+
             %impact du levage du béton
             impact_levage_betonreused_reuse2=kgco2_levage*masselin_beton_reuse2; %[kgco2/m]
-                        
+
             %quantité de métal pour les cornières pour appuyer les poutres A CORRIGER
             masse_corn2=masse_lin_corn2*Selection_profile_largeurtot/1000*2*qpoutreparmlin; %[kg/m]
-            
+
             %impact de la production des cornièces métalliques
             impact_prod_metalneuf_corn_reuse2=masse_corn2*kgco2_prod_profilmetal;
-                       
+
             %impact de la production des plaques métalliques
             impact_prod_metalneuf_plaque_reuse2=massemetalplaque_reuse2*kgco2_prod_profilmetal;
-            
+
             %impact du transport des plaques métalliques
             impact_tp_metalneuf_plaque_reuse2=massemetalplaque_reuse2/1000*tpdist_metal*kgco2_tp_camion3240t;
-           
+
             %impact du transport des cornières métalliques
             impact_tp_metalneuf_corn_reuse2=masse_corn2/1000*tpdist_metal*kgco2_tp_camion3240t;
-                         
+
             %impact des soudures sur l'acier
             impact_welding_reuse2=Selection_beam_welding*L1*qpoutreparmlin*kgco2_welding;
-            
+
             %impact du dégraissage de l'acier
-            surface_peint_1beam=Selection_profile_degreasedsurf; %facteur 1/1000 enlevé 
+            surface_peint_1beam=Selection_profile_degreasedsurf; %facteur 1/1000 enlevé
             surfacepeinttot_reuse2=surface_peint_1beam*qpoutreparmlin*L1; %surface à protéger avec peinture ignifuge par mètre linéaire de plancher[m2/m]
             impact_degraissage_metalneuf_reuse2=kgco2_degraissage*surfacepeinttot_reuse2;
-            
+
             %impact de la production de la peinture protectrice
             impact_prod_revpulvacier_reuse2=kgco2_prod_revpulvacier*surfacepeinttot_reuse2;
-            
+
             %impact de la production du caoutchouc
-            volumecaoutchouctot_reuse2=Selection_beam_caoutchoucwidth/1000*L1*qpoutreparmlin*epaisseur_caoutchouc; %volume de caoutchouc par mètre lin de plancher [m3/m]            
+            volumecaoutchouctot_reuse2=Selection_beam_caoutchoucwidth/1000*L1*qpoutreparmlin*epaisseur_caoutchouc; %volume de caoutchouc par mètre lin de plancher [m3/m]
             impact_prod_caoutchouc_reuse2=massevol_caoutchouc*volumecaoutchouctot_reuse2*kgco2_prod_caoutchouc; %impact de la production du caoutchouc [kgco2/m]
 
             %impact du levage de les cornières métalliques
             impact_levage_metalneuf_corn_reuse2=kgco2_levage*masse_corn2; %[kgco2/m]
-            
+
             %impact du levage des plaques métalliques
             impact_levage_metalneuf_plaque_reuse2=kgco2_levage*massemetalplaque_reuse2; %[kgco2/m]
 
             %impact EVITE de l'élimination du béton réutilisé
             impact_EVITE_elimi_betonreused_reuse2=kgco2_elimi_beton*masselin_beton_reuse2; %[kgco2/m]
-            
+
             %impact EVITE de l'élimination de l'acier d'armature réutilisé !!! A CORRIGER !!!
             volarma0=L1*hsreuse*lbetonparmlin*tauxarmature0; %volume des armatures réutilisées [m3/m]
             massearma0=massevol_armature*volarma0; %masse des armatures réutilisées [m3/m]
             impact_EVITE_elimi_armareused_reuse2=kgco2_elimi_armature*massearma0; %[kgco2/m]
-            
+
             %% IMPACTS SPECIAUX POUR SYSTEMES 2 AVEC PROFILES NEUFS
             if steelprofile_type==1 %recycledsteel
                 %impact de la production des profilés métalliques
@@ -577,7 +577,7 @@ L_alpha=L0*alpha;
                 impact_tp_metalneuf_profiles_reuse2=0;
                 impact_levage_metalneuf_profiles_reuse2=0;
             end
-            
+
             %% IMPACTS SPECIAUX POUR SYSTEMES 2 AVEC PROFILES REEMPLOI
             if steelprofile_type==1 %recycledsteel
                 impact_unwelding_metalreuse_reuse2=0;
@@ -590,7 +590,7 @@ L_alpha=L0*alpha;
                 %impact de l'ouverture/unwelding connections sur le donneur
                 impact_unwelding_metalreuse_reuse2=Selection_profile_unwelding*qpoutreparmlin*kgco2_welding; %[kgco2/m]
 
-                %impact de la dépose des profilés de réemploi 
+                %impact de la dépose des profilés de réemploi
                 impact_depose_metalreused_reuse2=kgco2_levage*masselin_poutre; %[kgco2/m]
 
                 %impact du sablage des profilés
@@ -602,7 +602,7 @@ L_alpha=L0*alpha;
                 %impact EVITE de l'élimination des profilés métalliques réutilisés
                 impact_EVITE_elimi_metalreused_reuse2=masselin_poutre*kgco2_elimi_profilmetal; %[kgco2/m
             end
-            
+
             %%  IMPACTS SPECIAUX POUR SYSTEMS 2 AVEC PROFILES DANS LE PLAN DU BETON -> RAJOUTER LA PROD ET LE TP DU BETON DANS LES PROFILES!
             if beamposition==1 %belowconcrete
                 impact_prod_betonnew_reuse2=0;
@@ -619,14 +619,14 @@ L_alpha=L0*alpha;
                 impact_prod_betonnew_reuse2=masse_betonremplissage_tot*kgco2_prod_beton;
                 impact_tp_betonnew_reuse2=masse_betonremplissage_tot/1000*kgco2_tp_camion3240t*tpdist_beton;
             end
-            
+
             %impact réemploi
             impactreuse2=impact_tp_etais_reuse2+impact_levageetdepose_etais_reuse2+impact_sciage_betonreused_reuse2+impact_depose_betonreused_reuse2+impact_tp_betonreused_reuse2+impact_levage_betonreused_reuse2+impact_prod_jointpolyneuf_reuse2+impact_prod_caoutchouc_reuse2+impact_prod_mortierneuf_reuse2+impact_prod_metalneuf_corn_reuse2+impact_prod_metalneuf_plaque_reuse2+impact_tp_metalneuf_plaque_reuse2+impact_tp_metalneuf_corn_reuse2+impact_levage_metalneuf_corn_reuse2+impact_levage_metalneuf_plaque_reuse2+impact_welding_reuse2+impact_degraissage_metalneuf_reuse2+impact_prod_revpulvacier_reuse2+impact_prod_metalneuf_profiles_reuse2+impact_tp_metalneuf_profiles_reuse2+impact_levage_metalneuf_profiles_reuse2+impact_unwelding_metalreuse_reuse2+impact_depose_metalreused_reuse2+impact_tp_metalreused_reuse2+impact_sablage_metalreused_reuse2+impact_prod_betonnew_reuse2+impact_tp_betonnew_reuse2;
             impactreuse=impactreuse2;
-            
+
             %impact neuf
             impactnew=impactnew_prod+impact_EVITE_elimi_betonreused_reuse2+impact_EVITE_elimi_armareused_reuse2+impact_EVITE_elimi_metalreused_reuse2;
-            
+
             %distribution des impacts (réemploi et new)
             impactreuse2_matrice=[impact_tp_etais_reuse2+impact_levageetdepose_etais_reuse2+impact_depose_betonreused_reuse2+impact_levage_betonreused_reuse2+impact_tp_metalneuf_plaque_reuse2+impact_tp_metalneuf_corn_reuse2+impact_levage_metalneuf_corn_reuse2+impact_levage_metalneuf_plaque_reuse2+impact_welding_reuse2+impact_degraissage_metalneuf_reuse2+impact_tp_metalneuf_profiles_reuse2+impact_levage_metalneuf_profiles_reuse2+impact_unwelding_metalreuse_reuse2+impact_depose_metalreused_reuse2+impact_tp_metalreused_reuse2+impact_sablage_metalreused_reuse2+impact_prod_betonnew_reuse2+impact_tp_betonnew_reuse2,impact_prod_revpulvacier_reuse2,impact_prod_jointpolyneuf_reuse2,impact_prod_caoutchouc_reuse2, impact_prod_mortierneuf_reuse2,0,impact_prod_metalneuf_corn_reuse2,impact_prod_metalneuf_plaque_reuse2,impact_prod_metalneuf_profiles_reuse2,0,0,impact_sciage_betonreused_reuse2,impact_tp_betonreused_reuse2,0];
             impactnew2_matrice=[impact_EVITE_elimi_armareused_reuse2+impact_EVITE_elimi_metalreused_reuse2+impact_prod_coffr_new0+impact_tp_coffrageetayage_new0+impact_levageetdepose_coffrageetetayage_new0+impact_tp_armaneuf_new0+impact_levage_armaneuf_new0+impact_levage_betonneuf_new0+impact_coulage_betonneuf_new0,0,0,0,0,impact_prod_armaneuf_new0,0,0,0,impact_prod_betonneuf_new0,impact_tp_betonneuf_new0,0,0,impact_EVITE_elimi_betonreused_reuse2];
@@ -634,17 +634,17 @@ L_alpha=L0*alpha;
             delta=(impactnew-impactreuse)/impactnew;
             delta1=0;
             delta2=(impactnew-impactreuse2)/impactnew;
-            
-            
+
+
              %% SELECTED SOLUTIONS
             sol=Selection_beam_sol;
         end
-      
+
 
 %     y=[impactnew;impactreuse];
 %     bar(y,'stacked')
-%     
+%
 %     x2=[-impact_EVITE_elimi_betonreused_reuse2 -impact_EVITE_elimi_armareused_reuse2 -impact_EVITE_elimi_metalreused_reuse2 impact_tp_etais_reuse2 impact_levageetdepose_etais_reuse2 impact_sciage_betonreused_reuse2 impact_depose_betonreused_reuse2 impact_tp_betonreused_reuse2 impact_levage_betonreused_reuse2 impact_prod_jointpolyneuf_reuse2 impact_prod_mortierneuf_reuse2 impact_prod_metalneuf_corn_reuse2 impact_prod_metalneuf_plaque_reuse2 impact_tp_metalneuf_plaque_reuse2 impact_tp_metalneuf_corn_reuse2 impact_levage_metalneuf_corn_reuse2 impact_levage_metalneuf_plaque_reuse2 impact_welding_reuse2 impact_degraissage_metalneuf_reuse2 impact_prod_revpulvacier_reuse2 impact_prod_metalneuf_profiles_reuse2 impact_tp_metalneuf_profiles_reuse2 impact_levage_metalneuf_profiles_reuse2 impact_unwelding_metalreuse_reuse2 impact_depose_metalreused_reuse2 impact_tp_metalreused_reuse2 impact_sablage_metalreused_reuse2 impact_prod_betonnew_reuse2 impact_tp_betonnew_reuse2;impact_prod_coffr_new0 impact_tp_coffrageetayage_new0 impact_levageetdepose_coffrageetetayage_new0 impact_prod_betonneuf_new0 impact_tp_betonneuf_new0 impact_prod_armaneuf_new0 impact_tp_armaneuf_new0 impact_levage_armaneuf_new0 impact_levage_betonneuf_new0 impact_coulage_betonneuf_new0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0];
-%     bar(x2,'stacked') 
+%     bar(x2,'stacked')
 
 % end

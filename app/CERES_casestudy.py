@@ -1,10 +1,9 @@
-import os
-import yaml
-from typing import Union
 import math
+import os
+
 import numpy as np
 import pandas as pd
-
+import yaml
 
 VARIABLES_FILE_PATH = os.path.join(os.path.dirname(__file__), "variables.yml")
 
@@ -112,7 +111,14 @@ def read_data(steelprofile_type: int) -> pd.DataFrame:
     else:
         raise ValueError("Invalid steelprofile_type")
 
-    df = pd.read_excel(os.path.join(os.path.dirname(__file__), excel_file), sheet_name=sheet_name, header=None, usecols=usecols, skiprows=skiprows, nrows=nrows)
+    df = pd.read_excel(
+        os.path.join(os.path.dirname(__file__), excel_file),
+        sheet_name=sheet_name,
+        header=None,
+        usecols=usecols,
+        skiprows=skiprows,
+        nrows=nrows,
+    )
     return df
 
 
@@ -120,14 +126,13 @@ def processing(
     l0: float, l1: float, hsreuse=float, year=int, q0=int, q1=int, tpdist_beton_reuse=float, tpdist_metal_reuse=float
 ):
     # retrive variables from yaml file
-    with open(VARIABLES_FILE_PATH, "r") as file:
+    with open(VARIABLES_FILE_PATH) as file:
         variables = yaml.safe_load(file)
     v = MyConfig(variables)
 
     # --------------------------------------------------------
     # caractérstiques du donneur
     Fsd_armamin = define_fsd_armamin(year)
-    j = l1
     steelprofile_type = 2
     beamposition = 1
 
@@ -163,7 +168,8 @@ def processing(
     # Extract profile_largeurtot - Largeur totale du profilé [mm]
     profile_largeurtot = data.iloc[:, 5]
 
-    # Extract profile_degreasedsurf - [m^2/m] surface dégraissée et repeintre par mètre de poutre de réemploi -> PAS AUSSI LES NEUVES? VOIR Brütting et al.
+    # Extract profile_degreasedsurf - [m^2/m] surface dégraissée et repeintre par mètre
+    # de poutre de réemploi -> PAS AUSSI LES NEUVES? VOIR Brütting et al.
     profile_degreasedsurf = data.iloc[:, 11]
 
     # Extract beam_sol - numero de poutres telles que listées dans "selection profiles.xls"
@@ -296,7 +302,6 @@ def processing(
         kgco2_prodetelimi_disque + kgco2_prodetelimi_machine + v.kgco2_prodenergie_sciage
     )  # kgCO2/m2 pour le sciage du béton
 
-    i = l0
     L_alpha = l0 * alpha
 
     # ------------------------------------------------------------------------------------------------------
@@ -378,198 +383,68 @@ def processing(
     # IMPACT SYSTEM 1 - dalles simples uniquement (zones 1 et 3)
     if l1 <= L_armamin and l1 <= l0 or l1 <= L_alpha and l1 > L_armamin:  # conditions de la zone 1 et de la zone 3
         L_decoupeL0 = l1
-        syst = 0
-        Selection_beam_sol = 0
 
         # quantité béton armé de réemploi
-        masselin_beton_reuse1 = l1 * hsreuse * v.massevol_BA  # masse BA dalle de réemploi par m [kg/m]
 
         # impact du transport des étais pour le donneur
-        masse_etais_reuse1 = (
-            masse_lin_etais_reuse * l1
-        )  # [kg/m] quantité étais pour découpe donneur par mètre linéaire receveur
-        impact_tp_etai_reuse1 = masse_etais_reuse1 / 1000 * tpdist_coffrageetayage * v.kgco2_tp_camion3240t  # [kgco2/m]
 
         # impact du levage et de la dépose des étais pour le donneur
-        impact_levageeetdepose_etais_reuse1 = kgco2_levage * 2 * masse_etais_reuse1  # [kgco2/m]
 
         # impact du sciage du béton
-        n_bloc_reuse1 = 1 / largcamion  # nombre de bloc de béton par mètre linéaire [n/m]
-        surfsciage_reuse1 = ((n_bloc_reuse1 * l1) + 1) * 2 * hsreuse  # surface de béton sciée par mètre linéaire [m2/m]
-        impact_sciage_betonreused_reuse1 = kgco2_sciage_beton * surfsciage_reuse1  # [kgco2/m]
 
         # impact de la dépose du béton
-        impact_depose_betonreused_reuse1 = kgco2_levage * masselin_beton_reuse1  # [kgco2/m]
 
         # impact du transport du béton
-        impact_tp_betonreused_reuse1 = (
-            (masselin_beton_reuse1 / 1000) * tpdist_beton_reuse * v.kgco2_tp_camion3240t
-        )  # [kgco2/m]
 
         # impact de la production des cornières métalliques
-        hcorn = None
-        epaisseurcorn = None
 
         if hsreuse == 0.14:  # hauteur de la cornière = largeur de la cornière = hauteur de la dalle de réemploi
-            epaisseurcorn = 0.013  # épaisseur de la cornière selon la table des LNP (cornière la plus fine)
-            hcorn = hsreuse
+            pass
         elif hsreuse == 0.16:
-            epaisseurcorn = 0.015
-            hcorn = hsreuse
+            pass
         elif hsreuse >= 0.18:
-            epaisseurcorn = 0.016
-            hcorn = hsreuse
+            pass
         elif hsreuse == 0.20:
-            epaisseurcorn = 0.016
-            hcorn = hsreuse
+            pass
         elif hsreuse == 0.22:
-            epaisseurcorn = 0.016
-            hcorn = 0.20
-
-        volcormetal = hcorn * 2 * epaisseurcorn  # volume linéaire par cornière [m3/m/corniere]
-        n_cor = 2
-        qcorniere = 0.4  # longueur de cornière par mètre linéaire d'appui [m cornière /m]
-        voltotcormetal = volcormetal * n_cor * qcorniere  # volume linéaire de métal pour les cornières [m3/m]
-        massemetalcorn_reuse1 = voltotcormetal * v.massevol_metal  # masse linéaire de métal pour les cornières [kg/m]
-        impact_prod_metalneuf_corn_reuse1 = massemetalcorn_reuse1 * v.kgco2_prod_profilmetal  # [kgco2/m]
+            pass
 
         # impact de la production des plaques métalliques
         vol_1plaque = (
             0.25 * 0.15 * 0.008 + 3.14 * 0.008**2 * hsreuse * 4
         )  # volume par plaque avec boulons [m3/plaque]
-        n_plaque_reuse1 = (2 + math.ceil(l1 / 2)) / largcamion  # nombre de plaque par mètre linéaire [plaque/m]
-        massemetalplaque_reuse1 = (
-            vol_1plaque * n_plaque_reuse1 * v.massevol_metal
-        )  # volume linéaire de métal pour les plaques [kg/m]
-        impact_prod_metalneuf_plaque_reuse1 = massemetalplaque_reuse1 * v.kgco2_prod_profilmetal  # [kgco2/m]
+        (2 + math.ceil(l1 / 2)) / largcamion  # nombre de plaque par mètre linéaire [plaque/m]
 
         # impact du transport des cornières métalliques
-        impact_tp_metalneuf_corn_reuse1 = (
-            massemetalcorn_reuse1 / 1000 * tpdist_metal * v.kgco2_tp_camion3240t
-        )  # [kgco2/m]
 
         # impact du transport des plaques métalliques
-        impact_tp_metalneuf_plaque_reuse1 = (
-            massemetalplaque_reuse1 / 1000 * tpdist_metal * v.kgco2_tp_camion3240t
-        )  # [kgco2/m]
 
         # impact de la production de la peinture protectrice
-        surfacepeintparcorn = hcorn  # surface à peindre par m de cornière [m2/m]
-        surfacepeinttot_reuse1 = (
-            surfacepeintparcorn * n_cor * qcorniere
-        )  # surface linéaire à peindre pour les cornières [m2/m]
-        impact_prod_revpulvacier_reuse1 = v.kgco2_prod_revpulvacier * surfacepeinttot_reuse1  # [kgco2/m]
 
         # impact de la production du caoutchouc
-        surfacecaoutchoucparcorn = (
-            hcorn  # surface à peindre par m de cornière = surface à doubler par caoutchouc par m de cornière [m2/m]
-        )
-        volumecaoutchouctot_reuse1 = (
-            surfacecaoutchoucparcorn * v.epaisseur_caoutchouc * n_cor * qcorniere
-        )  # volume de caoutchouc pour doubler les cornières [m3/m]
-        impact_prod_caoutchouc_reuse1 = (
-            v.massevol_caoutchouc * volumecaoutchouctot_reuse1 * v.kgco2_prod_caoutchouc
-        )  # impact de la production du caoutchouc [kgco2/m]
 
         # impact du dégraissage de l'acier
-        impact_degraissage_metalneuf_reuse1 = v.kgco2_degraissage * surfacepeinttot_reuse1  # [kgco2/m]
 
         # impact du levage des cornières métalliques
-        impact_levage_metalneuf_corn_reuse1 = kgco2_levage * massemetalcorn_reuse1  # [kgco2/m]
 
         # impact du levage des plaques métalliques
-        impact_levage_metalneuf_plaque_reuse1 = kgco2_levage * massemetalplaque_reuse1  # [kgco2/m]
 
         # impact du levage du béton
-        impact_levage_betonreused_reuse1 = kgco2_levage * masselin_beton_reuse1  # [kgco2/m]
 
         # impact du joint
-        volumejointpoly = 0.02 * 0.02 * l1 / largcamion  # [m3/m]
-        impact_prod_jointpolyneuf_reuse1 = v.kgco2_prod_jointpoly * v.massevol_jointpoly * volumejointpoly  # [kgco2/m]
 
         # impact du mortier dans les joints entre les pieces de beton
-        volumemortier = (hsreuse - 0.03) * 0.02 * l1 / largcamion  # [m3/m]
-        impact_prod_mortierneuf_reuse1 = volumemortier * v.massevol_mortier * v.kgco2_prod_mortier  # [kgco2/m]
 
         # impact EVITE de l'élimination du béton réutilisé
-        impact_EVITE_elimi_betonreused_reuse1 = v.kgco2_elimi_beton * masselin_beton_reuse1  # [kgco2/m]
 
         # impact EVITE de l'élimination de l'acier d'armature réutilisé
         volarma0 = l1 * hsreuse * v.tauxarmature0  # volume des armatures réutilisées [m3/m]
         massearma0 = v.massevol_armature * volarma0  # masse des armatures réutilisées [m3/m]
-        impact_EVITE_elimi_armareused_reuse1 = v.kgco2_elimi_armature * massearma0  # [kgco2/m]
 
         # impact réemploi
-        impactreuse1 = (
-            impact_tp_etai_reuse1
-            + impact_levageeetdepose_etais_reuse1
-            + impact_sciage_betonreused_reuse1
-            + impact_depose_betonreused_reuse1
-            + impact_tp_betonreused_reuse1
-            + impact_levage_betonreused_reuse1
-            + impact_prod_metalneuf_corn_reuse1
-            + impact_prod_metalneuf_plaque_reuse1
-            + impact_tp_metalneuf_corn_reuse1
-            + impact_tp_metalneuf_plaque_reuse1
-            + impact_degraissage_metalneuf_reuse1
-            + impact_prod_revpulvacier_reuse1
-            + impact_levage_metalneuf_plaque_reuse1
-            + impact_levage_metalneuf_corn_reuse1
-            + impact_prod_jointpolyneuf_reuse1
-            + impact_prod_caoutchouc_reuse1
-            + impact_prod_mortierneuf_reuse1
-        )  # impact solution réemploi dalles simples [kgco2/m]
 
         # distribution des impacts (réemploi et new)
-        impactreuse1_matrice = [
-            impact_tp_etai_reuse1
-            + impact_levageeetdepose_etais_reuse1
-            + impact_depose_betonreused_reuse1
-            + impact_levage_betonreused_reuse1
-            + impact_tp_metalneuf_corn_reuse1
-            + impact_tp_metalneuf_plaque_reuse1
-            + impact_degraissage_metalneuf_reuse1
-            + impact_levage_metalneuf_plaque_reuse1
-            + impact_levage_metalneuf_corn_reuse1,
-            impact_prod_revpulvacier_reuse1,
-            impact_prod_jointpolyneuf_reuse1,
-            +impact_prod_caoutchouc_reuse1,
-            impact_prod_mortierneuf_reuse1,
-            0,
-            impact_prod_metalneuf_corn_reuse1,
-            impact_prod_metalneuf_plaque_reuse1,
-            0,
-            0,
-            0,
-            impact_sciage_betonreused_reuse1,
-            impact_tp_betonreused_reuse1,
-            0,
-        ]
         impact_levageetdepose_coffrageetetayage_new0 = 0  # to change !!!!!!
-
-        impactnew1_matrice = [
-            impact_tp_armaneuf_new0
-            + impact_levage_armaneuf_new0
-            + impact_levage_betonneuf_new0
-            + impact_coulage_betonneuf_new0
-            + impact_prod_coffr_new0
-            + impact_tp_coffrageetayage_new0
-            + impact_levageetdepose_coffrageetetayage_new0
-            + impact_EVITE_elimi_armareused_reuse1,
-            0,
-            0,
-            0,
-            0,
-            impact_prod_armaneuf_new0,
-            0,
-            0,
-            0,
-            impact_prod_betonneuf_new0,
-            impact_tp_betonneuf_new0,
-            0,
-            0,
-            impact_EVITE_elimi_betonreused_reuse1,
-        ]
 
         # impactreuse = impactreuse1
         # impactreuse_m2[i, j] = impactreuse / L1
@@ -595,7 +470,7 @@ def processing(
             L_decoupeL0 = max(L_alpha, L_armamin)
 
         if beamposition == 1:  # belowconcrete
-            syst = 1
+            pass
 
         Qlin = L_decoupeL0 * Qtotsurfacique1 * beam_selfweight  # [kN/m]
 
@@ -656,15 +531,15 @@ def processing(
             else:
                 test = test + 1
 
-        Selection_W = profile_W[sel]
+        profile_W[sel]
         Selection_I = profile_I[sel]
         Selection_profile_mass = profile_mass[sel]
         Selection_profile_hauteur = profile_hauteur[sel]
         Selection_profile_largeurtot = profile_largeurtot[sel]
         Selection_profile_degreasedsurf = profile_degreasedsurf[sel]
-        Selection_beam_sol = beam_sol[sel]
+        beam_sol[sel]
         Selection_beam_welding = beam_welding[sel]
-        Selection_supportingplates_mass = supportingplates_mass[sel]
+        supportingplates_mass[sel]
         Selection_profile_unwelding = profile_unwelding[sel]
         Selection_profile_sandblastedsurf = profile_sandblastedsurf[sel]
         Selection_beam_largeurentrepiece = beam_largeurentrepiece[sel]
@@ -845,7 +720,8 @@ def processing(
             impact_EVITE_elimi_metalreused_reuse2 = masselin_poutre * v.kgco2_elimi_profilmetal  # [kgco2/m]
 
         # ------------------------------------------------------------------------------------------------------
-        ## IMPACTS SPECIAUX POUR SYSTEMS 2 AVEC PROFILES DANS LE PLAN DU BETON -> RAJOUTER LA PROD ET LE TP DU BETON DANS LES PROFILES!
+        ## IMPACTS SPECIAUX POUR SYSTEMS 2 AVEC PROFILES DANS LE PLAN DU BETON
+        # -> RAJOUTER LA PROD ET LE TP DU BETON DANS LES PROFILES!
         if beamposition == 1:  # belowconcrete
             impact_prod_betonnew_reuse2 = 0
             impact_tp_betonnew_reuse2 = 0
@@ -903,39 +779,6 @@ def processing(
             + impact_EVITE_elimi_metalreused_reuse2
         )
 
-        impactreuse2_matrice = [
-            impact_tp_etais_reuse2
-            + impact_levageetdepose_etais_reuse2
-            + impact_depose_betonreused_reuse2
-            + impact_levage_betonreused_reuse2
-            + impact_tp_metalneuf_plaque_reuse2
-            + impact_tp_metalneuf_corn_reuse2
-            + impact_levage_metalneuf_corn_reuse2
-            + impact_levage_metalneuf_plaque_reuse2
-            + impact_welding_reuse2
-            + impact_degraissage_metalneuf_reuse2
-            + impact_tp_metalneuf_profiles_reuse2
-            + impact_levage_metalneuf_profiles_reuse2
-            + impact_unwelding_metalreuse_reuse2
-            + impact_depose_metalreused_reuse2
-            + impact_tp_metalreused_reuse2
-            + impact_sablage_metalreused_reuse2
-            + impact_prod_betonnew_reuse2
-            + impact_tp_betonnew_reuse2,
-            impact_prod_revpulvacier_reuse2,
-            impact_prod_jointpolyneuf_reuse2,
-            impact_prod_caoutchouc_reuse2,
-            impact_prod_mortierneuf_reuse2,
-            0,
-            impact_prod_metalneuf_corn_reuse2,
-            impact_prod_metalneuf_plaque_reuse2,
-            impact_prod_metalneuf_profiles_reuse2,
-            0,
-            0,
-            impact_sciage_betonreused_reuse2,
-            impact_tp_betonreused_reuse2,
-            0,
-        ]
         impactnew2_matrice = [
             impact_EVITE_elimi_armareused_reuse2
             + impact_EVITE_elimi_metalreused_reuse2
@@ -960,10 +803,6 @@ def processing(
             0,
             impact_EVITE_elimi_betonreused_reuse2,
         ]
-
-        delta = (impactnew - impactreuse) / impactnew
-        delta1 = 0
-        delta2 = (impactnew - impactreuse2) / impactnew
 
         bar_char_data = pd.DataFrame(
             {"lab": ["Impact new", "Impact reuse", "Impact reuse 2"], "val": [impactnew, impactreuse, impactreuse2]}

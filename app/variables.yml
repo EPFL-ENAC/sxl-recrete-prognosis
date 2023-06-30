@@ -62,4 +62,3 @@ kgco2_welding: 0.16264047  # kgCO2/m de soudure sur métal E&Bpaper
 kgco2_prod_mortier: 0.393  # kgCO2/kg de Colle de construction/mortier d'enrobage minéral(e) KBOB 04.008
 kgco2_prod_jointpoly: 1.53  # kgCO2/kg de joint en mousse polyéthylène KBOB 08.004
 kgco2_prod_caoutchouc: 2.74  # kgCO2/kg de Lé d'étanchéité caoutchouc (EPDM) KBOB 09.004
-

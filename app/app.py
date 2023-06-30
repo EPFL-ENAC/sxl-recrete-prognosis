@@ -1,13 +1,7 @@
-import streamlit as st
-import json
-import time
-from CERES_casestudy import processing
-import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
-
+import streamlit as st
+from CERES_casestudy import processing
 from drawing import plot_drawing
-
 
 st.set_page_config(layout="wide")
 
@@ -114,23 +108,15 @@ if st.button("Run Simulations"):
         if simulation_result:
             column = columns[i]
 
-            fig = px.bar(simulation_result[0], y="val",title="Comparaison of the impact",labels={'val':'Co2 emissions'})
+            fig = px.bar(
+                simulation_result[0], y="val", title="Comparaison of the impact", labels={"val": "Co2 emissions"}
+            )
             column.plotly_chart(fig, use_container_width=True)
 
             fig = px.pie(simulation_result[1], values="val", names="lab")
             column.plotly_chart(fig, use_container_width=True)
 
-
             drawing = simulation_result[2]
-            fig2  = plot_drawing(l1 = drawing.get("l1"),
-                               h = drawing.get("h"),
-                               number_part=drawing.get("number_part"))
-      
-            
+            fig2 = plot_drawing(l1=drawing.get("l1"), h=drawing.get("h"), number_part=drawing.get("number_part"))
 
-      
-            
             column.plotly_chart(fig2, use_container_width=True)
-
-
-

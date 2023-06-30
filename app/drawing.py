@@ -1,6 +1,4 @@
 import plotly.graph_objects as go
-import io
-import base64
 
 
 def plot_drawing(l1: float, h: float, number_part: int = 1, beam_size: float = 0.1, beam_height: float = 0.5):
@@ -42,25 +40,28 @@ def plot_drawing(l1: float, h: float, number_part: int = 1, beam_size: float = 0
                 label=dict(text=f"Beam size= {beam_size}"),
             )
 
-            fig.add_trace(go.Scatter(
-                x=[beam_center_x],
-                y=[-(h / 2)-0.2 ],
-                mode="text",
-                name="Lines and Text",
-                text=[f"Beam size= {beam_size}"],
-                textposition="top center"
-            ))
+            fig.add_trace(
+                go.Scatter(
+                    x=[beam_center_x],
+                    y=[-(h / 2) - 0.2],
+                    mode="text",
+                    name="Lines and Text",
+                    text=[f"Beam size= {beam_size}"],
+                    textposition="top center",
+                )
+            )
 
-            fig.add_trace(go.Scatter(
-                x=[beam_center_x+2*beam_size],
-                y=[-(h / 2)-(beam_height)],
-                mode="text",
-                name="Lines and Text",
-                text=[f"Beam height= {beam_height}"],
-                textposition="top right"
-            ))
+            fig.add_trace(
+                go.Scatter(
+                    x=[beam_center_x + 2 * beam_size],
+                    y=[-(h / 2) - (beam_height)],
+                    mode="text",
+                    name="Lines and Text",
+                    text=[f"Beam height= {beam_height}"],
+                    textposition="top right",
+                )
+            )
 
-    
             fig.add_shape(
                 type="line",
                 x0=beam_center_x,
@@ -92,7 +93,7 @@ def plot_drawing(l1: float, h: float, number_part: int = 1, beam_size: float = 0
     fig.add_trace(
         go.Scatter(
             x=[l1 / 2],
-            y=[(2 * h)+0.1],
+            y=[(2 * h) + 0.1],
             mode="text",
             name="Markers and Text",
             text=[f"Slab length= {l1} m"],
@@ -100,19 +101,21 @@ def plot_drawing(l1: float, h: float, number_part: int = 1, beam_size: float = 0
         )
     )
 
-    fig.update_layout(annotations=[
-            go.layout.Annotation(x=l1+0.3,
-            y=0,
-            xref="x",
-            yref="y",
-            text=f"Slab height = {h} m",
-            align='center',
-            showarrow=False,
-            yanchor='middle',
-            textangle=90)])
-    
-
-
+    fig.update_layout(
+        annotations=[
+            go.layout.Annotation(
+                x=l1 + 0.3,
+                y=0,
+                xref="x",
+                yref="y",
+                text=f"Slab height = {h} m",
+                align="center",
+                showarrow=False,
+                yanchor="middle",
+                textangle=90,
+            )
+        ]
+    )
 
     # add H dimension
     fig.add_shape(
@@ -124,8 +127,6 @@ def plot_drawing(l1: float, h: float, number_part: int = 1, beam_size: float = 0
         line=dict(color="RoyalBlue", width=3),
         label=dict(text=f"H = {h}"),
     )
-
- 
 
     fig.add_shape(
         type="line",
