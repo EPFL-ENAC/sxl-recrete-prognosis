@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  streamlit_app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: unless-stopped
+    ports:
+      - "80:8501"
+      - "443:8501"

@@ -25,7 +25,9 @@ dependencies = [
 	"pandas",
 	"openpyxl",
 	"plotly-express",
-	"kaleido"
+	"kaleido",
+	"streamlit",
+	"PyYAML"
 ]
 
 
@@ -42,8 +44,7 @@ dev = [
 	"sphinx_rtd_theme",
 	"nbsphinx",
 	"sphinx-pyproject",
-	"sphinx-mdinclude",
-	"streamlit"
+	"sphinx-mdinclude"
 	]
 
 # Linter settings
