@@ -1,32 +1,57 @@
 import plotly.express as px
 import streamlit as st
+from alias import alias
 from CERES_casestudy import processing
 from drawing import plot_drawing
 
+# Define page layout
 st.set_page_config(layout="wide")
-
-
-st.title("Simulation App")
-
-
-num_columns = st.number_input("Number of simulations", min_value=1, max_value=5, value=1, step=1)
-columns = st.columns(num_columns)
-
+st.title("Reused as-cut cast-in-place concrete slab pieces")
 result = {}
 
 
-first_column = columns[0]
+def run_simulation(result: list, columns: list):
+    for i in result:
+        simulation_params = result[i]
+        simulation_result = processing(**simulation_params)
+
+        if simulation_result:
+            column = columns[i]
+            column.markdown("---")
+
+            fig = px.bar(
+                simulation_result[0], y="val", title="Comparaison of the impact", labels={"val": "Co2 emissions"}
+            )
+            column.plotly_chart(fig, use_container_width=True)
+
+            fig = px.pie(simulation_result[1], values="val", names="lab")
+            column.plotly_chart(fig, use_container_width=True)
+
+            drawing = simulation_result[2]
+            fig2 = plot_drawing(l1=drawing.get("l1"), h=drawing.get("h"), number_part=drawing.get("number_part"))
+
+            column.plotly_chart(fig2, use_container_width=True)
 
 
-# alias = json.load(open("alias.json", "r"))
-# print(alias)
-alias = {
-    "q0": {"Housing (2 kN/m²)": 2, "Office (3 kN/m²)": 3},
-    "year": {"1956-1967 (300 N/mm²)": 1, "1968-1988 (390 N/mm²)": 2, "1988-2023 (435 N/mm²)": 3},
-    "q1": {"Housing (2 kN/m²)": 2, "Office (3 kN/m²)": 3},
-}
+# Define the number of simulations
+with st.container():
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        num_columns = st.number_input(
+            " 1️⃣ Choose the number of simulations", min_value=1, max_value=5, value=1, step=1
+        )
+    with col2:
+        st.write(" 2️⃣ Define the simulation parameters")
+        st.write(" ↓ below ↓")
+    with col3:
+        st.write(" 3️⃣ Run the simulations")
+        button_pressed = st.button("Run Simulations")
 
+    st.markdown("---")
 
+columns = st.columns(num_columns)
+
+# Define the simulation parameters
 for i, column in enumerate(columns):
     simulation_id = i + 1
 
@@ -37,7 +62,7 @@ for i, column in enumerate(columns):
         label_visibility = "hidden"
         suffix = f"{i}"
 
-    column.write(f"Simulation {simulation_id}")
+    column.write(f"Parameters for simulation no {simulation_id}")
     q0 = column.selectbox(
         label=f"Donor-structure design use{suffix}",
         options=("Housing (2 kN/m²)", "Office (3 kN/m²)"),
@@ -100,23 +125,6 @@ for i, column in enumerate(columns):
         "tpdist_metal_reuse": tpdist_metal_reuse,
     }
 
-if st.button("Run Simulations"):
-    for i in result:
-        simulation_params = result[i]
-        simulation_result = processing(**simulation_params)
 
-        if simulation_result:
-            column = columns[i]
-
-            fig = px.bar(
-                simulation_result[0], y="val", title="Comparaison of the impact", labels={"val": "Co2 emissions"}
-            )
-            column.plotly_chart(fig, use_container_width=True)
-
-            fig = px.pie(simulation_result[1], values="val", names="lab")
-            column.plotly_chart(fig, use_container_width=True)
-
-            drawing = simulation_result[2]
-            fig2 = plot_drawing(l1=drawing.get("l1"), h=drawing.get("h"), number_part=drawing.get("number_part"))
-
-            column.plotly_chart(fig2, use_container_width=True)
+if button_pressed:
+    run_simulation(result=result, columns=columns)

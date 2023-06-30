@@ -47,6 +47,9 @@ dev = [
 	"sphinx-mdinclude"
 	]
 
+[tool.setuptools]
+py-modules = []
+
 # Linter settings
 [tool.ruff]
 select = ["F",
