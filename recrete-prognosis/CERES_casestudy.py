@@ -1,10 +1,12 @@
+import os
 import yaml
 from typing import Union
 import math
 import numpy as np
 import pandas as pd
 
-VARIABLES_FILE_PATH = "variables.yml"
+
+VARIABLES_FILE_PATH = os.path.join(os.path.dirname(__file__), "variables.yml")
 
 
 class MyConfig:
@@ -110,7 +112,7 @@ def read_data(steelprofile_type: int) -> pd.DataFrame:
     else:
         raise ValueError("Invalid steelprofile_type")
 
-    df = pd.read_excel(excel_file, sheet_name=sheet_name, header=None, usecols=usecols, skiprows=skiprows, nrows=nrows)
+    df = pd.read_excel(os.path.join(os.path.dirname(__file__), excel_file), sheet_name=sheet_name, header=None, usecols=usecols, skiprows=skiprows, nrows=nrows)
     return df
 
 
@@ -963,10 +965,10 @@ def processing(
         delta1 = 0
         delta2 = (impactnew - impactreuse2) / impactnew
 
-
-        bar_char_data = pd.DataFrame({'lab': ["Impact new", "Impact reuse", "Impact reuse 2"],'val': [impactnew, impactreuse, impactreuse2]})
-        bar_char_data.set_index('lab', inplace=True)
-
+        bar_char_data = pd.DataFrame(
+            {"lab": ["Impact new", "Impact reuse", "Impact reuse 2"], "val": [impactnew, impactreuse, impactreuse2]}
+        )
+        bar_char_data.set_index("lab", inplace=True)
 
         labels = [
             "Category 1",
@@ -990,12 +992,9 @@ def processing(
         drawing["h"] = hsreuse
         drawing["number_part"] = 2
 
+        pie_chart_data = pd.DataFrame({"lab": labels, "val": impactnew2_matrice})
 
-        pie_chart_data = pd.DataFrame({'lab': labels,'val':impactnew2_matrice})
-
-       
-        return [bar_char_data,pie_chart_data,drawing]
-
+        return [bar_char_data, pie_chart_data, drawing]
 
 
 if __name__ == "__main__":
