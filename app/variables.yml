@@ -62,3 +62,35 @@ kgco2_welding: 0.16264047  # kgCO2/m de soudure sur métal E&Bpaper
 kgco2_prod_mortier: 0.393  # kgCO2/kg de Colle de construction/mortier d'enrobage minéral(e) KBOB 04.008
 kgco2_prod_jointpoly: 1.53  # kgCO2/kg de joint en mousse polyéthylène KBOB 08.004
 kgco2_prod_caoutchouc: 2.74  # kgCO2/kg de Lé d'étanchéité caoutchouc (EPDM) KBOB 09.004
+
+# données coffrage et étayage pour NEW (SYSTEM 0)
+# panneaux
+h_panneaux: 0.021  # [m] épaisseur des panneaux
+h_coffbord: 0.50  # hauteur du coffrage de bord [m]
+n_coffbord: 2  # nombre de coffrage de bord sur les bords long (aux appuis)
+n_uti_panneaux: 20  # [n] nombre d'utilisation des panneaux de coffrage en bois
+n_uti_chantier_panneaux: 2  # nombre d'utilisation sur le chantier des panneaux
+
+# poutrelles sous les panneaux
+masseline_1poutrelle: 4.7  # [kg/m] poids des poutrelles H20 doka
+n_uti_chantier_poutrelles: 2  # nombre d'utilisation sur le chantier des poutrelles
+
+# étais
+poidsunit_etai: 13  # [kg/étai]
+portee_etai: 2  # [m2/étai] surface d'influence sur un étai --> A VERIFIER
+n_uti_chantier_etais: 1.5  # nombre d'utilisation sur le chantier des étais
+
+# données étayage pour le démontage avant REUSE (SYSTEM 1, 2A, 2B)
+poidsunit_etai: 13  # [kg/étai]
+portee_etai_reuse: 2  # [m2/étai] surface d'influence sur un étai
+
+# schéma de sciage
+largcamion: 2.50  # largeur maximale de camion en Suisse selon l'art. 64-67 OCR
+
+# caractéristique NEW
+tauxarmature_neuf: 0.014  # %taux d'armature dans béton neuf 1,4% -> estimé manuellement, voir "dalles neuves.xlsx"
+
+tpdist_coffrageetayage : 120  # distance de transport du matériel de coffrage et étayage [km] (pour deux trajets) --> DISTANCE A VERIFIER
+tpdist_metal : 60  # distance de transport des profilés métalliques [km] --> DISTANCE A VERIFIER
+tpdist_beton : 60  # distance de transport du béton [km] --> DISTANCE A VERIFIER
+tpdist_arma : 60  # distance de transport de l'acier d'armature [km] --> DISTANCE A VERIFIER

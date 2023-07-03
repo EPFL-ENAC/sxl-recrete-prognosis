@@ -18,16 +18,30 @@ def run_simulation(result: list, columns: list):
         if simulation_result:
             column = columns[i]
             column.markdown("---")
+            column.write(f"The selected system is : {simulation_result[0]}")
 
             fig = px.bar(
-                simulation_result[0], y="val", title="Comparaison of the impact", labels={"val": "Co2 emissions"}
+                simulation_result[1], y="values", title="Comparaison of the impact", labels={"values": "Co2 emissions"}
             )
             column.plotly_chart(fig, use_container_width=True)
 
-            fig = px.pie(simulation_result[1], values="val", names="lab")
+            fig = px.pie(
+                simulation_result[2],
+                values="values",
+                names=simulation_result[2].index,
+                title="Comparaison of the impact for reused elements",
+            )
             column.plotly_chart(fig, use_container_width=True)
 
-            drawing = simulation_result[2]
+            fig = px.pie(
+                simulation_result[3],
+                values="values",
+                names=simulation_result[3].index,
+                title="Comparaison of the impact for new elements",
+            )
+            column.plotly_chart(fig, use_container_width=True)
+
+            drawing = simulation_result[4]
             fig2 = plot_drawing(l1=drawing.get("l1"), h=drawing.get("h"), number_part=drawing.get("number_part"))
 
             column.plotly_chart(fig2, use_container_width=True)
