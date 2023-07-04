@@ -1,5 +1,8 @@
 import plotly.graph_objects as go
 
+DIMENSION_END_LINE_OFFSET = 0.02
+DIMENSION_WIDTH = 2
+
 
 def plot_drawing(l1: float, h: float, number_part: int = 1, beam_size: float = 0.1, beam_height: float = 0.5):
     fig = go.Figure()
@@ -22,8 +25,8 @@ def plot_drawing(l1: float, h: float, number_part: int = 1, beam_size: float = 0
             y0=y_min,
             x1=x_max,
             y1=y_max,
-            line=dict(color="RoyalBlue"),
-            fillcolor="lightskyblue",  # Transparent fill color
+            line=dict(color="grey"),
+            fillcolor="lightgray",  # Transparent fill color
         )
 
     if number_part > 1:
@@ -81,15 +84,35 @@ def plot_drawing(l1: float, h: float, number_part: int = 1, beam_size: float = 0
                 line=dict(color="black", width=3),
             )
 
-    # add L1 dimension
+    # L1 dimension
     fig.add_shape(
-        type="line", x0=0, y0=2 * h, x1=l1, y1=2 * h, line=dict(color="RoyalBlue", width=3), label=dict(text=f"L1= {h}")
-    )
-    fig.add_shape(type="line", x0=0, y0=(2 * h) - 0.05, x1=0, y1=(2 * h) + 0.05, line=dict(color="RoyalBlue", width=3))
-    fig.add_shape(
-        type="line", x0=l1, y0=(2 * h) - 0.05, x1=l1, y1=(2 * h) + 0.05, line=dict(color="RoyalBlue", width=3)
+        type="line",
+        x0=0,
+        y0=2 * h,
+        x1=l1,
+        y1=2 * h,
+        line=dict(color="RoyalBlue", width=DIMENSION_WIDTH),
+        label=dict(text=f"L1= {h}"),
     )
 
+    fig.add_shape(
+        type="line",
+        x0=0 - DIMENSION_END_LINE_OFFSET,
+        y0=(2 * h) - 0.05,
+        x1=0 + DIMENSION_END_LINE_OFFSET,
+        y1=(2 * h) + 0.05,
+        line=dict(color="RoyalBlue", width=DIMENSION_WIDTH),
+    )
+    fig.add_shape(
+        type="line",
+        x0=l1 - DIMENSION_END_LINE_OFFSET,
+        y0=(2 * h) - 0.05,
+        x1=l1 + DIMENSION_END_LINE_OFFSET,
+        y1=(2 * h) + 0.05,
+        line=dict(color="RoyalBlue", width=DIMENSION_WIDTH),
+    )
+
+    # L1 label
     fig.add_trace(
         go.Scatter(
             x=[l1 / 2],
@@ -99,6 +122,35 @@ def plot_drawing(l1: float, h: float, number_part: int = 1, beam_size: float = 0
             text=[f"Slab length= {l1} m"],
             textposition="top center",
         )
+    )
+
+    # add H dimension
+    fig.add_shape(
+        type="line",
+        x0=l1 + 0.1,
+        y0=0 - (h / 2),
+        x1=l1 + 0.1,
+        y1=h / 2,
+        line=dict(color="RoyalBlue", width=DIMENSION_WIDTH),
+        label=dict(text=f"H = {h}"),
+    )
+
+    fig.add_shape(
+        type="line",
+        x0=l1 + 0.1 - DIMENSION_END_LINE_OFFSET,
+        y0=0 - (h / 2),
+        x1=l1 + 0.1 + DIMENSION_END_LINE_OFFSET,
+        y1=0 - (h / 2),
+        line=dict(color="RoyalBlue", width=DIMENSION_WIDTH),
+    )
+
+    fig.add_shape(
+        type="line",
+        x0=l1 + 0.1 - 0.025,
+        y0=(h / 2),
+        x1=l1 + 0.1 + 0.025,
+        y1=(h / 2),
+        line=dict(color="RoyalBlue", width=DIMENSION_WIDTH),
     )
 
     fig.update_layout(
@@ -115,35 +167,6 @@ def plot_drawing(l1: float, h: float, number_part: int = 1, beam_size: float = 0
                 textangle=90,
             )
         ]
-    )
-
-    # add H dimension
-    fig.add_shape(
-        type="line",
-        x0=l1 + 0.1,
-        y0=0 - (h / 2),
-        x1=l1 + 0.1,
-        y1=h / 2,
-        line=dict(color="RoyalBlue", width=3),
-        label=dict(text=f"H = {h}"),
-    )
-
-    fig.add_shape(
-        type="line",
-        x0=l1 + 0.1 - 0.025,
-        y0=0 - (h / 2),
-        x1=l1 + 0.1 + 0.025,
-        y1=0 - (h / 2),
-        line=dict(color="RoyalBlue", width=3),
-    )
-
-    fig.add_shape(
-        type="line",
-        x0=l1 + 0.1 - 0.025,
-        y0=(h / 2),
-        x1=l1 + 0.1 + 0.025,
-        y1=(h / 2),
-        line=dict(color="RoyalBlue", width=3),
     )
 
     fig.update_xaxes(range=[-0.2, l1 + 0.5], showgrid=False)

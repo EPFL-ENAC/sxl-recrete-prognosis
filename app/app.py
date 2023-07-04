@@ -68,7 +68,6 @@ columns = st.columns(num_columns)
 # Define the simulation parameters
 for i, column in enumerate(columns):
     simulation_id = i + 1
-
     if simulation_id == 1:
         label_visibility = "visible"
         suffix = ""
@@ -97,10 +96,10 @@ for i, column in enumerate(columns):
     )
     hsreuse = column.number_input(
         label=f"Donor-hsreuse{suffix}",
-        min_value=0.0,
-        max_value=1.0,
-        value=0.15,
-        step=0.01,
+        min_value=0.14,
+        max_value=0.22,
+        value=0.14,
+        step=0.02,
         label_visibility=label_visibility,
     )
     q1 = column.selectbox(

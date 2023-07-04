@@ -463,7 +463,15 @@ def calculate_impact_system_0(
 
 
 def calculate_impact_system_1(
-    v, masse_lin_etais_reuse, kgco2_levage, kgco2_sciage_beton, dict_impact_new0, impactnew_prod
+    v,
+    masse_lin_etais_reuse,
+    kgco2_levage,
+    kgco2_sciage_beton,
+    dict_impact_new0,
+    impactnew_prod,
+    l1,
+    hsreuse,
+    tpdist_beton_reuse,
 ):
     """Calculate the impact system 1 (reuse of the slab with no cut)
 
@@ -692,7 +700,9 @@ def calculate_impact_system_1(
     # impact neuf
     impactnew = impactnew_prod + impact_EVITE_elimi_betonreused_reuse1 + impact_EVITE_elimi_armareused_reuse1
 
-    return impactreuse1, impactreuse1_matrice, impactnew1_matrice, impactnew
+    number_of_slab = 1
+
+    return impactreuse1, impactreuse1_matrice, impactnew1_matrice, impactnew, number_of_slab
 
 
 def calculate_impact_system_2(
@@ -1098,7 +1108,9 @@ def calculate_impact_system_2(
         impact_EVITE_elimi_betonreused_reuse2,
     ]
 
-    return impactreuse2, impactreuse2_matrice, impactnew2_matrice, impactnew
+    number_of_slab = 2
+
+    return impactreuse2, impactreuse2_matrice, impactnew2_matrice, impactnew, number_of_slab
 
 
 def create_df_chart(values: list, labels: list):
@@ -1176,14 +1188,22 @@ def processing(
     if l1 <= L_armamin and l1 <= l0 or l1 <= L_alpha and l1 > L_armamin:  # conditions de la zone 1 et de la zone 3
         system = 1
         # Impact reuse (SYSTEM 1)
-        impactreuse, impactreuse_matrice, impactnew_matrice, impactnew = calculate_impact_system_1(
-            v, masse_lin_etais_reuse, kgco2_levage, kgco2_sciage_beton, dict_impact_new0, impactnew_prod
+        impactreuse, impactreuse_matrice, impactnew_matrice, impactnew, number_of_slab = calculate_impact_system_1(
+            v,
+            masse_lin_etais_reuse,
+            kgco2_levage,
+            kgco2_sciage_beton,
+            dict_impact_new0,
+            impactnew_prod,
+            l1,
+            hsreuse,
+            tpdist_beton_reuse,
         )
 
     else:
         system = 2
         # Impact reuse (SYSTEM 2)
-        impactreuse, impactreuse_matrice, impactnew_matrice, impactnew = calculate_impact_system_2(
+        impactreuse, impactreuse_matrice, impactnew_matrice, impactnew, number_of_slab = calculate_impact_system_2(
             v,
             l1,
             l0,
@@ -1224,7 +1244,7 @@ def processing(
     drawing_data = {}
     drawing_data["l1"] = l1
     drawing_data["h"] = hsreuse
-    drawing_data["number_part"] = 2  # Where to get this information ?
+    drawing_data["number_part"] = number_of_slab  # Where to get this information ?
 
     df_barchart = create_df_chart(values=[impactnew, impactreuse], labels=["Impact new", "Impact reuse"])
     df_piechart_reuse = create_df_chart(
