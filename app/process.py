@@ -661,15 +661,10 @@ def calculate_impact_system_1(
         impact_prod_jointpolyneuf_reuse1,
         +impact_prod_caoutchouc_reuse1,
         impact_prod_mortierneuf_reuse1,
-        0,
         impact_prod_metalneuf_corn_reuse1,
         impact_prod_metalneuf_plaque_reuse1,
-        0,
-        0,
-        0,
         impact_sciage_betonreused_reuse1,
         impact_tp_betonreused_reuse1,
-        0,
     ]
 
     impactnew1_matrice = [
@@ -682,18 +677,9 @@ def calculate_impact_system_1(
         + dict_impact_new0.get("tp_coffrageetayage")
         + impact_levageetdepose_coffrageetetayage_new0
         + impact_EVITE_elimi_armareused_reuse1,
-        0,
-        0,
-        0,
-        0,
         dict_impact_new0.get("prod_armaneuf"),
-        0,
-        0,
-        0,
         dict_impact_new0.get("prod_betonneuf"),
         dict_impact_new0.get("tp_betonneuf"),
-        0,
-        0,
         impact_EVITE_elimi_betonreused_reuse1,
     ]
 
@@ -1072,15 +1058,11 @@ def calculate_impact_system_2(
         impact_prod_jointpolyneuf_reuse2,
         impact_prod_caoutchouc_reuse2,
         impact_prod_mortierneuf_reuse2,
-        0,
         impact_prod_metalneuf_corn_reuse2,
         impact_prod_metalneuf_plaque_reuse2,
         impact_prod_metalneuf_profiles_reuse2,
-        0,
-        0,
         impact_sciage_betonreused_reuse2,
         impact_tp_betonreused_reuse2,
-        0,
     ]
 
     impactnew2_matrice = [
@@ -1093,18 +1075,9 @@ def calculate_impact_system_2(
         + dict_impact_new0.get("levage_armaneuf")
         + dict_impact_new0.get("levage_betonneuf")
         + dict_impact_new0.get("coulage_betonneuf"),
-        0,
-        0,
-        0,
-        0,
         dict_impact_new0.get("prod_armaneuf"),
-        0,
-        0,
-        0,
         dict_impact_new0.get("prod_betonneuf"),
         dict_impact_new0.get("tp_betonneuf"),
-        0,
-        0,
         impact_EVITE_elimi_betonreused_reuse2,
     ]
 
@@ -1246,7 +1219,7 @@ def processing(
     drawing_data["h"] = hsreuse
     drawing_data["number_part"] = number_of_slab  # Where to get this information ?
 
-    df_barchart = create_df_chart(values=[impactnew, impactreuse], labels=["Impact new", "Impact reuse"])
+    df_barchart = create_df_chart(values=[impactnew / l1, impactreuse / l1], labels=["Impact new", "Impact reuse"])
     df_piechart_reuse = create_df_chart(
         values=impactreuse_matrice, labels=[f"label_{i}" for i, v in enumerate(impactreuse_matrice)]
     )

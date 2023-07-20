@@ -25,7 +25,7 @@ def plot_drawing(l1: float, h: float, number_part: int = 1, beam_size: float = 0
             y0=y_min,
             x1=x_max,
             y1=y_max,
-            line=dict(color="grey"),
+            line=dict(color="white"),
             fillcolor="lightgray",  # Transparent fill color
         )
 
@@ -169,14 +169,11 @@ def plot_drawing(l1: float, h: float, number_part: int = 1, beam_size: float = 0
         ]
     )
 
-    fig.update_xaxes(range=[-0.2, l1 + 0.5], showgrid=False)
+    fig.update_xaxes(range=[-0.2, l1 + 0.5], showgrid=False, showline=False, showticklabels=False)
     # fig.update_yaxes(range=[-(2 * h + 1), (2 * h + 1)], showgrid=False)
-    fig.update_yaxes(
-        scaleanchor="x",
-        scaleratio=1,
-    )
-
+    fig.update_yaxes(scaleanchor="x", scaleratio=1, showline=False, showticklabels=False, showgrid=False)
     fig.update_layout(showlegend=False)
+
     return fig
 
 
