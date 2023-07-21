@@ -71,7 +71,7 @@ def plot_drawing(l1: float, h: float, number_part: int = 1, beam_size: float = 0
     # text
     x = slab_dim_x + SLAB_TEXT_DIMENSION_X_OFFSET
     y = 0
-    ax.text(x, y, f"Slab height= {l1} m", fontsize=5, ha="center", va="center", rotation=90)
+    ax.text(x, y, f"Slab height= {h} m", fontsize=5, ha="center", va="center", rotation=90)
 
     # Draw beam
     if number_part > 1:
