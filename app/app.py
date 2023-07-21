@@ -1,8 +1,10 @@
 import plotly.express as px
 import streamlit as st
 from alias import alias
-from drawing import plot_drawing
 from process import processing
+
+# from drawing import plot_drawing
+from slab_drawing import plot_drawing
 
 # Define page layout
 st.set_page_config(layout="wide")
@@ -138,7 +140,7 @@ def run_simulation(result: list, description: list):
             for simulation_id, column in enumerate([col1, col2, col3]):
                 drawing = simulation_result[simulation_id][4]
                 fig2 = plot_drawing(l1=drawing.get("l1"), h=drawing.get("h"), number_part=drawing.get("number_part"))
-                column.plotly_chart(fig2, use_container_width=True)
+                column.pyplot(fig2, use_container_width=True)
 
 
 col0, col1, col2, col3 = st.columns(4)
