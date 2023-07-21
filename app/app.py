@@ -1,3 +1,5 @@
+import os
+
 import plotly.express as px
 import streamlit as st
 from alias import alias
@@ -82,24 +84,26 @@ def add_number_input(
                 result[i - 1][parameter_name] = res
 
 
-def run_simulation(result: list, description: list):
+def run_simulation(result: list):
     """This function takes the input parameters, run the simulation and display the results.
 
     Parameters
     ----------
     result : list
         List of the input parameters.
-    description : list
-        List containing the description of the results per line.
     """
     simulation_result = []
     for simulation_id, simulation_params in enumerate(result):
         simulation_result.append(processing(**simulation_params))
 
-    for line, description_text in enumerate(description):
+    for line in range(5):
         st.markdown("---")
         col0, col1, col2, col3 = st.columns(4)
-        col0.write(description_text)
+        path_description = os.path.join(os.path.dirname(__file__), "description", f"{line}.md")
+
+        with open(path_description) as f:
+            markdown_text = f.read()
+        col0.markdown(markdown_text)
 
         if line == 0:
             for simulation_id, column in enumerate([col1, col2, col3]):
@@ -228,12 +232,4 @@ with st.container():
 
 
 if button_pressed:
-    description = [
-        "Selected system",
-        "Comparaison of the impact",
-        "Comparaison of the impact for reused elements",
-        "Comparaison of the impact for new elements",
-        "Drawing",
-    ]
-
-    run_simulation(result=result, description=description)
+    run_simulation(result=result)
