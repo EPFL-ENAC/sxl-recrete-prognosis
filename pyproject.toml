@@ -27,7 +27,8 @@ dependencies = [
 	"plotly-express",
 	"kaleido",
 	"streamlit",
-	"PyYAML"
+	"PyYAML",
+	"matplotlib"
 ]
 
 
