@@ -1093,7 +1093,15 @@ def create_df_chart(values: list, labels: list):
 
 
 def processing(
-    l0: float, l1: float, hsreuse=float, year=int, q0=int, q1=int, tpdist_beton_reuse=float, tpdist_metal_reuse=float
+    l0: float,
+    l1: float,
+    hsreuse=float,
+    year=int,
+    q0=int,
+    q1=int,
+    tpdist_beton_reuse=float,
+    tpdist_metal_reuse=float,
+    steel_profiles=str,
 ):
     # retrive variables from yaml file
     with open(VARIABLES_FILE_PATH) as file:

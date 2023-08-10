@@ -18,7 +18,9 @@ with open("style.css") as f:
 st.title("Reused as-cut cast-in-place concrete slab pieces")
 
 
-def selectbox_input(parameter_name: str, parmater_description: str, options: tuple, result: list):
+def selectbox_input(
+    parameter_name: str, parmater_description: str, options: tuple, result: list, index: int = 0, on_change=None
+):
     """Generic function to create a row of 4 columns and add select boxes as cell content.
     Save the chosen parameter under the result list
 
@@ -42,8 +44,13 @@ def selectbox_input(parameter_name: str, parmater_description: str, options: tup
                     label=f"{parmater_description}{i}",
                     options=options,
                     label_visibility="collapsed",
+                    index=index,
+                    on_change=on_change,
                 )
-                result[i - 1][parameter_name] = alias.get(parameter_name).get(res)
+                if alias.get(parameter_name):
+                    result[i - 1][parameter_name] = alias.get(parameter_name).get(res)
+                else:
+                    result[i - 1][parameter_name] = res
 
 
 def number_input(
@@ -54,6 +61,7 @@ def number_input(
     default_value: float,
     step: float,
     result: list,
+    disabled: list = [True, True, True],
 ):
     """Generic function to create a row of 4 columns and add input numbers as cell content.
     Save the chosen parameter under the result list
@@ -87,6 +95,7 @@ def number_input(
                     value=default_value,
                     step=step,
                     label_visibility="collapsed",
+                    disabled=disabled[i - 1],
                 )
                 result[i - 1][parameter_name] = res
 
@@ -240,40 +249,6 @@ def html_text(list_text: list, color: str = "#000000", font_size: str = "18", te
 def main_part():
     st.markdown("#")
     st.markdown("#")
-    col0, col1, col2, col3 = st.columns(4)
-
-    col0.text("hhhelkn fdsknfr")
-
-    col0.text("hhhelkn fdsknfr")
-    col0.text("hhhelkn fdsknfr dsgdfg")
-    col1.text("hhhelkn fdsknfrdfg gsdflgjlsdfgsdfg  sdfjgdsfjgljdfslgj sldfjglsdfk")
-    col1.number_input(
-        label="oijoj df",
-        min_value=1,
-        max_value=10,
-        value=5,
-        step=1,
-        label_visibility="collapsed",
-    )
-
-    col1.number_input(
-        label="oijoj df ff",
-        min_value=1,
-        max_value=10,
-        value=5,
-        step=1,
-        label_visibility="collapsed",
-    )
-    col1.number_input(
-        label="oijoj df ffss",
-        min_value=1,
-        max_value=10,
-        value=5,
-        step=1,
-        label_visibility="collapsed",
-    )
-
-    st.markdown("#")
 
     col0, col1, col2, col3 = st.columns(4)
     columns_title = ["", "<b>Design 1</b>", "<b>Design 2</b>", "<b>Design 3</b>"]
@@ -293,16 +268,19 @@ def main_part():
     )
 
     selectbox_input(
-        parameter_name="q0",
-        parmater_description="Donor-structure design use",
+        parameter_name="q1",
+        parmater_description="Use",
         options=("Housing (2 kN/m²)", "Office (3 kN/m²)"),
         result=result,
     )
 
-    selectbox_input(
-        parameter_name="year",
-        parmater_description="Donor-structure construction period (design steel yield strength)",
-        options=("1956-1967 (300 N/mm²)", "1968-1988 (390 N/mm²)", "1988-2023 (435 N/mm²)"),
+    number_input(
+        parameter_name="l1",
+        parmater_description="Floor span [m]",
+        min_value=2.0,
+        max_value=8.0,
+        default_value=6.0,
+        step=0.5,
         result=result,
     )
 
@@ -317,82 +295,98 @@ def main_part():
         text_align="center",
     )
 
-    # number_input(
-    #     parameter_name="l0",
-    #     parmater_description="Donor-structure slab span [m]",
-    #     min_value=2.0,
-    #     max_value=8.0,
-    #     default_value=3.0,
-    #     step=0.5,
-    #     result=result,
-    # )
+    selectbox_input(
+        parameter_name="q0",
+        parmater_description="Original use",
+        options=("Housing (2 kN/m²)", "Office (3 kN/m²)"),
+        result=result,
+    )
 
-    # number_input(
-    #     parameter_name="hsreuse",
-    #     parmater_description="Donor-hsreuse",
-    #     min_value=0.14,
-    #     max_value=0.22,
-    #     default_value=0.14,
-    #     step=0.02,
-    #     result=result,
-    # )
+    selectbox_input(
+        parameter_name="year",
+        parmater_description="Construction period (design steel yield strength)",
+        options=("1956-1967 (300 N/mm²)", "1968-1988 (390 N/mm²)", "1988-2023 (435 N/mm²)"),
+        index=1,
+        result=result,
+    )
 
-    # selectbox_input(
-    #     parameter_name="q1",
-    #     parmater_description="New-design use",
-    #     options=("Housing (2 kN/m²)", "Office (3 kN/m²)"),
-    #     result=result,
-    # )
+    number_input(
+        parameter_name="l0",
+        parmater_description="Slab span [m]",
+        min_value=2.0,
+        max_value=8.0,
+        default_value=3.0,
+        step=0.1,
+        result=result,
+    )
 
-    # number_input(
-    #     parameter_name="l1",
-    #     parmater_description="New-design floor span [m]",
-    #     min_value=2.0,
-    #     max_value=8.0,
-    #     default_value=6.0,
-    #     step=0.5,
-    #     result=result,
-    # )
+    number_input(
+        parameter_name="hsreuse",
+        parmater_description="Slab thickness [cm]",
+        min_value=0.14,
+        max_value=0.30,
+        default_value=0.14,
+        step=0.02,
+        result=result,
+    )
 
-    # html_text(
-    #     [
-    #         "",
-    #         "<i>Step 3</i> <b>Steal profiles</b>",
-    #         "<i>Step 3</i> <b>Steal profiles</b>",
-    #         "<i>Step 3</i> <b>Steal profiles</b>",
-    #     ],
-    #     font_size="18",
-    #     text_align="center",
-    # )
+    number_input(
+        parameter_name="tpdist_beton_reuse",
+        parmater_description="Transportation distance the new design [km]",
+        min_value=0,
+        max_value=1000,
+        default_value=20,
+        step=5,
+        result=result,
+    )
 
-    # number_input(
-    #     parameter_name="tpdist_beton_reuse",
-    #     parmater_description="Cut reinforced-concrete pieces [km]",
-    #     min_value=0,
-    #     max_value=1000,
-    #     default_value=20,
-    #     step=1,
-    #     result=result,
-    # )
+    html_text(
+        [
+            "",
+            "<i>Step 3</i> <b>Steal profiles</b>",
+            "<i>Step 3</i> <b>Steal profiles</b>",
+            "<i>Step 3</i> <b>Steal profiles</b>",
+        ],
+        font_size="18",
+        text_align="center",
+    )
 
-    # number_input(
-    #     parameter_name="tpdist_metal_reuse",
-    #     parmater_description="Steel profiles [km]",
-    #     min_value=0,
-    #     max_value=1000,
-    #     default_value=80,
-    #     step=1,
-    #     result=result,
-    # )
+    def with_steel_profil_distance():
+        pass
+        # print(result[0])
 
-    # st.markdown("#")
+    selectbox_input(
+        parameter_name="steel_profiles",
+        parmater_description="Type of steel profiles",
+        options=("Reused steel profiles", "New steel profile"),
+        index=1,
+        result=result,
+        on_change=with_steel_profil_distance(),
+    )
 
-    # with st.container():
-    #     button_pressed = st.button("Run Simulations", use_container_width=True)
-    #     st.markdown("#")
+    tpdist_metal_reuse_disabled = [
+        True if result[i].get("steel_profiles") == "New steel profile" else False for i in range(0, 3)
+    ]
 
-    # if button_pressed:
-    #     run_simulation(result=result)
+    number_input(
+        parameter_name="tpdist_metal_reuse",
+        parmater_description="Steel profiles [km]",
+        min_value=0,
+        max_value=1000,
+        default_value=80,
+        step=1,
+        result=result,
+        disabled=tpdist_metal_reuse_disabled,
+    )
+
+    st.markdown("#")
+
+    with st.container():
+        button_pressed = st.button("Run Simulations", use_container_width=True)
+        st.markdown("#")
+
+    if button_pressed:
+        run_simulation(result=result)
 
 
 if __name__ == "__main__":
