@@ -11,7 +11,8 @@ from process import processing
 # Define page layout
 st.set_page_config(layout="wide")
 
-with open("style.css") as f:
+
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "style.css")) as f:
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
@@ -61,7 +62,7 @@ def number_input(
     default_value: float,
     step: float,
     result: list,
-    disabled: list = [True, True, True],
+    disabled: list = [False, False, False],
 ):
     """Generic function to create a row of 4 columns and add input numbers as cell content.
     Save the chosen parameter under the result list
