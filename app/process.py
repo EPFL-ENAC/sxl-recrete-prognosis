@@ -1227,7 +1227,7 @@ def processing(
         values=impactnew_matrice, labels=[f"label_{i}" for i, v in enumerate(impactnew_matrice)]
     )
 
-    return [system, df_barchart, df_piechart_reuse, df_piechart_new, drawing_data]
+    return [system, drawing_data, df_barchart, df_piechart_reuse, df_piechart_new]
 
 
 if __name__ == "__main__":

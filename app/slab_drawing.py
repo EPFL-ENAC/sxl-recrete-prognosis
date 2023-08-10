@@ -106,6 +106,10 @@ def plot_drawing(l1: float, h: float, number_part: int = 1, beam_size: float = 0
     ax.set_xticklabels([])
     ax.set_yticklabels([])
 
+    # Set the background color to red
+    ax.set_facecolor("none")
+    fig.patch.set_alpha(0)
+
     return fig
 
 
