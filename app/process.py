@@ -1081,7 +1081,7 @@ def calculate_impact_system_2(
         impact_EVITE_elimi_betonreused_reuse2,
     ]
 
-    number_of_slab = 2
+    number_of_slab = 1
 
     return impactreuse2, impactreuse2_matrice, impactnew2_matrice, impactnew, number_of_slab
 
@@ -1223,6 +1223,7 @@ def processing(
         )
 
     drawing_data = {}
+    drawing_data["l0"] = l0
     drawing_data["l1"] = l1
     drawing_data["h"] = hsreuse
     drawing_data["number_part"] = number_of_slab  # Where to get this information ?

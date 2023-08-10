@@ -136,13 +136,29 @@ def run_simulation(result: list):
         if line == 1:
             for simulation_id, column in enumerate([col1, col2, col3]):
                 drawing = simulation_result[simulation_id][1]
-                fig1 = slab_drawing.plot_drawing(
-                    l1=drawing.get("l1"), h=drawing.get("h"), number_part=drawing.get("number_part")
+                fig1 = slab_drawing.plot_transverse_section(
+                    length=drawing.get("l0"),
+                    height=drawing.get("h"),
+                    number_part=drawing.get("number_part"),
+                    beam_length=drawing.get("h"),
+                    beam_height=drawing.get("h"),
                 )
                 column.pyplot(fig1, use_container_width=True)
                 fig1.clf()
 
         if line == 2:
+            for simulation_id, column in enumerate([col1, col2, col3]):
+                drawing = simulation_result[simulation_id][1]
+                fig1 = slab_drawing.plot_longitudinal_section(
+                    length=drawing.get("l1"),
+                    height=drawing.get("h"),
+                    number_part=drawing.get("number_part"),
+                    beam_height=drawing.get("h"),
+                )
+                column.pyplot(fig1, use_container_width=True)
+                fig1.clf()
+
+        if line == 3:
             for simulation_id, column in enumerate([col1, col2, col3]):
                 drawing = simulation_result[simulation_id][2]
                 fig2 = bars_chart.plot(drawing)

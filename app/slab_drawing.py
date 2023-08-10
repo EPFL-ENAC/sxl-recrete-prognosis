@@ -1,98 +1,134 @@
+import math
+
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
 
 DIMENSION_END_LINE_OFFSET = 0.02
-DIMENSION_WIDTH = 2
+DIMENSION_WIDTH = 0.5
 SLAB_SEPARATION_LINE_WIDTH = 0.1
-SLAB_LINE_DIMENSION_Y_OFFSET = 0.1
-SLAB_TEXT_DIMENSION_Y_OFFSET = 0.2
+SLAB_LINE_DIMENSION_Y_OFFSET = 0.25
+SLAB_TEXT_DIMENSION_Y_OFFSET = 0.5
 SLAB_LINE_DIMENSION_X_OFFSET = 0.1
 SLAB_TEXT_DIMENSION_X_OFFSET = 0.11
+TEXT_DIMENSION_SIZE = 10
 BEAM_VERTIAL_OFFSET = 0.1
-BEAM_WIDTH = 3
+BEAM_WIDTH = 1
+BEAM_MARKER_SIZE = 5
 
 
-def plot_drawing(l1: float, h: float, number_part: int = 1, beam_size: float = 0.1, beam_height: float = 0.5):
+def plot_transverse_section(
+    length: float, height: float, number_part: int = 1, beam_length: float = 0.0, beam_height: float = 0.0
+):
     # Create a figure and axis
     fig, ax = plt.subplots()
 
-    slab_x_dimension = l1 / (number_part)
-    slab_y_dimension = h
+    slab_x_dimension = length
+    slab_y_dimension = height
 
-    # Draw slabs
+    # Draw main slabs
     for i in range(number_part):
         slab_x_min = slab_x_dimension * i + (SLAB_SEPARATION_LINE_WIDTH * i)
-        slab_y_min = -(h / 2)
+        slab_y_min = -(height / 2)
         rect = patches.Rectangle(
             (slab_x_min, slab_y_min),
             slab_x_dimension,
             slab_y_dimension,
             linewidth=1,
             edgecolor="grey",
-            fill=None,
-            hatch="///",
+            facecolor="lightgrey",
+            # hatch="///",
         )
         ax.add_patch(rect)
 
+    # Draw left slide half slabs
+    slab_x_min = 0 - (slab_x_dimension / 2) - SLAB_SEPARATION_LINE_WIDTH
+    slab_y_min = -(height / 2)
+    rect = patches.Rectangle(
+        (slab_x_min, slab_y_min),
+        slab_x_dimension / 2,
+        slab_y_dimension,
+        linewidth=1,
+        edgecolor="grey",
+        facecolor="lightgrey",
+        # hatch="///",
+    )
+    ax.add_patch(rect)
+
+    # Draw right slide half slabs
+    slab_x_min = slab_x_dimension * number_part + (SLAB_SEPARATION_LINE_WIDTH * number_part)
+    slab_y_min = -(height / 2)
+    rect = patches.Rectangle(
+        (slab_x_min, slab_y_min),
+        slab_x_dimension / 2,
+        slab_y_dimension,
+        linewidth=1,
+        edgecolor="grey",
+        facecolor="lightgrey",
+        # hatch="///",
+    )
+    ax.add_patch(rect)
+
     # Draw slab horizontal dimensions
-    for i in range(number_part):
-        slab_dim_x_min = slab_x_dimension * i + (SLAB_SEPARATION_LINE_WIDTH * i)
-        slab_dim_x_max = slab_dim_x_min + slab_x_dimension
-        slab_dim_y = (h / 2) + SLAB_LINE_DIMENSION_Y_OFFSET
-        x = [slab_dim_x_min, slab_dim_x_max]
-        y = [slab_dim_y, slab_dim_y]
-
-        # lines
-        ax.plot(x, y, color="black")
-
-        # markers
-        ax.plot(x, y, color="black", marker=(2, 0, 45), linestyle="None")
-        ax.plot(x, y, color="black", marker=(2, 0, 0), linestyle="None")
-
-        # text
-        x = slab_dim_x_min + slab_x_dimension / 2
-        y = (h / 2) + SLAB_TEXT_DIMENSION_Y_OFFSET
-        ax.text(x, y, f"Slab length= {l1} m", fontsize=5, ha="center", va="center")
-
-    # Draw slab vertical dimensions
-    slab_dim_x = slab_dim_x_max + SLAB_LINE_DIMENSION_X_OFFSET
-    slab_dim_y_min = -(h / 2)
-    slab_dim_y_max = h / 2
-    x = [slab_dim_x, slab_dim_x]
-    y = [slab_dim_y_min, slab_dim_y_max]
-
+    slab_id = math.ceil(number_part / 2) - 1
+    slab_dim_x_min = slab_x_dimension * slab_id + (SLAB_SEPARATION_LINE_WIDTH * slab_id)
+    slab_dim_x_max = slab_dim_x_min + slab_x_dimension
+    slab_dim_y = (height / 2) + SLAB_LINE_DIMENSION_Y_OFFSET
+    x = [slab_dim_x_min, slab_dim_x_max]
+    y = [slab_dim_y, slab_dim_y]
     # lines
     ax.plot(x, y, color="black")
-
     # markers
-    ax.plot(x, y, color="black", marker=(2, 0, 45), linestyle="None")
-    ax.plot(x, y, color="black", marker=(2, 0, 90), linestyle="None")
-
+    ax.plot(x, y, color="black", marker=(2, 0, -45), linestyle="None")
+    ax.plot(x, y, color="black", marker=(2, 0, 0), linestyle="None")
     # text
-    x = slab_dim_x + SLAB_TEXT_DIMENSION_X_OFFSET
-    y = 0
-    ax.text(x, y, f"Slab height= {h} m", fontsize=5, ha="center", va="center", rotation=90)
+    x = slab_dim_x_min + slab_x_dimension / 2
+    y = (height / 2) + SLAB_TEXT_DIMENSION_Y_OFFSET
+    text_length = round(length, 2)
+    ax.text(x, y, f"cut-piece length : {text_length} m", fontsize=TEXT_DIMENSION_SIZE, ha="center", va="center")
+
+    # # Draw slab vertical dimensions
+    # slab_dim_x = slab_dim_x_max + SLAB_LINE_DIMENSION_X_OFFSET
+    # slab_dim_y_min = -(height / 2)
+    # slab_dim_y_max = height / 2
+    # x = [slab_dim_x, slab_dim_x]
+    # y = [slab_dim_y_min, slab_dim_y_max]
+
+    # # lines
+    # ax.plot(x, y, color="black")
+
+    # # markers
+    # ax.plot(x, y, color="black", marker=(2, 0, 45), linestyle="None")
+    # ax.plot(x, y, color="black", marker=(2, 0, 90), linestyle="None")
+
+    # # text
+    # x = slab_dim_x + SLAB_TEXT_DIMENSION_X_OFFSET
+    # y = 0
+    # ax.text(x, y, f"Slab height= {height} m", fontsize=5, ha="center", va="center", rotation=90)
 
     # Draw beam
-    if number_part > 1:
-        for i in range(number_part - 1):
-            beam_center_x = (
-                slab_x_dimension * (i + 1) + (SLAB_SEPARATION_LINE_WIDTH * (i + 1)) - (SLAB_SEPARATION_LINE_WIDTH / 2)
-            )
-            beam_y_max = -(h / 2) - BEAM_VERTIAL_OFFSET
-            x = [beam_center_x - beam_size, beam_center_x + beam_size]
-            y = [beam_y_max, beam_y_max]
-            ax.plot(x, y, color="grey", linewidth=BEAM_WIDTH)
-            x = [beam_center_x, beam_center_x]
-            y = [beam_y_max, beam_y_max - beam_height]
-            ax.plot(x, y, color="grey", linewidth=BEAM_WIDTH)
-            x = [beam_center_x - beam_size, beam_center_x + beam_size]
-            y = [beam_y_max - beam_height, beam_y_max - beam_height]
-            ax.plot(x, y, color="grey", linewidth=BEAM_WIDTH)
+    for i in range(number_part + 1):
+        beam_center_x = slab_x_dimension * i + (SLAB_SEPARATION_LINE_WIDTH * i) - (SLAB_SEPARATION_LINE_WIDTH / 2)
+        beam_y_max = -(height / 2) - BEAM_VERTIAL_OFFSET
+        x = [beam_center_x - beam_length, beam_center_x + beam_length]
+        y = [beam_y_max, beam_y_max]
+        ax.plot(x, y, color="black", linewidth=BEAM_WIDTH)
+        x = [beam_center_x, beam_center_x]
+        y = [beam_y_max, beam_y_max - beam_height]
+        ax.plot(x, y, color="black", linewidth=BEAM_WIDTH)
+        x = [beam_center_x - beam_length, beam_center_x + beam_length]
+        y = [beam_y_max - beam_height, beam_y_max - beam_height]
+        ax.plot(x, y, color="black", linewidth=BEAM_WIDTH)
 
     # Set axis limits
-    ax.set_xlim([-0.2, l1 + 0.5])
-    ax.set_ylim([-2 * h - beam_height, +h * 2])
+    ax.set_xlim(
+        [
+            -slab_x_dimension / 2,
+            0.5 * slab_x_dimension
+            + slab_x_dimension * (number_part)
+            + (SLAB_SEPARATION_LINE_WIDTH * (number_part + 1)),
+        ]
+    )
+    ax.set_ylim([-2 * height - beam_height, height * 4])
 
     # Set the aspect ratio
     ax.set_aspect("equal")
@@ -110,8 +146,172 @@ def plot_drawing(l1: float, h: float, number_part: int = 1, beam_size: float = 0
     ax.set_facecolor("none")
     fig.patch.set_alpha(0)
 
-    return fig
+    return plt
+
+
+def plot_longitudinal_section(length: float, height: float, number_part: int = 1, beam_height: float = 0.5):
+    # Create a figure and axis
+    fig, ax = plt.subplots()
+
+    slab_x_dimension = length
+    slab_y_dimension = height
+
+    # Draw main slabs
+    for i in range(number_part):
+        beam_x_min = slab_x_dimension * i + (SLAB_SEPARATION_LINE_WIDTH * i)
+        beam_y_min = -(height / 2)
+        rect = patches.Rectangle(
+            (beam_x_min, beam_y_min),
+            slab_x_dimension,
+            slab_y_dimension,
+            linewidth=1,
+            edgecolor="grey",
+            facecolor="lightgrey",
+            # hatch="///",
+        )
+        ax.add_patch(rect)
+
+    # Draw beam
+    beam_x_min = 0
+    beam_y_min = -(height / 2) - beam_height
+    beam_x_dimension = (slab_x_dimension + SLAB_SEPARATION_LINE_WIDTH) * number_part - SLAB_SEPARATION_LINE_WIDTH
+    beam_y_dimension = beam_height
+
+    rect = patches.Rectangle(
+        (beam_x_min, beam_y_min),
+        beam_x_dimension,
+        beam_y_dimension,
+        linewidth=1,
+        edgecolor="grey",
+        facecolor="white",
+        # hatch="///",
+    )
+    ax.add_patch(rect)
+
+    # Add marker
+    beam_marker_y = beam_y_min - BEAM_MARKER_SIZE / 100
+    ax.plot(
+        0,
+        beam_marker_y,
+        color="black",
+        marker="^",
+        markersize=BEAM_MARKER_SIZE,
+        markerfacecolor="none",
+        markeredgecolor="black",
+    )
+    ax.plot(
+        beam_x_dimension,
+        beam_marker_y,
+        color="black",
+        marker="^",
+        markersize=BEAM_MARKER_SIZE,
+        markerfacecolor="none",
+        markeredgecolor="black",
+    )
+
+    # Draw beam horizontal dimensions
+    x_min = 0
+    x_max = beam_x_dimension
+    y_min = -(beam_height * 5)
+    y_max = -(beam_height * 3)
+    offset = beam_x_dimension / 75
+
+    x = [x_min, x_min]
+    y = [y_min - offset, y_max]
+    ax.plot(x, y, color="black", linewidth=DIMENSION_WIDTH)
+
+    x = [x_max, x_max]
+    y = [y_min - offset, y_max]
+    ax.plot(x, y, color="black", linewidth=DIMENSION_WIDTH)
+
+    x = [x_min - offset, x_max + offset]
+    y = [y_min, y_min]
+    ax.plot(x, y, color="black", linewidth=DIMENSION_WIDTH)
+
+    ax.plot(x_min, y_min, color="black", marker=(2, 0, -45), linestyle="None")
+    ax.plot(x_max, y_min, color="black", marker=(2, 0, -45), linestyle="None")
+
+    # Draw slab horizontal dimensions
+    slab_id = math.ceil(number_part / 2) - 1
+    slab_dim_x_min = slab_x_dimension * slab_id + (SLAB_SEPARATION_LINE_WIDTH * slab_id)
+
+    x = slab_dim_x_min + slab_x_dimension / 2
+    y = -(height) - SLAB_TEXT_DIMENSION_Y_OFFSET
+    text_length = round(length * number_part, 2)
+    ax.text(x, y, f"new design span :  {text_length} m", fontsize=TEXT_DIMENSION_SIZE, ha="center", va="center")
+
+    slab_dim_x_max = slab_dim_x_min + slab_x_dimension
+    slab_dim_y = (height / 2) + SLAB_LINE_DIMENSION_Y_OFFSET
+    x = [slab_dim_x_min, slab_dim_x_max]
+    y = [slab_dim_y, slab_dim_y]
+    # lines
+    ax.plot(x, y, color="black", linewidth=DIMENSION_WIDTH)
+    # markers
+    ax.plot(x, y, color="black", marker=(2, 0, -45), linestyle="None")
+    ax.plot(x, y, color="black", marker=(2, 0, 0), linestyle="None")
+    # text
+    x = slab_dim_x_min + slab_x_dimension / 2
+    y = (height / 2) + SLAB_TEXT_DIMENSION_Y_OFFSET
+    text_length = round(length, 2)
+    ax.text(x, y, f"cut-piece width: {text_length} m", fontsize=TEXT_DIMENSION_SIZE, ha="center", va="center")
+
+    # slab_id = math.ceil(number_part / 2) - 1
+    # slab_dim_x_min = slab_x_dimension * slab_id + (SLAB_SEPARATION_LINE_WIDTH * slab_id)
+    # slab_dim_x_max = slab_dim_x_min + slab_x_dimension
+    # slab_dim_y = (height / 2) + SLAB_LINE_DIMENSION_Y_OFFSET
+    # x = [slab_dim_x_min, slab_dim_x_max]
+    # y = [slab_dim_y, slab_dim_y]
+    # # lines
+    # ax.plot(x, y, color="black")
+    # # markers
+    # ax.plot(x, y, color="black", marker=(2, 0, -45), linestyle="None")
+    # ax.plot(x, y, color="black", marker=(2, 0, 0), linestyle="None")
+    # # text
+    # x = slab_dim_x_min + slab_x_dimension / 2
+    # y = (height / 2) + SLAB_TEXT_DIMENSION_Y_OFFSET
+    # text_length = round(length, 2)
+    # ax.text(x, y, f"cut-piece width: {text_length} m", fontsize=TEXT_DIMENSION_SIZE, ha="center", va="center")
+
+    # Set axis limits
+    ax.set_xlim(
+        [
+            -0.1,
+            0.1 + slab_x_dimension * (number_part) + (SLAB_SEPARATION_LINE_WIDTH * (number_part + 1)),
+        ]
+    )
+    ax.set_ylim([-4 * height - beam_height, height * 4])
+
+    # Set the aspect ratio
+    ax.set_aspect("equal")
+
+    # Remove frame border and ticks
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+    ax.spines["bottom"].set_visible(False)
+    ax.spines["left"].set_visible(False)
+    ax.tick_params(axis="both", which="both", length=0)
+    ax.set_xticklabels([])
+    ax.set_yticklabels([])
+
+    # Set the background color to red
+    ax.set_facecolor("none")
+    fig.patch.set_alpha(0)
+
+    return plt
 
 
 if __name__ == "__main__":
-    plot_drawing(3, 0.5, 3)
+    # plot_transverse_section(
+    #     length=3,
+    #     height=0.3,
+    #     number_part=1,
+    #     beam_length=0.1,
+    #     beam_height=0.2,
+    # ).show()
+
+    plot_longitudinal_section(
+        length=3,
+        height=0.3,
+        number_part=2,
+        beam_height=0.2,
+    ).show()
