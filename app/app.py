@@ -1,6 +1,7 @@
 import os
 
 import bars_chart
+import pie_chart
 
 # from drawing import plot_drawing
 import slab_drawing
@@ -10,10 +11,6 @@ from process import processing
 
 # Define page layout
 st.set_page_config(layout="wide")
-
-
-with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "style.css")) as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
 st.title("Reused as-cut cast-in-place concrete slab pieces")
@@ -165,82 +162,12 @@ def run_simulation(result: list):
                 column.pyplot(fig2, use_container_width=True)
                 fig2.clf()
 
-                # print(simulation_result[simulation_id][2])
-                # fig = px.bar(
-                #     simulation_result[simulation_id][2],
-                #     y="values",
-                #     labels={"values": "KgC0₂ eq/m³ emissions"},
-                #     color_discrete_sequence=["grey"],
-                #     text="values",
-                # )
-                # fig.update_traces(texttemplate="%{text:.2f}", textposition="outside")
-                # fig.update_layout(
-                #     xaxis_title="",
-                #     plot_bgcolor="rgba(0,0,0,0)",
-                #     paper_bgcolor="rgba(0,0,0,0)",
-                #     title="Embodied carbon comparison",
-                # )
-
-                # gap_betwwen_bars = 0.5
-
-                # fig.update_layout(bargap=gap_betwwen_bars)
-
-                # fig.add_shape(
-                #     type="line",
-                #     x0=0.5,
-                #     y0=simulation_result[simulation_id][2]["values"].iloc[0],
-                #     x1=0.5,
-                #     y1=simulation_result[simulation_id][2]["values"].iloc[1],
-                #     line=dict(
-                #         color="black",
-                #         width=1,
-
-                #     ),
-                # )
-
-                # fig.add_shape(
-                #     type="line",
-                #     x0=0.5-(gap_betwwen_bars/2),
-                #     y0=simulation_result[simulation_id][2]["values"].iloc[0],
-                #     x1=0.5,
-                #     y1=simulation_result[simulation_id][2]["values"].iloc[0],
-                #     line=dict(
-                #         color="black",
-                #         width=1
-                #     ),
-                # )
-
-                # fig.add_shape(
-                #     type="line",
-                #     x0=0.5+(gap_betwwen_bars/2),
-                #     y0=simulation_result[simulation_id][2]["values"].iloc[1],
-                #     x1=0.5,
-                #     y1=simulation_result[simulation_id][2]["values"].iloc[1],
-                #     line=dict(
-                #         color="black",
-                #         width=1
-                #     ),
-                # )
-
-                # column.plotly_chart(fig, use_container_width=True)
-
-        # if line == 2:
-        #     for simulation_id, column in enumerate([col1, col2, col3]):
-        #         fig = px.pie(
-        #             simulation_result[simulation_id][2],
-        #             values="values",
-        #             names=simulation_result[simulation_id][2].index,
-        #         )
-        #         column.plotly_chart(fig, use_container_width=True)
-
-        # if line == 3:
-        #     for simulation_id, column in enumerate([col1, col2, col3]):
-        #         fig = px.pie(
-        #             simulation_result[simulation_id][3],
-        #             values="values",
-        #             names=simulation_result[simulation_id][3].index,
-        #         )
-        #         column.plotly_chart(fig, use_container_width=True)
+        if line == 4:
+            for simulation_id, column in enumerate([col1, col2, col3]):
+                drawing = simulation_result[simulation_id][3]
+                fig3 = pie_chart.plot(drawing)
+                column.pyplot(fig3, use_container_width=True)
+                fig3.clf()
 
 
 def html_text(list_text: list, color: str = "#000000", font_size: str = "18", text_align: str = "left") -> None:
@@ -404,6 +331,10 @@ def main_part():
 
     if button_pressed:
         run_simulation(result=result)
+
+
+# with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "style.css")) as f:
+#     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
