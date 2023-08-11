@@ -18,7 +18,28 @@ BEAM_MARKER_SIZE = 5
 
 def plot_transverse_section(
     length: float, height: float, number_part: int = 1, beam_length: float = 0.0, beam_height: float = 0.0
-):
+) -> object:
+    """Create a transversal section matplotlib plot
+
+    Parameters
+    ----------
+    length : float
+        length of the slab
+    height : float
+        height of the slab
+    number_part : int, optional
+        number of part of the slab to draw, by default 1
+    beam_length : float, optional
+        beam length, by default 0.0
+    beam_height : float, optional
+        beam heigth, by default 0.0
+
+    Returns
+    -------
+    object
+        Matplotlib plot
+    """
+
     # Create a figure and axis
     fig, ax = plt.subplots()
 
@@ -76,34 +97,15 @@ def plot_transverse_section(
     x = [slab_dim_x_min, slab_dim_x_max]
     y = [slab_dim_y, slab_dim_y]
     # lines
-    ax.plot(x, y, color="black")
+    ax.plot(x, y, linewidth=DIMENSION_WIDTH, color="black")
     # markers
-    ax.plot(x, y, color="black", marker=(2, 0, -45), linestyle="None")
-    ax.plot(x, y, color="black", marker=(2, 0, 0), linestyle="None")
+    ax.plot(x, y, color="black", marker=(2, 0, -45), linestyle="None", linewidth=DIMENSION_WIDTH)
+    ax.plot(x, y, color="black", marker=(2, 0, 0), linestyle="None", linewidth=DIMENSION_WIDTH)
     # text
     x = slab_dim_x_min + slab_x_dimension / 2
     y = (height / 2) + SLAB_TEXT_DIMENSION_Y_OFFSET
     text_length = round(length, 2)
     ax.text(x, y, f"cut-piece length : {text_length} m", fontsize=TEXT_DIMENSION_SIZE, ha="center", va="center")
-
-    # # Draw slab vertical dimensions
-    # slab_dim_x = slab_dim_x_max + SLAB_LINE_DIMENSION_X_OFFSET
-    # slab_dim_y_min = -(height / 2)
-    # slab_dim_y_max = height / 2
-    # x = [slab_dim_x, slab_dim_x]
-    # y = [slab_dim_y_min, slab_dim_y_max]
-
-    # # lines
-    # ax.plot(x, y, color="black")
-
-    # # markers
-    # ax.plot(x, y, color="black", marker=(2, 0, 45), linestyle="None")
-    # ax.plot(x, y, color="black", marker=(2, 0, 90), linestyle="None")
-
-    # # text
-    # x = slab_dim_x + SLAB_TEXT_DIMENSION_X_OFFSET
-    # y = 0
-    # ax.text(x, y, f"Slab height= {height} m", fontsize=5, ha="center", va="center", rotation=90)
 
     # Draw beam
     for i in range(number_part + 1):
@@ -149,7 +151,26 @@ def plot_transverse_section(
     return plt
 
 
-def plot_longitudinal_section(length: float, height: float, number_part: int = 1, beam_height: float = 0.5):
+def plot_longitudinal_section(length: float, height: float, number_part: int = 1, beam_height: float = 0.5) -> object:
+    """Create a longitudinal section matplotlib plot
+
+    Parameters
+    ----------
+    length : float
+        Slab length
+    height : float
+        Slab height
+    number_part : int, optional
+        Number of slab to draw, by default 1
+    beam_height : float, optional
+        Beam heigth, by default 0.5
+
+    Returns
+    -------
+    object
+        Matplotlib plot
+    """
+
     # Create a figure and axis
     fig, ax = plt.subplots()
 
@@ -236,7 +257,7 @@ def plot_longitudinal_section(length: float, height: float, number_part: int = 1
     slab_dim_x_min = slab_x_dimension * slab_id + (SLAB_SEPARATION_LINE_WIDTH * slab_id)
 
     x = slab_dim_x_min + slab_x_dimension / 2
-    y = -(height) - SLAB_TEXT_DIMENSION_Y_OFFSET
+    y = -(2 * beam_height) - SLAB_TEXT_DIMENSION_Y_OFFSET / 2
     text_length = round(length * number_part, 2)
     ax.text(x, y, f"new design span :  {text_length} m", fontsize=TEXT_DIMENSION_SIZE, ha="center", va="center")
 
@@ -255,23 +276,6 @@ def plot_longitudinal_section(length: float, height: float, number_part: int = 1
     text_length = round(length, 2)
     ax.text(x, y, f"cut-piece width: {text_length} m", fontsize=TEXT_DIMENSION_SIZE, ha="center", va="center")
 
-    # slab_id = math.ceil(number_part / 2) - 1
-    # slab_dim_x_min = slab_x_dimension * slab_id + (SLAB_SEPARATION_LINE_WIDTH * slab_id)
-    # slab_dim_x_max = slab_dim_x_min + slab_x_dimension
-    # slab_dim_y = (height / 2) + SLAB_LINE_DIMENSION_Y_OFFSET
-    # x = [slab_dim_x_min, slab_dim_x_max]
-    # y = [slab_dim_y, slab_dim_y]
-    # # lines
-    # ax.plot(x, y, color="black")
-    # # markers
-    # ax.plot(x, y, color="black", marker=(2, 0, -45), linestyle="None")
-    # ax.plot(x, y, color="black", marker=(2, 0, 0), linestyle="None")
-    # # text
-    # x = slab_dim_x_min + slab_x_dimension / 2
-    # y = (height / 2) + SLAB_TEXT_DIMENSION_Y_OFFSET
-    # text_length = round(length, 2)
-    # ax.text(x, y, f"cut-piece width: {text_length} m", fontsize=TEXT_DIMENSION_SIZE, ha="center", va="center")
-
     # Set axis limits
     ax.set_xlim(
         [
@@ -279,7 +283,7 @@ def plot_longitudinal_section(length: float, height: float, number_part: int = 1
             0.1 + slab_x_dimension * (number_part) + (SLAB_SEPARATION_LINE_WIDTH * (number_part + 1)),
         ]
     )
-    ax.set_ylim([-4 * height - beam_height, height * 4])
+    ax.set_ylim([-6 * height - beam_height, height * 4])
 
     # Set the aspect ratio
     ax.set_aspect("equal")
