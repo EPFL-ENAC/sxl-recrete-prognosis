@@ -7,13 +7,13 @@ import pie_chart
 import slab_drawing
 import streamlit as st
 from alias import alias
+from PIL import Image
 from process import processing
 
 # Define page layout
 st.set_page_config(layout="wide")
 
-
-st.title("Reused as-cut cast-in-place concrete slab pieces")
+LOCAL_FOLDER_PATH = os.path.dirname(__file__)
 
 
 def selectbox_input(
@@ -113,7 +113,7 @@ def run_simulation(result: list):
     # Add columns titles
     col0, col1, col2, col3 = st.columns(4)
     columns_title = ["", "<b>Design 1</b>", "<b>Design 2</b>", "<b>Design 3</b>"]
-    html_text(list_text=columns_title, color="#24acb2", font_size="22", text_align="center")
+    html_text(text=columns_title, color="#24acb2", font_size="22", text_align="center")
 
     # Iterate over the 5 lines of the results
     for line in range(5):
@@ -170,12 +170,14 @@ def run_simulation(result: list):
                 fig3.clf()
 
 
-def html_text(list_text: list, color: str = "#000000", font_size: str = "18", text_align: str = "left") -> None:
-    """Generic function to create a row of 4 columns and add html text as cell content.
+def html_text(
+    text: list, color: str = "#000000", font_size: str = "18", text_align: str = "left", column: bool = True
+) -> None:
+    """Generic function to create a row html text as cell content.
 
     Parameters
     ----------
-    list_text : list
+    list_text : list or string
         list of the text to display in the columns
     color : str, optional
         Text color, by default "#000000"
@@ -183,21 +185,97 @@ def html_text(list_text: list, color: str = "#000000", font_size: str = "18", te
         Text size, by default "18"
     text_align : str, optional
         Test alignment, by default "left"
+    column : bool, optional
+        If True, the text is displayed in 4 columns, by default True
     """
-    for i, column in enumerate(st.columns(4)):
-        text = list_text[i]
+
+    if column:
+        for i, column in enumerate(st.columns(4)):
+            input_text = text[i]
+            html_text = f'<p style="color:{color}; font-size: {font_size}px; text-align:{text_align};">{input_text}</p>'
+            column.markdown(html_text, unsafe_allow_html=True)
+    else:
         html_text = f'<p style="color:{color}; font-size: {font_size}px; text-align:{text_align};">{text}</p>'
-        column.markdown(html_text, unsafe_allow_html=True)
+        st.markdown(html_text, unsafe_allow_html=True)
+
+
+def header():
+    # html_path = os.path.join(LOCAL_FOLDER_PATH, "static", "header.html")
+    # with open(html_path, "r") as f:
+    #     html_content = f.read()
+    # st.components.v1.html(html_content, width=None, height=300, scrolling=False)
+
+    # st.components.v1.iframe("static/header.html", height=200, scrolling=False)
+
+    with st.container():
+        html_text(text="<b>APEC4 Flo:RE<b>", color="#010302", font_size="30", text_align="Left", column=False)
+        html_text(
+            text="Automated Pre-design and Embodied-carbon Calculator for floors made of REused cut concrete pieces",
+            color="#1599d7",
+            font_size="22",
+            text_align="Left",
+            column=False,
+        )
+        html_text(
+            text="""Flo:RE are new construction systems for floors made of reused cut
+            concrete elements developped at EPFL. Depending on the the design project,
+            Flo:RE solutions only reuse concrete cut from existing slabs or combine it
+            with either new or reused steel profiles.""",
+            font_size="18",
+            text_align="Left",
+            column=False,
+        )
+        image_path = os.path.join(LOCAL_FOLDER_PATH, "static", "slab_donor_2_new.png")
+
+        if os.path.exists(image_path):
+            st.image(Image.open(image_path))
+
+        html_text(
+            text="""
+            APEC is an automated tool to Pre-design Flo:RE that match the specificities
+            of your new design and of your concrete or steel donor structure.
+            Enter your design and donor-structure specificities and APEC will
+            suggest an adapted Flo:RE system and provides its embodied carbon.
+            """,
+            font_size="18",
+            text_align="Left",
+            column=False,
+        )
+
+        html_text(
+            text="""
+            All the details of Flo:RE and APEC4 Flo:RE are available in this
+            journal paper.
+            """,
+            font_size="18",
+            text_align="Left",
+            column=False,
+        )
+        html_text(
+            text="""
+            <i>APEC never replaces the work of a civil engineer and is only
+            conceived an early pre-design stage supporting tool. <br>
+            No composite action between concrete and steel is assumed. <br>
+            Donor structures are assumed in good condition and designed based
+            on Swiss standards at the time of constuction. <br>
+            Concrete slabs are assumed to be flat, unprestressed,
+            with unidirectional continuous reinforcement.</i>
+            """,
+            font_size="14",
+            text_align="Left",
+            column=False,
+        )
 
 
 def main_part():
+    """This part contains the main part of the app (parameters selection and results display)"""
     st.markdown("#")
     st.markdown("#")
 
     col0, col1, col2, col3 = st.columns(4)
     columns_title = ["", "<b>Design 1</b>", "<b>Design 2</b>", "<b>Design 3</b>"]
 
-    html_text(list_text=columns_title, color="#24acb2", font_size="22", text_align="center")
+    html_text(text=columns_title, color="#24acb2", font_size="22", text_align="center")
 
     # original_title = '<p style="color:#24acb2; font-size: 18px; text-align:center;"><b>Design 1</b></p>'
     # col1.markdown(original_title, unsafe_allow_html=True)
@@ -333,9 +411,10 @@ def main_part():
         run_simulation(result=result)
 
 
-# with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "style.css")) as f:
-#     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "style.css")) as f:
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
+    header()
     main_part()
