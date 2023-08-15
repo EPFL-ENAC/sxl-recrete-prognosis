@@ -1,3 +1,4 @@
+import math
 import os
 
 import bars_chart
@@ -98,17 +99,34 @@ def number_input(
                 result[i - 1][parameter_name] = res
 
 
-def run_simulation(result: list):
+def run_simulation(input_parameters: list) -> list:
     """This function takes the input parameters, run the simulation and display the results.
 
     Parameters
     ----------
     result : list
         List of the input parameters.
+
+    Returns
+    -------
+    list
+        List of the results of the simulation.
     """
     simulation_result = []
-    for simulation_id, simulation_params in enumerate(result):
+    for simulation_id, simulation_params in enumerate(input_parameters):
         simulation_result.append(processing(**simulation_params))
+
+    return simulation_result
+
+
+def display_results(simulation_result: list) -> None:
+    """This function display the results of the simulation.
+
+    Parameters
+    ----------
+    simulation_result : list
+        List of the results of the simulation.
+    """
 
     # Add columns titles
     col0, col1, col2, col3 = st.columns(4)
@@ -120,52 +138,74 @@ def run_simulation(result: list):
         # st.markdown("---")
         col0, col1, col2, col3 = st.columns(4)
 
-        path_description = os.path.join(os.path.dirname(__file__), "description", f"{line}.md")
+        path_description = os.path.join(os.path.dirname(__file__), "static", f"{line}.md")
 
         with open(path_description) as f:
             markdown_text = f.read()
         col0.markdown(markdown_text)
+        if line == 4:
+            image_path = os.path.join(os.path.dirname(__file__), "static", "legend.png")
+            image = Image.open(image_path)
+            col0.image(image)
 
         if line == 0:
             for simulation_id, column in enumerate([col1, col2, col3]):
-                column.write(f"The selected system is : {simulation_result[simulation_id][0]}")
+                column.write(simulation_result[simulation_id][0])
 
         if line == 1:
             for simulation_id, column in enumerate([col1, col2, col3]):
-                drawing = simulation_result[simulation_id][1]
+                drawing_parameters = simulation_result[simulation_id][1]
                 fig1 = slab_drawing.plot_transverse_section(
-                    length=drawing.get("l0"),
-                    height=drawing.get("h"),
-                    number_part=drawing.get("number_part"),
-                    beam_length=drawing.get("h"),
-                    beam_height=drawing.get("h"),
+                    length=drawing_parameters.get("l0"),
+                    height=drawing_parameters.get("h"),
+                    number_part=drawing_parameters.get("number_part"),
+                    beam_length=drawing_parameters.get("h"),
+                    beam_height=drawing_parameters.get("h"),
                 )
                 column.pyplot(fig1, use_container_width=True)
                 fig1.clf()
 
         if line == 2:
             for simulation_id, column in enumerate([col1, col2, col3]):
-                drawing = simulation_result[simulation_id][1]
+                system_id = simulation_result[simulation_id][-1]
+                drawing_parameters = simulation_result[simulation_id][1]
+                number_part = math.ceil(drawing_parameters.get("l1") / 2.5)
+                lenght = drawing_parameters.get("l1") / number_part
+
+                if system_id == 1:
+                    beam_height = 0
+                else:
+                    beam_height = drawing_parameters.get("h")
+
                 fig1 = slab_drawing.plot_longitudinal_section(
-                    length=drawing.get("l1"),
-                    height=drawing.get("h"),
-                    number_part=drawing.get("number_part"),
-                    beam_height=drawing.get("h"),
+                    length=lenght,
+                    height=drawing_parameters.get("h"),
+                    number_part=number_part,
+                    beam_height=beam_height,
                 )
                 column.pyplot(fig1, use_container_width=True)
                 fig1.clf()
 
         if line == 3:
             for simulation_id, column in enumerate([col1, col2, col3]):
-                drawing = simulation_result[simulation_id][2]
-                fig2 = bars_chart.plot(drawing)
+                drawing_parameters = simulation_result[simulation_id][2]
+                fig2 = bars_chart.plot(drawing_parameters)
                 column.pyplot(fig2, use_container_width=True)
                 fig2.clf()
 
         if line == 4:
             for simulation_id, column in enumerate([col1, col2, col3]):
-                drawing = simulation_result[simulation_id][3]
-                fig3 = pie_chart.plot(drawing)
+                drawing_parameters = simulation_result[simulation_id][3]
+                os.path.join(os.path.dirname(LOCAL_FOLDER_PATH), "app", "app_layout_config.yml")
+                # with open(yaml_filename, 'r') as yaml_file:
+                #     color_data = yaml.safe_load(yaml_file)
+                #     label_name = []
+                #     for i in color_data['piechart_color']:
+                #         label_name.append(list(i.keys())[0])
+
+                # drawing_parameters = drawing_parameters.set_index(pd.Index(label_name))
+
+                fig3 = pie_chart.plot(drawing_parameters)
                 column.pyplot(fig3, use_container_width=True)
                 fig3.clf()
 
@@ -281,7 +321,7 @@ def main_part():
     # col1.markdown(original_title, unsafe_allow_html=True)
     # col1.write("**:#24acb2[Design 1]**")
 
-    result = [{} for i in range(3)]
+    input_paramters = [{} for i in range(3)]
 
     html_text(
         ["", "<i>Step 1</i> <b>New design</b>", "<i>Step 1</i> <b>New design</b>", "<i>Step 1</i> <b>New design</b>"],
@@ -293,7 +333,7 @@ def main_part():
         parameter_name="q1",
         parmater_description="Use",
         options=("Housing (2 kN/m²)", "Office (3 kN/m²)"),
-        result=result,
+        result=input_paramters,
     )
 
     number_input(
@@ -303,7 +343,7 @@ def main_part():
         max_value=8.0,
         default_value=6.0,
         step=0.5,
-        result=result,
+        result=input_paramters,
     )
 
     html_text(
@@ -321,7 +361,7 @@ def main_part():
         parameter_name="q0",
         parmater_description="Original use",
         options=("Housing (2 kN/m²)", "Office (3 kN/m²)"),
-        result=result,
+        result=input_paramters,
     )
 
     selectbox_input(
@@ -329,7 +369,7 @@ def main_part():
         parmater_description="Construction period (design steel yield strength)",
         options=("1956-1967 (300 N/mm²)", "1968-1988 (390 N/mm²)", "1988-2023 (435 N/mm²)"),
         index=1,
-        result=result,
+        result=input_paramters,
     )
 
     number_input(
@@ -339,7 +379,7 @@ def main_part():
         max_value=8.0,
         default_value=3.0,
         step=0.1,
-        result=result,
+        result=input_paramters,
     )
 
     number_input(
@@ -349,7 +389,7 @@ def main_part():
         max_value=0.30,
         default_value=0.14,
         step=0.02,
-        result=result,
+        result=input_paramters,
     )
 
     number_input(
@@ -359,15 +399,15 @@ def main_part():
         max_value=1000,
         default_value=20,
         step=5,
-        result=result,
+        result=input_paramters,
     )
 
     html_text(
         [
             "",
-            "<i>Step 3</i> <b>Steal profiles</b>",
-            "<i>Step 3</i> <b>Steal profiles</b>",
-            "<i>Step 3</i> <b>Steal profiles</b>",
+            "<i>Step 3</i> <b>Steel profiles</b>",
+            "<i>Step 3</i> <b>Steel profiles</b>",
+            "<i>Step 3</i> <b>Steel profiles</b>",
         ],
         font_size="18",
         text_align="center",
@@ -378,16 +418,16 @@ def main_part():
         # print(result[0])
 
     selectbox_input(
-        parameter_name="steel_profiles",
+        parameter_name="steelprofile_type",
         parmater_description="Type of steel profiles",
         options=("Reused steel profiles", "New steel profile"),
         index=1,
-        result=result,
+        result=input_paramters,
         on_change=with_steel_profil_distance(),
     )
 
     tpdist_metal_reuse_disabled = [
-        True if result[i].get("steel_profiles") == "New steel profile" else False for i in range(0, 3)
+        True if input_paramters[i].get("steelprofile_type") == 1 else False for i in range(0, 3)
     ]
 
     number_input(
@@ -397,7 +437,7 @@ def main_part():
         max_value=1000,
         default_value=80,
         step=1,
-        result=result,
+        result=input_paramters,
         disabled=tpdist_metal_reuse_disabled,
     )
 
@@ -408,7 +448,8 @@ def main_part():
         st.markdown("#")
 
     if button_pressed:
-        run_simulation(result=result)
+        input_paramters = run_simulation(input_parameters=input_paramters)
+        display_results(simulation_result=input_paramters)
 
 
 with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "style.css")) as f:

@@ -170,6 +170,9 @@ def plot_longitudinal_section(length: float, height: float, number_part: int = 1
     object
         Matplotlib plot
     """
+    print("--------")
+
+    with_beam = True if beam_height > 0 else False
 
     # Create a figure and axis
     fig, ax = plt.subplots()
@@ -179,10 +182,10 @@ def plot_longitudinal_section(length: float, height: float, number_part: int = 1
 
     # Draw main slabs
     for i in range(number_part):
-        beam_x_min = slab_x_dimension * i + (SLAB_SEPARATION_LINE_WIDTH * i)
-        beam_y_min = -(height / 2)
+        slab_x_min = slab_x_dimension * i + (SLAB_SEPARATION_LINE_WIDTH * i)
+        slab_y_min = 0
         rect = patches.Rectangle(
-            (beam_x_min, beam_y_min),
+            (slab_x_min, slab_y_min),
             slab_x_dimension,
             slab_y_dimension,
             linewidth=1,
@@ -193,24 +196,29 @@ def plot_longitudinal_section(length: float, height: float, number_part: int = 1
         ax.add_patch(rect)
 
     # Draw beam
-    beam_x_min = 0
-    beam_y_min = -(height / 2) - beam_height
-    beam_x_dimension = (slab_x_dimension + SLAB_SEPARATION_LINE_WIDTH) * number_part - SLAB_SEPARATION_LINE_WIDTH
-    beam_y_dimension = beam_height
+    vertical_offset = 0
+    if with_beam:
+        beam_x_min = 0
+        beam_y_min = -beam_height
+        beam_x_dimension = (slab_x_dimension + SLAB_SEPARATION_LINE_WIDTH) * number_part - SLAB_SEPARATION_LINE_WIDTH
+        beam_y_dimension = beam_height
 
-    rect = patches.Rectangle(
-        (beam_x_min, beam_y_min),
-        beam_x_dimension,
-        beam_y_dimension,
-        linewidth=1,
-        edgecolor="grey",
-        facecolor="white",
-        # hatch="///",
-    )
-    ax.add_patch(rect)
+        rect = patches.Rectangle(
+            (beam_x_min, beam_y_min),
+            beam_x_dimension,
+            beam_y_dimension,
+            linewidth=1,
+            edgecolor="grey",
+            facecolor="white",
+            # hatch="///",
+        )
+        ax.add_patch(rect)
+        vertical_offset = beam_y_min
 
     # Add marker
-    beam_marker_y = beam_y_min - BEAM_MARKER_SIZE / 100
+    beam_marker_y = vertical_offset - BEAM_MARKER_SIZE / 100
+    slab_x_max = (slab_x_dimension + SLAB_SEPARATION_LINE_WIDTH) * number_part - SLAB_SEPARATION_LINE_WIDTH
+
     ax.plot(
         0,
         beam_marker_y,
@@ -221,7 +229,7 @@ def plot_longitudinal_section(length: float, height: float, number_part: int = 1
         markeredgecolor="black",
     )
     ax.plot(
-        beam_x_dimension,
+        slab_x_max,
         beam_marker_y,
         color="black",
         marker="^",
@@ -232,10 +240,10 @@ def plot_longitudinal_section(length: float, height: float, number_part: int = 1
 
     # Draw beam horizontal dimensions
     x_min = 0
-    x_max = beam_x_dimension
-    y_min = -(beam_height * 5)
-    y_max = -(beam_height * 3)
-    offset = beam_x_dimension / 75
+    x_max = slab_x_max
+    y_max = -beam_height
+    y_min = y_max - SLAB_LINE_DIMENSION_Y_OFFSET
+    offset = slab_x_max / 75
 
     x = [x_min, x_min]
     y = [y_min - offset, y_max]
@@ -256,8 +264,8 @@ def plot_longitudinal_section(length: float, height: float, number_part: int = 1
     slab_id = math.ceil(number_part / 2) - 1
     slab_dim_x_min = slab_x_dimension * slab_id + (SLAB_SEPARATION_LINE_WIDTH * slab_id)
 
-    x = slab_dim_x_min + slab_x_dimension / 2
-    y = -(2 * beam_height) - SLAB_TEXT_DIMENSION_Y_OFFSET / 2
+    x = slab_x_max / 2
+    y = y_min - slab_x_max / 40
     text_length = round(length * number_part, 2)
     ax.text(x, y, f"new design span :  {text_length} m", fontsize=TEXT_DIMENSION_SIZE, ha="center", va="center")
 
@@ -272,7 +280,7 @@ def plot_longitudinal_section(length: float, height: float, number_part: int = 1
     ax.plot(x, y, color="black", marker=(2, 0, 0), linestyle="None")
     # text
     x = slab_dim_x_min + slab_x_dimension / 2
-    y = (height / 2) + SLAB_TEXT_DIMENSION_Y_OFFSET
+    y = slab_dim_y + (slab_x_max / 40)
     text_length = round(length, 2)
     ax.text(x, y, f"cut-piece width: {text_length} m", fontsize=TEXT_DIMENSION_SIZE, ha="center", va="center")
 
@@ -314,8 +322,8 @@ if __name__ == "__main__":
     # ).show()
 
     plot_longitudinal_section(
-        length=3,
-        height=0.3,
+        length=1.5,
+        height=0.14,
         number_part=2,
-        beam_height=0.2,
+        beam_height=0,
     ).show()

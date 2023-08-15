@@ -6,6 +6,7 @@ import pandas as pd
 import yaml
 
 VARIABLES_FILE_PATH = os.path.join(os.path.dirname(__file__), "variables.yml")
+BEAMS_CONFIG_FILE_PATH = os.path.join(os.path.dirname(__file__), "data_beams_1.xlsx")
 
 
 class MyConfig:
@@ -59,58 +60,37 @@ def define_fyd(steelprofile_type: int) -> float:
     float
         fyd value.
     """
-
     # résistance profilé [N/mm2]
     if steelprofile_type == 1:
-        fyd = 335 / 1.05
+        fyd = 355 / 1.05
 
     # Résistance profilé de réemploi (pas acier de la meilleure qualité) [N/mm2]
-    if steelprofile_type == 2:
-        fyd = 335 / 1.05
+    elif steelprofile_type == 2:
+        fyd = 235 / 1.05
     else:
         raise ValueError("Invalid steelprofile_type")
 
     return fyd
 
 
-def read_data(steelprofile_type: int) -> pd.DataFrame:
+def read_data_beams() -> pd.DataFrame:
     """Read data from excel file.
 
     Parameters
     ----------
-    steelprofile_type : int
-        Steel profile type.
-
     Returns
     -------
     pd.DataFrame
         Dataframe containing data from excel file.
 
-    Raises
-    ------
-    ValueError
-        Invalid steelprofile_type.
     """
-
-    if steelprofile_type == 1:
-        excel_file = "data_beams_1.xlsx"
-        sheet_name = "1"
-        skiprows = 2
-        usecols = range(1, 19)
-        nrows = 27
-
-    elif steelprofile_type == 2:
-        excel_file = "data_beams_casestudy.xlsx"
-        sheet_name = "1"
-        skiprows = 3
-        usecols = range(1, 19)
-        nrows = 2
-
-    else:
-        raise ValueError("Invalid steelprofile_type")
+    sheet_name = "1"
+    skiprows = 2
+    usecols = range(1, 19)
+    nrows = 27
 
     df = pd.read_excel(
-        os.path.join(os.path.dirname(__file__), excel_file),
+        BEAMS_CONFIG_FILE_PATH,
         sheet_name=sheet_name,
         header=None,
         usecols=usecols,
@@ -119,6 +99,23 @@ def read_data(steelprofile_type: int) -> pd.DataFrame:
     )
 
     return df
+
+
+def get_beam_name(row_id: int) -> str:
+    """Return beam name from the configuration Excel file.
+
+    Parameters
+    ----------
+    row_id : int
+        Row id.
+
+    Returns
+    -------
+    str
+        Name of the beam.
+    """
+    df = read_data_beams()
+    return df.iloc[row_id, 0]
 
 
 def get_profile_data(steelprofile_type: int, beamposition: int, fyd: float) -> tuple:
@@ -143,7 +140,9 @@ def get_profile_data(steelprofile_type: int, beamposition: int, fyd: float) -> t
 
     """
 
-    data = read_data(steelprofile_type=steelprofile_type)
+    data = read_data_beams()
+
+    beam_name = data.iloc[:, 0]
 
     # masse linéaire des profilés utilisés dans les poutres[kN/m]
     profile_mass = data.iloc[:, 2] * 10**-3
@@ -220,6 +219,7 @@ def get_profile_data(steelprofile_type: int, beamposition: int, fyd: float) -> t
         profile_unwelding,
         profile_sandblastedsurf,
         profile_MRd,
+        beam_name,
     )
 
 
@@ -397,6 +397,7 @@ def calculate_impact_system_0(
         hsnew = 0.22  # hauteur de la dalle neuve [m]
 
     volbeton = l1 * hsnew * (1 - v.tauxarmature_neuf)  # [m3/m]
+
     massebeton = volbeton * v.massevol_beton  # [kg/m]
     volarmature = l1 * hsnew * v.tauxarmature_neuf  # [m3/m]
     massearmature = volarmature * v.massevol_armature  # [kg/m]
@@ -727,6 +728,7 @@ def calculate_impact_system_2(
     kgco2_sciage_beton,
     impactnew_prod,
     dict_impact_new0,
+    beam_name,
 ):
     L_decoupeL0 = None
 
@@ -775,6 +777,7 @@ def calculate_impact_system_2(
             sel = np.min(ind) + it
             Selection_I = profile_I[sel]
             Selection_beam_largeurentrepiece = beam_largeurentrepiece[sel]
+
         if steelprofile_type == 2:  # reusedsteel
             flecheBeam_perm_reuse = (
                 (L_decoupeL0 + Selection_beam_largeurentrepiece / 1000)
@@ -799,6 +802,7 @@ def calculate_impact_system_2(
         else:
             test = test + 1
 
+    beam_name_text = beam_name[sel]
     profile_W[sel]
     Selection_I = profile_I[sel]
     Selection_profile_mass = profile_mass[sel]
@@ -1083,7 +1087,7 @@ def calculate_impact_system_2(
 
     number_of_slab = 1
 
-    return impactreuse2, impactreuse2_matrice, impactnew2_matrice, impactnew, number_of_slab
+    return impactreuse2, impactreuse2_matrice, impactnew2_matrice, impactnew, number_of_slab, beam_name_text
 
 
 def create_df_chart(values: list, labels: list):
@@ -1101,7 +1105,7 @@ def processing(
     q1=int,
     tpdist_beton_reuse=float,
     tpdist_metal_reuse=float,
-    steel_profiles=str,
+    steelprofile_type=int,
 ):
     # retrive variables from yaml file
     with open(VARIABLES_FILE_PATH) as file:
@@ -1111,7 +1115,6 @@ def processing(
     # --------------------------------------------------------
     # caractérstiques du donneur
     Fsd_armamin = define_fsd_armamin(year)
-    steelprofile_type = 2
     beamposition = 1
 
     # charge permanentes [kN/m2]
@@ -1142,6 +1145,7 @@ def processing(
         profile_unwelding,
         profile_sandblastedsurf,
         profile_MRd,
+        beam_name,
     ) = get_profile_data(steelprofile_type=steelprofile_type, beamposition=beamposition, fyd=fyd)
 
     # schéma de découpes
@@ -1167,7 +1171,8 @@ def processing(
     )
 
     if l1 <= L_armamin and l1 <= l0 or l1 <= L_alpha and l1 > L_armamin:  # conditions de la zone 1 et de la zone 3
-        system = 1
+        system_id = 1
+        system_text = "Cut concrete as primary elements"
         # Impact reuse (SYSTEM 1)
         impactreuse, impactreuse_matrice, impactnew_matrice, impactnew, number_of_slab = calculate_impact_system_1(
             v,
@@ -1182,9 +1187,15 @@ def processing(
         )
 
     else:
-        system = 2
         # Impact reuse (SYSTEM 2)
-        impactreuse, impactreuse_matrice, impactnew_matrice, impactnew, number_of_slab = calculate_impact_system_2(
+        (
+            impactreuse,
+            impactreuse_matrice,
+            impactnew_matrice,
+            impactnew,
+            number_of_slab,
+            beam_name_text,
+        ) = calculate_impact_system_2(
             v,
             l1,
             l0,
@@ -1220,7 +1231,10 @@ def processing(
             kgco2_sciage_beton,
             impactnew_prod,
             dict_impact_new0,
+            beam_name,
         )
+        system_id = 2
+        system_text = f"Cut concrete over new {beam_name_text} steel profile"
 
     drawing_data = {}
     drawing_data["l0"] = l0
@@ -1236,18 +1250,19 @@ def processing(
         values=impactnew_matrice, labels=[f"label_{i}" for i, v in enumerate(impactnew_matrice)]
     )
 
-    return [system, drawing_data, df_barchart, df_piechart_reuse, df_piechart_new]
+    return [system_text, drawing_data, df_barchart, df_piechart_reuse, df_piechart_new, system_id]
 
 
 if __name__ == "__main__":
     l0 = 3
-    l1 = 4
+    l1 = 3
     hsreuse = 0.14
     year = 2
     q0 = 2
     q1 = 2
     tpdist_beton_reuse = 20
     tpdist_metal_reuse = 80
+    steelprofile_type = 2
 
     result = processing(
         l0=l0,
@@ -1258,4 +1273,7 @@ if __name__ == "__main__":
         q1=q1,
         tpdist_beton_reuse=tpdist_beton_reuse,
         tpdist_metal_reuse=tpdist_metal_reuse,
+        steelprofile_type=steelprofile_type,
     )
+
+    print(result[2])
