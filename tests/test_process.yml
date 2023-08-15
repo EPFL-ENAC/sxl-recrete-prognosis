@@ -1,0 +1,80 @@
+  - l0 : 6
+    l1 : 4
+    hsreuse : 0.2
+    year : 3
+    q0 : 3
+    q1 : 3
+    tpdist_beton_reuse : 100
+    tpdist_metal_reuse : 100
+    steelprofile_type : 1
+    expected : [77.350107, 16.533228]
+  - l0 : 3
+    l1 : 4
+    hsreuse : 0.14
+    year : 2
+    q0 : 2
+    q1 : 2
+    tpdist_beton_reuse : 20
+    tpdist_metal_reuse : 80
+    steelprofile_type : 2
+    expected : [75.450933, 6.576556]
+  - l0 : 8
+    l1 : 4
+    hsreuse : 0.14
+    year : 2
+    q0 : 2
+    q1 : 2
+    tpdist_beton_reuse : 20
+    tpdist_metal_reuse : 80
+    steelprofile_type : 1
+    expected : [75.379402, 7.610140]
+  - l0 : 8
+    l1 : 4
+    hsreuse : 0.14
+    year : 2
+    q0 : 2
+    q1 : 2
+    tpdist_beton_reuse : 100
+    tpdist_metal_reuse : 80
+    steelprofile_type : 1
+    expected : [75.379402,10.914140]
+  - l0 : 8
+    l1 : 4
+    hsreuse : 0.14
+    year : 2
+    q0 : 2
+    q1 : 2
+    tpdist_beton_reuse : 100
+    tpdist_metal_reuse : 100
+    steelprofile_type : 1
+    expected : [75.379402,10.914140]
+  - l0 : 6
+    l1 : 4
+    hsreuse : 0.14
+    year : 2
+    q0 : 3
+    q1 : 3
+    tpdist_beton_reuse : 100
+    tpdist_metal_reuse : 100
+    steelprofile_type : 1
+    expected : [75.379402,16.912470]
+  - l0 : 6
+    l1 : 4
+    hsreuse : 0.2
+    year : 2
+    q0 : 3
+    q1 : 3
+    tpdist_beton_reuse : 100
+    tpdist_metal_reuse : 100
+    steelprofile_type : 1
+    expected : [77.350107,16.533228]
+  - l0 : 6
+    l1 : 4
+    hsreuse : 0.2
+    year : 3
+    q0 : 3
+    q1 : 3
+    tpdist_beton_reuse : 100
+    tpdist_metal_reuse : 100
+    steelprofile_type : 1
+    expected : [77.350107,16.533228]

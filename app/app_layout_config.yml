@@ -1,0 +1,11 @@
+piechart_color :
+  - cut concrete transportation: 2466b0
+  - concrete sawing : fdd570
+  - mortar production: f08517
+  - joint production : 8cc992
+  - fire-proofing painting production : 29b09f
+  - steel-angle production : f5a9ad
+  - steel-plate production : e63636
+  - steel-profile production : 8bc5ed
+  - other : 5a469a
+  - default : 5a469a

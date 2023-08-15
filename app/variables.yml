@@ -88,7 +88,7 @@ portee_etai_reuse: 2  # [m2/étai] surface d'influence sur un étai
 largcamion: 2.50  # largeur maximale de camion en Suisse selon l'art. 64-67 OCR
 
 # caractéristique NEW
-tauxarmature_neuf: 0.014  # %taux d'armature dans béton neuf 1,4% -> estimé manuellement, voir "dalles neuves.xlsx"
+tauxarmature_neuf: 0.015  # %taux d'armature dans béton neuf 1,4% -> estimé manuellement, voir "dalles neuves.xlsx"
 
 tpdist_coffrageetayage : 120  # distance de transport du matériel de coffrage et étayage [km] (pour deux trajets) --> DISTANCE A VERIFIER
 tpdist_metal : 60  # distance de transport des profilés métalliques [km] --> DISTANCE A VERIFIER
