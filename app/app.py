@@ -14,6 +14,7 @@ from process import processing
 # Define page layout
 st.set_page_config(layout="wide")
 
+
 LOCAL_FOLDER_PATH = os.path.dirname(__file__)
 
 
@@ -309,8 +310,14 @@ def header():
 
 def main_part():
     """This part contains the main part of the app (parameters selection and results display)"""
-    st.markdown("#")
-    st.markdown("#")
+    html_text(text="<b>APEC4 Flo:RE<b>", color="#010302", font_size="30", text_align="Left", column=False)
+    html_text(
+        text="Automated Pre-design and Embodied-carbon Calculator for floors made of REused cut concrete pieces",
+        color="#1599d7",
+        font_size="22",
+        text_align="Left",
+        column=False,
+    )
 
     col0, col1, col2, col3 = st.columns(4)
     columns_title = ["", "<b>Design 1</b>", "<b>Design 2</b>", "<b>Design 3</b>"]
@@ -456,6 +463,13 @@ with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "style.css"))
     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
+def tabs():
+    tab1, tab2, tab3, tab4 = st.tabs(["Simulations", "About", "Journal paper", "Contact"])
+    with tab1:
+        main_part()
+    with tab2:
+        header()
+
+
 if __name__ == "__main__":
-    header()
-    main_part()
+    tabs()
