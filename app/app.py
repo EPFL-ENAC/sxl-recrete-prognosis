@@ -218,6 +218,7 @@ def display_results(simulation_result: list) -> None:
 
         if line == 5:
             for simulation_id, column in enumerate([col1, col2, col3]):
+                system_id = simulation_result[simulation_id][-1]
                 drawing_parameters = simulation_result[simulation_id][3]
                 os.path.join(os.path.dirname(LOCAL_FOLDER_PATH), "app", "app_layout_config.yml")
                 # with open(yaml_filename, 'r') as yaml_file:
@@ -228,7 +229,7 @@ def display_results(simulation_result: list) -> None:
 
                 # drawing_parameters = drawing_parameters.set_index(pd.Index(label_name))
 
-                fig3 = pie_chart.plot(drawing_parameters)
+                fig3 = pie_chart.plot(drawing_parameters, system_id)
                 column.pyplot(fig3, use_container_width=True)
                 fig3.clf()
 
@@ -456,8 +457,8 @@ def page():
 
     footer()
 
-    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "style.css")) as f:
-        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+    # with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "style.css")) as f:
+    #     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
