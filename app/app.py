@@ -135,7 +135,7 @@ def display_results(simulation_result: list) -> None:
     html_text(text=columns_title, color="#24acb2", font_size="22", text_align="center")
 
     # Iterate over the 5 lines of the results
-    for line in range(5):
+    for line in range(6):
         # st.markdown("---")
         col0, col1, col2, col3 = st.columns(4)
 
@@ -144,7 +144,7 @@ def display_results(simulation_result: list) -> None:
         with open(path_description) as f:
             markdown_text = f.read()
         col0.markdown(markdown_text)
-        if line == 4:
+        if line == 5:
             image_path = os.path.join(os.path.dirname(__file__), "static", "legend.png")
             image = Image.open(image_path)
             col0.image(image)
@@ -189,12 +189,23 @@ def display_results(simulation_result: list) -> None:
 
         if line == 3:
             for simulation_id, column in enumerate([col1, col2, col3]):
+                system_id = simulation_result[simulation_id][-1]
+                if system_id == 1:
+                    image_name = "slabs_without_beams.jpg"
+                else:
+                    image_name = "slabs_with_beams.jpg"
+
+                image_path = os.path.join(os.path.dirname(__file__), "static", image_name)
+                column.image(Image.open(image_path))
+
+        if line == 4:
+            for simulation_id, column in enumerate([col1, col2, col3]):
                 drawing_parameters = simulation_result[simulation_id][2]
                 fig2 = bars_chart.plot(drawing_parameters)
                 column.pyplot(fig2, use_container_width=True)
                 fig2.clf()
 
-        if line == 4:
+        if line == 5:
             for simulation_id, column in enumerate([col1, col2, col3]):
                 drawing_parameters = simulation_result[simulation_id][3]
                 os.path.join(os.path.dirname(LOCAL_FOLDER_PATH), "app", "app_layout_config.yml")
