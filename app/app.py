@@ -7,15 +7,26 @@ import pie_chart
 # from drawing import plot_drawing
 import slab_drawing
 import streamlit as st
+import yaml
+from about import about_section
 from alias import alias
+from conact import contact_section
+from paper import paper_section
 from PIL import Image
 from process import processing
+from utils.add_html import html_text
 
 # Define page layout
 st.set_page_config(layout="wide")
 
 
 LOCAL_FOLDER_PATH = os.path.dirname(__file__)
+
+
+with open(os.path.join(LOCAL_FOLDER_PATH, "app_layout_config.yml")) as f:
+    config = yaml.safe_load(f)
+
+PAGE_THEME_COLOR = f"#{config.get('page_color')}"
 
 
 def selectbox_input(
@@ -132,7 +143,7 @@ def display_results(simulation_result: list) -> None:
     # Add columns titles
     col0, col1, col2, col3 = st.columns(4)
     columns_title = ["", "<b>Design 1</b>", "<b>Design 2</b>", "<b>Design 3</b>"]
-    html_text(text=columns_title, color="#24acb2", font_size="22", text_align="center")
+    html_text(text=columns_title, color=PAGE_THEME_COLOR, font_size="22", text_align="center")
 
     # Iterate over the 5 lines of the results
     for line in range(6):
@@ -222,118 +233,13 @@ def display_results(simulation_result: list) -> None:
                 fig3.clf()
 
 
-def html_text(
-    text: list, color: str = "#000000", font_size: str = "18", text_align: str = "left", column: bool = True
-) -> None:
-    """Generic function to create a row html text as cell content.
-
-    Parameters
-    ----------
-    list_text : list or string
-        list of the text to display in the columns
-    color : str, optional
-        Text color, by default "#000000"
-    font_size : str, optional
-        Text size, by default "18"
-    text_align : str, optional
-        Test alignment, by default "left"
-    column : bool, optional
-        If True, the text is displayed in 4 columns, by default True
-    """
-
-    if column:
-        for i, column in enumerate(st.columns(4)):
-            input_text = text[i]
-            html_text = f'<p style="color:{color}; font-size: {font_size}px; text-align:{text_align};">{input_text}</p>'
-            column.markdown(html_text, unsafe_allow_html=True)
-    else:
-        html_text = f'<p style="color:{color}; font-size: {font_size}px; text-align:{text_align};">{text}</p>'
-        st.markdown(html_text, unsafe_allow_html=True)
-
-
-def header():
-    # html_path = os.path.join(LOCAL_FOLDER_PATH, "static", "header.html")
-    # with open(html_path, "r") as f:
-    #     html_content = f.read()
-    # st.components.v1.html(html_content, width=None, height=300, scrolling=False)
-
-    # st.components.v1.iframe("static/header.html", height=200, scrolling=False)
-
-    with st.container():
-        html_text(text="<b>APEC4 Flo:RE<b>", color="#010302", font_size="30", text_align="Left", column=False)
-        html_text(
-            text="Automated Pre-design and Embodied-carbon Calculator for floors made of REused cut concrete pieces",
-            color="#1599d7",
-            font_size="22",
-            text_align="Left",
-            column=False,
-        )
-        html_text(
-            text="""Flo:RE are new construction systems for floors made of reused cut
-            concrete elements developped at EPFL. Depending on the the design project,
-            Flo:RE solutions only reuse concrete cut from existing slabs or combine it
-            with either new or reused steel profiles.""",
-            font_size="18",
-            text_align="Left",
-            column=False,
-        )
-        image_path = os.path.join(LOCAL_FOLDER_PATH, "static", "slab_donor_2_new.png")
-
-        if os.path.exists(image_path):
-            st.image(Image.open(image_path))
-
-        html_text(
-            text="""
-            APEC is an automated tool to Pre-design Flo:RE that match the specificities
-            of your new design and of your concrete or steel donor structure.
-            Enter your design and donor-structure specificities and APEC will
-            suggest an adapted Flo:RE system and provides its embodied carbon.
-            """,
-            font_size="18",
-            text_align="Left",
-            column=False,
-        )
-
-        html_text(
-            text="""
-            All the details of Flo:RE and APEC4 Flo:RE are available in this
-            journal paper.
-            """,
-            font_size="18",
-            text_align="Left",
-            column=False,
-        )
-        html_text(
-            text="""
-            <i>APEC never replaces the work of a civil engineer and is only
-            conceived an early pre-design stage supporting tool. <br>
-            No composite action between concrete and steel is assumed. <br>
-            Donor structures are assumed in good condition and designed based
-            on Swiss standards at the time of constuction. <br>
-            Concrete slabs are assumed to be flat, unprestressed,
-            with unidirectional continuous reinforcement.</i>
-            """,
-            font_size="14",
-            text_align="Left",
-            column=False,
-        )
-
-
 def main_part():
     """This part contains the main part of the app (parameters selection and results display)"""
-    html_text(text="<b>APEC4 Flo:RE<b>", color="#010302", font_size="30", text_align="Left", column=False)
-    html_text(
-        text="Automated Pre-design and Embodied-carbon Calculator for floors made of REused cut concrete pieces",
-        color="#1599d7",
-        font_size="22",
-        text_align="Left",
-        column=False,
-    )
 
     col0, col1, col2, col3 = st.columns(4)
     columns_title = ["", "<b>Design 1</b>", "<b>Design 2</b>", "<b>Design 3</b>"]
 
-    html_text(text=columns_title, color="#24acb2", font_size="22", text_align="center")
+    html_text(text=columns_title, color=PAGE_THEME_COLOR, font_size="22", text_align="center")
 
     # original_title = '<p style="color:#24acb2; font-size: 18px; text-align:center;"><b>Design 1</b></p>'
     # col1.markdown(original_title, unsafe_allow_html=True)
@@ -470,17 +376,89 @@ def main_part():
         display_results(simulation_result=input_paramters)
 
 
-with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "style.css")) as f:
-    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+def header():
+    col0, col1, col2 = st.columns([10, 1, 1])
+    with col0:
+        col0.markdown("#")
+
+        html_text(text="<b>Flo:RE Calculator <b>", color="#010302", font_size="30", text_align="Left", column=False)
+        html_text(
+            text=(
+                "Flo:RE Calculator is an  Automated Pre-design and Embodied-carbon Tool for Floors made of REused cut"
+                " concrete pieces"
+            ),
+            color=PAGE_THEME_COLOR,
+            font_size="22",
+            text_align="Left",
+            column=False,
+        )
+
+    with col1:
+        col1.markdown("#")
+        html_text(
+            text="""
+                <img decoding="async"  height="100"
+                src="https://www.epfl.ch/about/overview/wp-content/uploads/2020/07/logo-epfl-1024x576.png"
+                class="attachment-full size-full" alt="EPFL" loading="lazy" data-recalc-dims="1">
+                """,
+            color=PAGE_THEME_COLOR,
+            font_size="22",
+            text_align="Left",
+            column=False,
+        )
+
+    with col2:
+        col2.markdown("#")
+        html_text(
+            text="""
+                <a href="https://github.com/EPFL-ENAC/sxl-recrete-prognosis">
+                <img decoding="async" width="100" height="100"
+                src="https://github.blog/wp-content/uploads/2008/12/forkme_right_red_aa0000.png?resize=149%2C149"
+                class="attachment-full size-full" alt="Fork me on GitHub" loading="lazy" data-recalc-dims="1"></a>
+                """,
+            color=PAGE_THEME_COLOR,
+            font_size="22",
+            text_align="Left",
+            column=False,
+        )
 
 
-def tabs():
-    tab1, tab2, tab3, tab4 = st.tabs(["Simulations", "About", "Journal paper", "Contact"])
+def footer():
+    st.markdown("---")
+    html_text(
+        text=(
+            "©EPFL, 2023 // Küpfer, C., Bertola, N., Fivet, C., [under review]. [insert final paper title]. [insert"
+            " link to article]"
+        ),
+        font_size="18",
+        text_align="Left",
+        column=False,
+    )
+
+
+def page():
+    """
+    This function is the main function of the app. It calls all the other functions to create the app.
+    """
+    header()
+
+    tab1, tab2, tab3, tab4 = st.tabs(["Simulations", "About Flo\\:RE", "Journal paper", "Contact"])
     with tab1:
         main_part()
     with tab2:
-        header()
+        about_section()
+
+    with tab3:
+        paper_section()
+
+    with tab4:
+        contact_section()
+
+    footer()
+
+    with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "style.css")) as f:
+        st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
-    tabs()
+    page()

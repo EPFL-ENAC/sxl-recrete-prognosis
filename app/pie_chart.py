@@ -12,8 +12,9 @@ with open(CONFIG_FILE_PATH) as f:
     for key, value in config_file.items():
         temp_dict = {}
         for i in value:
-            for k, v in i.items():
-                temp_dict[k] = v
+            if isinstance(i, dict):
+                for k, v in i.items():
+                    temp_dict[k] = v
         config[key] = temp_dict
 
 

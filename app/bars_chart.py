@@ -1,11 +1,22 @@
+import os
+
 import matplotlib.pyplot as plt
 import pandas as pd
+import yaml
 
 BAR_WIDTH = 0.5
 
+LOCAL_FOLDER_PATH = os.path.dirname(__file__)
+
+
+with open(os.path.join(LOCAL_FOLDER_PATH, "app_layout_config.yml")) as f:
+    config = yaml.safe_load(f)
+
+PAGE_THEME_COLOR = f"#{config.get('page_color')}"
+
 
 def plot(df: pd.DataFrame):
-    colors = ["#bfbfbf", "#24acb2"]
+    colors = ["#bfbfbf", PAGE_THEME_COLOR]
     labels = ["Conventional solution \n (new flat RC slab)", "Flo:RE solution \n (reused concrete)"]
     bars = plt.bar(labels, df["values"], color=colors, width=BAR_WIDTH)
     plt.ylabel("kgCO₂ eq/m²")
