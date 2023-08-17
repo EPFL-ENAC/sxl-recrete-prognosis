@@ -649,6 +649,14 @@ def calculate_impact_system_1(
 
     # distribution des impacts (réemploi et new)
     impactreuse1_matrice = [
+        impact_prod_revpulvacier_reuse1,
+        impact_prod_jointpolyneuf_reuse1,
+        +impact_prod_caoutchouc_reuse1,
+        impact_prod_mortierneuf_reuse1,
+        impact_prod_metalneuf_corn_reuse1,
+        impact_prod_metalneuf_plaque_reuse1,
+        impact_sciage_betonreused_reuse1,
+        impact_tp_betonreused_reuse1,
         impact_tp_etai_reuse1
         + impact_levageeetdepose_etais_reuse1
         + impact_depose_betonreused_reuse1
@@ -658,14 +666,6 @@ def calculate_impact_system_1(
         + impact_degraissage_metalneuf_reuse1
         + impact_levage_metalneuf_plaque_reuse1
         + impact_levage_metalneuf_corn_reuse1,
-        impact_prod_revpulvacier_reuse1,
-        impact_prod_jointpolyneuf_reuse1,
-        +impact_prod_caoutchouc_reuse1,
-        impact_prod_mortierneuf_reuse1,
-        impact_prod_metalneuf_corn_reuse1,
-        impact_prod_metalneuf_plaque_reuse1,
-        impact_sciage_betonreused_reuse1,
-        impact_tp_betonreused_reuse1,
     ]
 
     impactnew1_matrice = [
@@ -1040,6 +1040,15 @@ def calculate_impact_system_2(
 
     # distribution des impacts (réemploi et new)
     impactreuse2_matrice = [
+        impact_prod_revpulvacier_reuse2,
+        impact_prod_jointpolyneuf_reuse2,
+        impact_prod_caoutchouc_reuse2,
+        impact_prod_mortierneuf_reuse2,
+        impact_prod_metalneuf_corn_reuse2,
+        impact_prod_metalneuf_plaque_reuse2,
+        impact_prod_metalneuf_profiles_reuse2,
+        impact_sciage_betonreused_reuse2,
+        impact_tp_betonreused_reuse2,
         impact_tp_etais_reuse2
         + impact_levageetdepose_etais_reuse2
         + impact_depose_betonreused_reuse2
@@ -1058,15 +1067,6 @@ def calculate_impact_system_2(
         + impact_sablage_metalreused_reuse2
         + impact_prod_betonnew_reuse2
         + impact_tp_betonnew_reuse2,
-        impact_prod_revpulvacier_reuse2,
-        impact_prod_jointpolyneuf_reuse2,
-        impact_prod_caoutchouc_reuse2,
-        impact_prod_mortierneuf_reuse2,
-        impact_prod_metalneuf_corn_reuse2,
-        impact_prod_metalneuf_plaque_reuse2,
-        impact_prod_metalneuf_profiles_reuse2,
-        impact_sciage_betonreused_reuse2,
-        impact_tp_betonreused_reuse2,
     ]
 
     impactnew2_matrice = [
@@ -1243,6 +1243,7 @@ def processing(
     drawing_data["number_part"] = number_of_slab  # Where to get this information ?
 
     df_barchart = create_df_chart(values=[impactnew / l1, impactreuse / l1], labels=["Impact new", "Impact reuse"])
+
     df_piechart_reuse = create_df_chart(
         values=impactreuse_matrice, labels=[f"label_{i}" for i, v in enumerate(impactreuse_matrice)]
     )

@@ -6,9 +6,13 @@ from PIL import Image, ImageDraw
 LOCAL_FOLDER_PATH = os.path.dirname(__file__)
 
 
-def html_to_rgb(html_color):
+def html_to_rgb(value):
+    red = int(value[1:3], 16)
+    green = int(value[3:5], 16)
+    blue = int(value[5:7], 16)
+
     # Convert HTML color code (e.g., "#RRGGBB") to RGB tuple
-    return tuple(int(html_color[i : i + 2], 16) for i in (1, 3, 5))
+    return red, green, blue
 
 
 def create_legend_icon(color, size):
@@ -24,24 +28,34 @@ def save_icon_to_png(icon, filename):
 
 def load_color():
     yaml_filename = os.path.join(os.path.dirname(LOCAL_FOLDER_PATH), "app_layout_config.yml")
-    markdown_filename = os.path.join(os.path.dirname(LOCAL_FOLDER_PATH), "static", "4.md")
+    markdown_filename = os.path.join(os.path.dirname(LOCAL_FOLDER_PATH), "static", "5.md")
 
     icon_width = 15
     icon_height = 10
     with open(yaml_filename) as yaml_file:
         color_data = yaml.safe_load(yaml_file)
 
-    for entry in color_data["piechart_color"]:
-        entry_name = list(entry.keys())[0]
-        entry_color = list(entry.values())[0]
-        icon_color = html_to_rgb(entry_color)
-        icon_filename = os.path.join(os.path.dirname(LOCAL_FOLDER_PATH), "static", f"{entry_color}.png")
+    color_dict = {}
 
+    impact_reuse_matrix_row = color_data.get("impact_reuse_matrix_row")
+    for i in impact_reuse_matrix_row:
+        i.get("system")
+        labels = i.get("labels")
+        for label in labels:
+            color = label.get("color")
+            name = label.get("name")
+            color_dict[name] = color
+
+    for name, color in color_dict.items():
+        print(color)
+        icon_color = html_to_rgb(str(color))
+        print(icon_color)
+        icon_filename = os.path.join(os.path.dirname(LOCAL_FOLDER_PATH), "static", f"{color}.png")
         legend_icon = create_legend_icon(icon_color, (icon_width, icon_height))
         save_icon_to_png(legend_icon, icon_filename)
 
         with open(markdown_filename, "a") as markdown_file:
-            markdown_file.write(f"![{entry_name}]({icon_filename}) {entry_name}\n")
+            markdown_file.write(f"![{name}]({icon_filename}) {name}\n")
 
 
 if __name__ == "__main__":

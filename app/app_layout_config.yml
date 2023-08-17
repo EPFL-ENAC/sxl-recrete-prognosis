@@ -1,11 +1,48 @@
-piechart_color :
-  - cut concrete transportation: 2466b0
-  - concrete sawing : fdd570
-  - mortar production: f08517
-  - joint production : 8cc992
-  - fire-proofing painting production : 29b09f
-  - steel-angle production : f5a9ad
-  - steel-plate production : e63636
-  - steel-profile production : 8bc5ed
-  - other : 5a469a
-  - default : 5a469a
+impact_reuse_matrix_row :
+  - system : 2
+    labels :
+    - name : "fireproof-painting production"
+      color : C0C0C0
+    - name : "polymere production"
+      color : cc0000
+    - name : "eslatomer production"
+      color : FFFF00
+    - name : "mortar production"
+      color : b3b300
+    - name : "steel-angle production"
+      color : 00FF00
+    - name : "steel-plate production"
+      color : 00b300
+    - name : "concrete sawing"
+      color : 0000FF
+    - name : "reused-concrete transport"
+      color : FF00FF
+    - name : "others (<1.5%, incl. reused-concrete lifting, reused-steel deconstruction, reused-steel sandblasting, new-steel transportation, etc.)"
+      color : 00b3b3
+  - system : 1
+    labels :
+    - name : "fireproof-painting production 2"
+      color : FF0000
+    - name : "fireproof-painting production"
+      color : C0C0C0
+    - name : "polymere production"
+      color : cc0000
+    - name : "eslatomer production"
+      color : FFFF00
+    - name : "mortar production"
+      color : b3b300
+    - name : "steel-angle production"
+      color : 00FF00
+    - name : "steel-plate production"
+      color : 00b300
+    - name : "concrete sawing"
+      color : 0000FF
+    - name : "reused-concrete transport"
+      color : FF00FF
+    - name : "others (<1.5%, incl. reused-concrete lifting, new-steel transportation, etc.)"
+      color : b300b3
+
+
+
+
+page_color : 004e7f
