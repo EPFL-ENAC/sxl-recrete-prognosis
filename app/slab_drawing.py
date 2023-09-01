@@ -170,7 +170,6 @@ def plot_longitudinal_section(length: float, height: float, number_part: int = 1
     object
         Matplotlib plot
     """
-    print("--------")
 
     with_beam = True if beam_height > 0 else False
 
