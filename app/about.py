@@ -102,6 +102,14 @@ def about_section():
             This web application is the result of dedicated effort and collaboration: <br>Code development:
             <li>Célia Küpfer (Structural Xploration Lab, EPFL)</li>
             <li>Numa Bertola (Structural Maintenance and Safety Laboratory, EPFL)</li>
+            """,
+            font_size="18",
+            text_align="Left",
+            column=False,
+        )
+        html_text(
+            text="""
+            Academic supervision:
             <li>Corentin Fivet (Structural Xploration Lab, EPFL)</li>
             """,
             font_size="18",
