@@ -86,7 +86,7 @@ def read_data_beams() -> pd.DataFrame:
     """
     sheet_name = "1"
     skiprows = 2
-    usecols = range(1, 19)
+    usecols = range(0, 19)
     nrows = 27
 
     df = pd.read_excel(
@@ -145,53 +145,53 @@ def get_profile_data(steelprofile_type: int, beamposition: int, fyd: float) -> t
     beam_name = data.iloc[:, 0]
 
     # masse linéaire des profilés utilisés dans les poutres[kN/m]
-    profile_mass = data.iloc[:, 2] * 10**-3
+    profile_mass = data.iloc[:, 3] * 10**-3
 
     # Calculate profile_W - Wy des profilés utilisés dans les poutres [mm^3]
-    profile_W = data.iloc[:, 3] * 10**3
+    profile_W = data.iloc[:, 4] * 10**3
 
     # Calculate profile_I - I des profilés utilisés dans les poutres [mm^4]
-    profile_I = data.iloc[:, 4] * 10**6
+    profile_I = data.iloc[:, 5] * 10**6
 
     # Extract profile_hauteur - hauteur du profilé [mm]
-    profile_hauteur = data.iloc[:, 1]
+    profile_hauteur = data.iloc[:, 2]
 
     # Extract profile_largeurtot - Largeur totale du profilé [mm]
-    profile_largeurtot = data.iloc[:, 5]
+    profile_largeurtot = data.iloc[:, 6]
 
     # Extract profile_degreasedsurf - [m^2/m] surface dégraissée et repeintre par mètre
     # de poutre de réemploi -> PAS AUSSI LES NEUVES? VOIR Brütting et al.
-    profile_degreasedsurf = data.iloc[:, 11]
+    profile_degreasedsurf = data.iloc[:, 12]
 
     # Extract beam_sol - numero de poutres telles que listées dans "selection profiles.xls"
-    beam_sol = data.iloc[:, 0]
+    beam_sol = data.iloc[:, 1]
 
     # Extract beam_vol_betonremplissage - aire du profilé [m^3/m]
-    beam_vol_betonremplissage = data.iloc[:, 13]
+    beam_vol_betonremplissage = data.iloc[:, 14]
 
     # Extract beam_welding - [m/m] mètre de soudure par mètre de poutre
-    beam_welding = data.iloc[:, 12]
+    beam_welding = data.iloc[:, 13]
 
     # Extract beam_largeurentrepiece - [mm]
-    beam_largeurentrepiece = data.iloc[:, 14]
+    beam_largeurentrepiece = data.iloc[:, 15]
 
     # Extract beam_caoutchoucwidth - [mm]
-    beam_caoutchoucwidth = data.iloc[:, 17]
+    beam_caoutchoucwidth = data.iloc[:, 18]
 
     # Extract supportingplates_mass  - masse de la plaque en acier pour les profilés de moins de 200mm de large [kN/m]
-    supportingplates_mass = data.iloc[:, 10] * 10**-3
+    supportingplates_mass = data.iloc[:, 11] * 10**-3
 
     beam_selfweight = None
     profile_unwelding = None
     profile_sandblastedsurf = None
 
     if steelprofile_type == 1:  # recycledsteel
-        profile_unwelding = data.iloc[:, 15]  # [m/profilé] mètre à dé-souder pour démonter un profilé
-        profile_sandblastedsurf = data.iloc[:, 16]  # [m2/m] surface sandblastée par mètre de profilé de réemploi
+        profile_unwelding = data.iloc[:, 16]  # [m/profilé] mètre à dé-souder pour démonter un profilé
+        profile_sandblastedsurf = data.iloc[:, 17]  # [m2/m] surface sandblastée par mètre de profilé de réemploi
 
     if steelprofile_type == 2:  # reusedsteel
-        profile_unwelding = data.iloc[:, 7]  # [m/profilé] mètre à dé-souder pour démonter un profilé
-        profile_sandblastedsurf = data.iloc[:, 8]  # [m2/m] surface sandblastée par mètre de profilé de réemploi
+        profile_unwelding = data.iloc[:, 8]  # [m/profilé] mètre à dé-souder pour démonter un profilé
+        profile_sandblastedsurf = data.iloc[:, 9]  # [m2/m] surface sandblastée par mètre de profilé de réemploi
 
     if beamposition == 1:  # belowconcrete
         beam_selfweight = 1.03  # facteur à rajouter à la charge sur les poutres liées à leur poids propre
@@ -1261,14 +1261,14 @@ def processing(
 
 if __name__ == "__main__":
     l0 = 3
-    l1 = 3
+    l1 = 6
     hsreuse = 0.14
     year = 2
     q0 = 2
     q1 = 2
     tpdist_beton_reuse = 20
     tpdist_metal_reuse = 80
-    steelprofile_type = 2
+    steelprofile_type = 1
 
     result = processing(
         l0=l0,
@@ -1281,3 +1281,5 @@ if __name__ == "__main__":
         tpdist_metal_reuse=tpdist_metal_reuse,
         steelprofile_type=steelprofile_type,
     )
+
+    print(result[0])
