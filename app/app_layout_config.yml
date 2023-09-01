@@ -21,8 +21,6 @@ impact_reuse_matrix_row :
       color : 00b3b3
   - system : 1
     labels :
-    - name : "fireproof-painting production 2"
-      color : FF0000
     - name : "fireproof-painting production"
       color : C0C0C0
     - name : "polymere production"
@@ -39,10 +37,7 @@ impact_reuse_matrix_row :
       color : 0000FF
     - name : "reused-concrete transport"
       color : FF00FF
-    - name : "others (<1.5%, incl. reused-concrete lifting, new-steel transportation, etc.)"
+    - name : "others (<1.5%, incl. reused-concrete lifting, reused-steel deconstruction, reused-steel sandblasting, new-steel transportation, etc.)"
       color : b300b3
-
-
-
 
 page_color : 004e7f
