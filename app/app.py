@@ -378,6 +378,9 @@ def main_part():
 
 
 def header():
+    """
+    This function creates the header of the app.
+    """
     col0, col1, col2 = st.columns([10, 1, 1])
     with col0:
         col0.markdown("#")
@@ -425,6 +428,9 @@ def header():
 
 
 def footer():
+    """
+    This function creates the footer of the app.
+    """
     st.markdown("---")
     html_text(
         text=(

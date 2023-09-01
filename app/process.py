@@ -751,14 +751,12 @@ def calculate_impact_system_2(
     Selection_I = profile_I[np.min(ind)]
     Selection_beam_largeurentrepiece = beam_largeurentrepiece[np.min(ind)]
 
-    test = 0
     it = 0
     flechemax_freq = l1 * 1000 / 350  # mm
     flechemax_perm = l1 * 1000 / 300  # mm
     sel = np.min(ind)
 
-    while test < 2:
-        test = 0
+    while True:
         flecheBeam_freq = (
             (L_decoupeL0 + Selection_beam_largeurentrepiece / 1000)
             * q1
@@ -770,10 +768,12 @@ def calculate_impact_system_2(
         )  # mm
         flecheBeton_freq = q1 * (L_decoupeL0 * 1000) ** 4 / v.Ebeton / Ibeton * 5 / 384  # mm
         flechetot_freq = flecheBeam_freq + flecheBeton_freq
+
         if flechetot_freq <= flechemax_freq:
-            test = test + 1
+            condition_1 = True
         else:
-            it = it + 1
+            condition_1 = False
+            it += 1
             sel = np.min(ind) + it
             Selection_I = profile_I[sel]
             Selection_beam_largeurentrepiece = beam_largeurentrepiece[sel]
@@ -793,14 +793,19 @@ def calculate_impact_system_2(
             )  # mm
             flechetot_perm_reuse = flecheBeam_perm_reuse + flecheBeton_perm
             if flechetot_perm_reuse <= flechemax_perm:
-                test = test + 1
+                condition_2 = True
             else:
-                it = it + 1
+                condition_2 = False
+                it += 1
                 sel = np.min(ind) + it
                 Selection_I = profile_I[sel]
                 Selection_beam_largeurentrepiece = beam_largeurentrepiece[sel]
         else:
-            test = test + 1
+            condition_2 = True
+
+        # Exit the loop if both conditions are true
+        if condition_1 and condition_2:
+            break
 
     beam_name_text = beam_name[sel]
     profile_W[sel]
@@ -1276,5 +1281,3 @@ if __name__ == "__main__":
         tpdist_metal_reuse=tpdist_metal_reuse,
         steelprofile_type=steelprofile_type,
     )
-
-    print(result[2])

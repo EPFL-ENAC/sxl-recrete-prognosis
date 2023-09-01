@@ -47,9 +47,7 @@ def load_color():
             color_dict[name] = color
 
     for name, color in color_dict.items():
-        print(color)
         icon_color = html_to_rgb(str(color))
-        print(icon_color)
         icon_filename = os.path.join(os.path.dirname(LOCAL_FOLDER_PATH), "static", f"{color}.png")
         legend_icon = create_legend_icon(icon_color, (icon_width, icon_height))
         save_icon_to_png(legend_icon, icon_filename)
