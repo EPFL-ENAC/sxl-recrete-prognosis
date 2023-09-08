@@ -516,7 +516,6 @@ def calculate_impact_system_1(
     n_bloc_reuse1 = 1 / v.largcamion
     # surface of concrete sawing per linear meter [m2/m]
     surfsciage_reuse1 = ((n_bloc_reuse1 * l1) + 1) * 2 * hsreuse
-    
     # neglect that one linear cut could potentially be used in two reused-concrete elements # [kgco2/m]
     impact_sciage_betonreused_reuse1 = kgco2_sciage_beton * surfsciage_reuse1
 
@@ -564,10 +563,8 @@ def calculate_impact_system_1(
 
     # New steel plates and bolts [m3/plaque]
     vol_1plaque = 0.25 * 0.15 * 0.008 + 3.14 * 0.008**2 * hsreuse * 4
-    
     # number of plates (hypothesis plates every 1.5 meters over the span and min two plates)[plate/m]
     n_plaque_reuse1 = (2 + math.ceil(l1 / 2)) / v.largcamion  # nombre de plaque par mètre linéaire [plaque/m]
-    
     # linear weigth of steel plates[kg/m]
     massemetalplaque_reuse1 = (
         vol_1plaque * n_plaque_reuse1 * v.massevol_metal
@@ -591,52 +588,53 @@ def calculate_impact_system_1(
     surfacepeinttot_reuse1 = (
         surfacepeintparcorn * n_cor * qcorniere
     )
-     # env. impact of protective painting production [kgco2/m]
+    # env. impact of protective painting production [kgco2/m]
     impact_prod_revpulvacier_reuse1 = v.kgco2_prod_revpulvacier * surfacepeinttot_reuse1
 
-    # impact de la production du caoutchouc
-    
+    # Env. impact of the rubber production
     surfacecaoutchoucparcorn = (
         hcorn
     )
+    # Rubber volume on the steel corners [m3/m]
     volumecaoutchouctot_reuse1 = (
         surfacecaoutchoucparcorn * v.epaisseur_caoutchouc * n_cor * qcorniere
-    )  # volume de caoutchouc pour doubler les cornières [m3/m]
+    )
+    # env. impact of the rubber production [kgco2/m]
     impact_prod_caoutchouc_reuse1 = (
         v.massevol_caoutchouc * volumecaoutchouctot_reuse1 * v.kgco2_prod_caoutchouc
-    )  # impact de la production du caoutchouc [kgco2/m]
+    )
 
-    # impact du dégraissage de l'acier
-    impact_degraissage_metalneuf_reuse1 = v.kgco2_degraissage * surfacepeinttot_reuse1  # [kgco2/m]
+    # Env. impact of steel degreasing [kgco2/m]
+    impact_degraissage_metalneuf_reuse1 = v.kgco2_degraissage * surfacepeinttot_reuse1
+    
+    # Env. impact of lifting steel corners [kgco2/m]
+    impact_levage_metalneuf_corn_reuse1 = kgco2_levage * massemetalcorn_reuse1
 
-    # impact du levage des cornières métalliques
-    impact_levage_metalneuf_corn_reuse1 = kgco2_levage * massemetalcorn_reuse1  # [kgco2/m]
+    # Env. impact of lifting of seel plates [kgco2/m]
+    impact_levage_metalneuf_plaque_reuse1 = kgco2_levage * massemetalplaque_reuse1
 
-    # impact du levage des plaques métalliques
-    impact_levage_metalneuf_plaque_reuse1 = kgco2_levage * massemetalplaque_reuse1  # [kgco2/m]
-
-    # impact du levage  du béton
+    # Env. impact of concrete lifting [kgco2/m]
     impact_levage_betonreused_reuse1 = kgco2_levage * masselin_beton_reuse1  # [kgco2/m]
 
-    # impact du joint
+    # Env. impact of polymer joint between concrete elements
     volumejointpoly = 0.02 * 0.02 * l1 / v.largcamion  # [m3/m]
     impact_prod_jointpolyneuf_reuse1 = v.kgco2_prod_jointpoly * v.massevol_jointpoly * volumejointpoly  # [kgco2/m]
 
-    # impact du mortier dans les joints entre les pieces de beton
+    # Env. impact of mortar between concrete elements
     volumemortier = (hsreuse - 0.03) * 0.02 * l1 / v.largcamion  # [m3/m]
     impact_prod_mortierneuf_reuse1 = volumemortier * v.massevol_mortier * v.kgco2_prod_mortier  # [kgco2/m]
 
-    # impact EVITE de l'élimination du béton réutilisé
+    # AVOIDED env. impact of reused-concrete elimination
     impact_EVITE_elimi_betonreused_reuse1 = v.kgco2_elimi_beton * masselin_beton_reuse1  # [kgco2/m]
 
-    # impact EVITE de l'élimination de l'acier d'armature réutilisé
-    volarma0 = l1 * hsreuse * v.tauxarmature0  # volume des armatures réutilisées  [m3/m]
-    massearma0 = v.massevol_armature * volarma0  # masse des armatures réutilisées [m3/m]
+    # AVOIDED env. impact of reinforcement elimination
+    volarma0 = l1 * hsreuse * v.tauxarmature0  # volume rebars  [m3/m]
+    massearma0 = v.massevol_armature * volarma0  # weight rebars [m3/m]
     impact_EVITE_elimi_armareused_reuse1 = v.kgco2_elimi_armature * massearma0  # [kgco2/m]
 
-    impact_levageetdepose_coffrageetetayage_new0 = 0  # to change !!!!!!
+    impact_levageetdepose_coffrageetetayage_new0 = 0  # neglected
 
-    # impact réemploi
+    # Environmental impact of reuse
     impactreuse1 = (
         impact_tp_etai_reuse1
         + impact_levageeetdepose_etais_reuse1
@@ -655,9 +653,9 @@ def calculate_impact_system_1(
         + impact_prod_jointpolyneuf_reuse1
         + impact_prod_caoutchouc_reuse1
         + impact_prod_mortierneuf_reuse1
-    )  # impact solution réemploi dalles simples [kgco2/m]
+    )  # env. impact solution of simply supported beam (System 1) [kgco2/m]
 
-    # distribution des impacts (réemploi et new)
+    # Impact distribution (reuse and new elements)
     impactreuse1_matrice = [
         impact_prod_revpulvacier_reuse1,
         impact_prod_jointpolyneuf_reuse1,
@@ -694,7 +692,7 @@ def calculate_impact_system_1(
         impact_EVITE_elimi_betonreused_reuse1,
     ]
 
-    # impact neuf
+    # Environmental impact new
     impactnew = impactnew_prod + impact_EVITE_elimi_betonreused_reuse1 + impact_EVITE_elimi_armareused_reuse1
 
     number_of_slab = 1
@@ -746,7 +744,7 @@ def calculate_impact_system_2(
         L_decoupeL0 = l0
     elif (
         l1 > l0 and l0 > L_armamin or l1 <= l0 and l1 > L_alpha and l1 > L_armamin
-    ):  # conditions de la zone 4 et de la zone 5
+    ):  # conditions zones 4 and 5
         L_decoupeL0 = max(L_alpha, L_armamin)
 
     if beamposition == 1:  # belowconcrete
@@ -833,123 +831,136 @@ def calculate_impact_system_2(
     Selection_beam_vol_betonremplissage = beam_vol_betonremplissage[sel]
     Selection_beam_caoutchoucwidth = beam_caoutchoucwidth[sel]
 
-    # IMPACTS COMMUNS À TOUS LES SYSTÈMES 2
-    # Ratio dalle:poutre
-    if beamposition == 1:  # belowconcrete
+    # Common environmental impacts to all systems
+    # Ratio slab:beam
+    if beamposition == 1:  # below concrete
         qdalle = 1
     elif beamposition == 2:  # concrete plane
         qdalle = 1 / (L_decoupeL0 + Selection_beam_largeurentrepiece / 1000) * L_decoupeL0
 
-    # Quantité de métal pour les plaques métalliques
-    vol_1plaque = 0.2 * 0.15 * 0.01 + 3.14 * 0.008**2 * hsreuse * 4  # Volume par plaque avec boulons [m3/plaque]
+    # Quantity of steel in plates
+    # Volume per plate with bolts [m3/plate]
+    vol_1plaque = 0.2 * 0.15 * 0.01 + 3.14 * 0.008**2 * hsreuse * 4
+    # Number of plates per linear meter [plate/m]
     n_plaque_reuse2 = (
         (2 * np.ceil(l1 / v.largcamion) + np.ceil(L_decoupeL0 / 1.5)) / L_decoupeL0 * qdalle
-    )  # Nombre de plaque par mètre linéaire [plaque/m]
+    )
+    # Linear weight of steel plates [kg/m]
     massemetalplaque_reuse2 = (
         vol_1plaque * n_plaque_reuse2 * v.massevol_metal
-    )  # Masse linéaire de métal pour les plaques [kg/m]
+    )
 
-    # Surface de béton sciée
-    n_bloc_reuse2 = np.ceil(l1 / v.largcamion)  # Nombre de blocs nécessaires pour couvrir L1
+    # Surface of concrete sawing
+    # Number of concrete elements for the span L1
+    n_bloc_reuse2 = np.ceil(l1 / v.largcamion)
+    # Concrete sawing per linear meter [m2/m]
     surfsciage_reuse2 = (
         (l1 / L_decoupeL0 * 2 + (n_bloc_reuse2 * 2)) * hsreuse * qdalle
-    )  # Surface de béton sciée par mètre linéaire [m2/m]
+    )
 
-    # Impact du transport des étais pour le donneur
+    # Env. impact of the steel shore transportation
+    # Weight of steel shores for concrete cutting per linear meter of the new structure
     masse_etais_reuse2 = (
         masse_lin_etais_reuse * l1 * qdalle
-    )  # Quantité étais pour découpe donneur par mètre linéaire receveur
+    )
     impact_tp_etais_reuse2 = masse_etais_reuse2 / 1000 * v.tpdist_coffrageetayage * v.kgco2_tp_camion3240t  # [kgco2/m]
 
-    # Impact du levage et de la dépose des étais
-    impact_levageetdepose_etais_reuse2 = kgco2_levage * masse_etais_reuse2  # [kgco2/m]
+    # Env. impact of lifting and removal of steel shores [kgco2/m]
+    impact_levageetdepose_etais_reuse2 = kgco2_levage * masse_etais_reuse2
 
-    # Impact du sciage du béton
-    impact_sciage_betonreused_reuse2 = kgco2_sciage_beton * surfsciage_reuse2  # [kgco2/m]
+    # Env. impact of concrete sawing [kgco2/m]
+    impact_sciage_betonreused_reuse2 = kgco2_sciage_beton * surfsciage_reuse2
 
-    # Impact du joint entre les pièces de béton
+    # Env. impact of polymer joint between pieces [kgco2/m]
     volumejointpoly2 = 0.02 * 0.02 * n_bloc_reuse2  # [m3/m]
     impact_prod_jointpolyneuf_reuse2 = (
         v.kgco2_prod_jointpoly * v.massevol_jointpoly * volumejointpoly2 * qdalle
-    )  # [kgco2/m]
+    )
 
-    # Impact du mortier dans les joints entre les pièces de béton
+    # Env. impact of filling mortar between concrete pieces [kgco2/m]
     volumemortier2 = (hsreuse - 0.03) * 0.02 * n_bloc_reuse2  # [m3/m]
-    impact_prod_mortierneuf_reuse2 = volumemortier2 * v.massevol_mortier * v.kgco2_prod_mortier * qdalle  # [kgco2/m]
+    impact_prod_mortierneuf_reuse2 = volumemortier2 * v.massevol_mortier * v.kgco2_prod_mortier * qdalle
 
-    # Quantité de métal pour les poutres
+    # Steel quantity of steel profiles
+    # Average number of steel profile per width meter of floor
     qpoutreparmlin = 1 / (
         L_decoupeL0 + (Selection_beam_largeurentrepiece / 1000)
-    )  # Nombre moyen de poutre par mètre (de large) de plancher
+    )
+    # Average steel weight per linear meter of floor
     masselin_poutre = (
         qpoutreparmlin * Selection_profile_mass * 100 * l1
-    )  # Masse de métal moyenne par mètre linéaire de plancher [kg/m] !! ATTENTION À LA CONVERSION
+    )
 
-    # Quantité de béton de réemploi
+    # Quantity of reused concrete
+    # Length of concrete per linear meter
     lbetonparmlin = 1 - (
         (Selection_beam_largeurentrepiece / 1000) * qpoutreparmlin
-    )  # Longueur de béton par m linéaire [m/m] À VÉRIFIER
-    masselin_beton_reuse2 = l1 * hsreuse * lbetonparmlin * v.massevol_BA  # Masse BA dalle de réemploi par m [kg/m]
+    )
+    # concrete weight per linear meter [kg/m]
+    masselin_beton_reuse2 = l1 * hsreuse * lbetonparmlin * v.massevol_BA
 
-    # Impact pour la dépose au sol (//levage) du béton scié
-    impact_depose_betonreused_reuse2 = kgco2_levage * masselin_beton_reuse2  # [kgco2/m]
+    # Env. impact of removal of reused concrete from donor structure [kgco2/m]
+    impact_depose_betonreused_reuse2 = kgco2_levage * masselin_beton_reuse2
 
-    # Impact du transport du béton
+    # Env. impact of concrete transportation [kgco2/m]
     impact_tp_betonreused_reuse2 = (
         masselin_beton_reuse2 / 1000 * tpdist_beton_reuse * v.kgco2_tp_camion3240t
-    )  # [kgco2/m]
+    )
 
-    # Impact du levage du béton
-    impact_levage_betonreused_reuse2 = kgco2_levage * masselin_beton_reuse2  # [kgco2/m]
+    # Env. impact of concrete lifting [kgco2/m]
+    impact_levage_betonreused_reuse2 = kgco2_levage * masselin_beton_reuse2
 
-    # Quantité de métal pour les cornières pour appuyer les poutres A CORRIGER
-    masse_corn2 = v.masse_lin_corn2 * Selection_profile_largeurtot / 1000 * 2 * qpoutreparmlin  # [kg/m]
+    # Steel quantity for beam corners [kg/m]
+    masse_corn2 = v.masse_lin_corn2 * Selection_profile_largeurtot / 1000 * 2 * qpoutreparmlin
 
-    # Impact de la production des cornières métalliques
+    # Env. impact of corner production [kgco2/m]
     impact_prod_metalneuf_corn_reuse2 = masse_corn2 * v.kgco2_prod_profilmetal
 
-    # Impact de la production des plaques métalliques
+    #  Env. impact of plate production [kgco2/m]
     impact_prod_metalneuf_plaque_reuse2 = massemetalplaque_reuse2 * v.kgco2_prod_profilmetal
 
-    # Impact du transport des plaques métalliques
+    #  Env. impact of plate transportation [kgco2/m]
     impact_tp_metalneuf_plaque_reuse2 = massemetalplaque_reuse2 / 1000 * v.tpdist_metal * v.kgco2_tp_camion3240t
 
-    # Impact du transport des cornières métalliques
+    # Env. impact of corner transportation [kgco2/m]
     impact_tp_metalneuf_corn_reuse2 = masse_corn2 / 1000 * v.tpdist_metal * v.kgco2_tp_camion3240t
 
-    # Impact des soudures sur l'acier
+    #  Env. impact of welding [kgco2/m]
     impact_welding_reuse2 = Selection_beam_welding * l1 * qpoutreparmlin * v.kgco2_welding
 
-    # Impact du dégraissage de l'acier
+    #  Env. impact of degreasing [kgco2/m]
     surface_peint_1beam = Selection_profile_degreasedsurf  # Facteur 1/1000 enlevé
+
+    # Surface to protect with ignifuge painting per linear meter of floor[m2/m]
     surfacepeinttot_reuse2 = (
         surface_peint_1beam * qpoutreparmlin * l1
-    )  # Surface à protéger avec peinture ignifuge par mètre linéaire de plancher [m2/m]
+    )
     impact_degraissage_metalneuf_reuse2 = v.kgco2_degraissage * surfacepeinttot_reuse2
 
-    # Impact de la production de la peinture protectrice
+    # Env. impact of painting production  [kgco2/m]
     impact_prod_revpulvacier_reuse2 = v.kgco2_prod_revpulvacier * surfacepeinttot_reuse2
 
-    # Impact de la production du caoutchouc
+    # Env. impact of rubber production [kgco2/m]
+    # Rubber volume per linear meter[m3/m]
     volumecaoutchouctot_reuse2 = (
         Selection_beam_caoutchoucwidth / 1000 * l1 * qpoutreparmlin * v.epaisseur_caoutchouc
-    )  # Volume de caoutchouc par mètre linéaire de plancher [m3/m]
+    )
     impact_prod_caoutchouc_reuse2 = (
         v.massevol_caoutchouc * volumecaoutchouctot_reuse2 * v.kgco2_prod_caoutchouc
-    )  # Impact de la production du caoutchouc [kgco2/m]
+    )
 
-    # Impact du levage des cornières métalliques
+    #  Env. impact of corner lifting [kgco2/m]
     impact_levage_metalneuf_corn_reuse2 = kgco2_levage * masse_corn2  # [kgco2/m]
 
-    # Impact du levage des plaques métalliques
+    #  Env. impact of plate lifting [kgco2/m]
     impact_levage_metalneuf_plaque_reuse2 = kgco2_levage * massemetalplaque_reuse2  # [kgco2/m]
 
-    # Impact EVITE de l'élimination du béton réutilisé
+    #  Env. impact AVOIDED of concrete [kgco2/m]
     impact_EVITE_elimi_betonreused_reuse2 = v.kgco2_elimi_beton * masselin_beton_reuse2  # [kgco2/m]
 
-    # Impact EVITE de l'élimination de l'acier d'armature réutilisé !!! A CORRIGER !!!
-    volarma0 = l1 * hsreuse * lbetonparmlin * v.tauxarmature0  # Volume des armatures réutilisées [m3/m]
-    massearma0 = v.massevol_armature * volarma0  # Masse des armatures réutilisées [m3/m]
+    #  Env. impact AVOIDED of reinforcement [kgco2/m]
+    volarma0 = l1 * hsreuse * lbetonparmlin * v.tauxarmature0  # Volume reinforcement [m3/m]
+    massearma0 = v.massevol_armature * volarma0  # weight reinforcement [m3/m]
     impact_EVITE_elimi_armareused_reuse2 = v.kgco2_elimi_armature * massearma0  # [kgco2/m]
 
     # IMPACTS SPECIAUX POUR SYSTEMES 2 AVEC PROFILES NEUFS
