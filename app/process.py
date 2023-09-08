@@ -43,7 +43,7 @@ def define_fsd_armamin(year: int) -> int:
 
 
 def define_fyd(steelprofile_type: int) -> float:
-    """Define the value of fyd (steel profile yield strength) 
+    """Define the value of fyd (steel profile yield strength)
     according to the type of steel profile (reuse S235, new S355).
 
 
@@ -186,7 +186,7 @@ def get_profile_data(steelprofile_type: int, beamposition: int, fyd: float) -> t
     profile_sandblastedsurf = None
 
     if steelprofile_type == 1:  # newsteel
-        profile_unwelding = data.iloc[:, 16]  # [m/profile] unwelding distance for steel profile deconstruction = 0 
+        profile_unwelding = data.iloc[:, 16]  # [m/profile] unwelding distance for steel profile deconstruction = 0
         profile_sandblastedsurf = data.iloc[:, 17]  # [m2/m] sandblasting surface for steel profile per meter = 0
 
     if steelprofile_type == 2:  # reusedsteel
@@ -300,7 +300,7 @@ def calculate_LCA_data(v: object, l0: float, alpha: float) -> tuple:
     l0 : float
         Donor span
     alpha : float
-        maximum ratio between donor span and new span that can be cut   
+        maximum ratio between donor span and new span that can be cut
     Returns
     -------
     tuple
