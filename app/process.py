@@ -606,7 +606,6 @@ def calculate_impact_system_1(
 
     # Env. impact of steel degreasing [kgco2/m]
     impact_degraissage_metalneuf_reuse1 = v.kgco2_degraissage * surfacepeinttot_reuse1
-    
     # Env. impact of lifting steel corners [kgco2/m]
     impact_levage_metalneuf_corn_reuse1 = kgco2_levage * massemetalcorn_reuse1
 
@@ -950,36 +949,36 @@ def calculate_impact_system_2(
     )
 
     #  Env. impact of corner lifting [kgco2/m]
-    impact_levage_metalneuf_corn_reuse2 = kgco2_levage * masse_corn2  # [kgco2/m]
+    impact_levage_metalneuf_corn_reuse2 = kgco2_levage * masse_corn2
 
     #  Env. impact of plate lifting [kgco2/m]
-    impact_levage_metalneuf_plaque_reuse2 = kgco2_levage * massemetalplaque_reuse2  # [kgco2/m]
+    impact_levage_metalneuf_plaque_reuse2 = kgco2_levage * massemetalplaque_reuse2
 
     #  Env. impact AVOIDED of concrete [kgco2/m]
-    impact_EVITE_elimi_betonreused_reuse2 = v.kgco2_elimi_beton * masselin_beton_reuse2  # [kgco2/m]
+    impact_EVITE_elimi_betonreused_reuse2 = v.kgco2_elimi_beton * masselin_beton_reuse2
 
     #  Env. impact AVOIDED of reinforcement [kgco2/m]
     volarma0 = l1 * hsreuse * lbetonparmlin * v.tauxarmature0  # Volume reinforcement [m3/m]
     massearma0 = v.massevol_armature * volarma0  # weight reinforcement [m3/m]
-    impact_EVITE_elimi_armareused_reuse2 = v.kgco2_elimi_armature * massearma0  # [kgco2/m]
+    impact_EVITE_elimi_armareused_reuse2 = v.kgco2_elimi_armature * massearma0
 
-    # IMPACTS SPECIAUX POUR SYSTEMES 2 AVEC PROFILES NEUFS
+    # Special env. impacts of system 2 with NEW steel profile
     if steelprofile_type == 1:  # recycledsteel
-        # Impact de la production des profilés métalliques
+        # Env. impact of steel-profile production [kgco2/m]
         impact_prod_metalneuf_profiles_reuse2 = masselin_poutre * v.kgco2_prod_profilmetal
 
-        # Impact du transport des profilés métalliques
+        # Env. impact of steel-profile transportation [kgco2/m]
         impact_tp_metalneuf_profiles_reuse2 = masselin_poutre / 1000 * v.tpdist_metal * v.kgco2_tp_camion3240t
 
-        # Impact du levage des profillés métalliques
-        impact_levage_metalneuf_profiles_reuse2 = kgco2_levage * masselin_poutre  # [kgco2/m]
+        # Env. impact of steel-profile lifting [kgco2/m]
+        impact_levage_metalneuf_profiles_reuse2 = kgco2_levage * masselin_poutre
 
     if steelprofile_type == 2:  # reusedsteel
         impact_prod_metalneuf_profiles_reuse2 = 0
         impact_tp_metalneuf_profiles_reuse2 = 0
         impact_levage_metalneuf_profiles_reuse2 = 0
 
-    # IMPACTS SPECIAUX POUR SYSTEMES 2 AVEC PROFILES REEMPLOI
+    # Special env. impacts of system 2 with REUSED steel profile
     if steelprofile_type == 1:  # recycledsteel
         impact_unwelding_metalreuse_reuse2 = 0
         impact_depose_metalreused_reuse2 = 0
@@ -988,25 +987,25 @@ def calculate_impact_system_2(
         impact_EVITE_elimi_metalreused_reuse2 = 0
 
     if steelprofile_type == 2:  # reusedsteel
-        # Impact de l'ouverture/unwelding connections sur le donneur
-        impact_unwelding_metalreuse_reuse2 = Selection_profile_unwelding * qpoutreparmlin * v.kgco2_welding  # [kgco2/m]
+        # Env. Impact of removing connection from donor building  [kgco2/m]
+        impact_unwelding_metalreuse_reuse2 = Selection_profile_unwelding * qpoutreparmlin * v.kgco2_welding
 
-        # Impact de la dépose des profilés de réemploi
-        impact_depose_metalreused_reuse2 = kgco2_levage * masselin_poutre  # [kgco2/m]
+        # Env. Impact of removal of steel profiles from donor building  [kgco2/m]
+        impact_depose_metalreused_reuse2 = kgco2_levage * masselin_poutre
 
-        # Impact du sablage des profilés
+        # Env. Impact of sand blastinh of steel profiles from donor building  [kgco2/m]
         impact_sablage_metalreused_reuse2 = (
             Selection_profile_sandblastedsurf * l1 * qpoutreparmlin * v.kgco2_sandblasting
-        )  # [kgco2/m]
+        )
 
-        # Impact du transport des profilés de réemploi
-        impact_tp_metalreused_reuse2 = masselin_poutre / 1000 * tpdist_metal_reuse * v.kgco2_tp_camion3240t  # [kgco2/m]
+        #  Env. Impact of  steel profiles transportation  [kgco2/m]
+        impact_tp_metalreused_reuse2 = masselin_poutre / 1000 * tpdist_metal_reuse * v.kgco2_tp_camion3240t
 
-        # Impact EVITE de l'élimination des profilés métalliques réutilisés
-        impact_EVITE_elimi_metalreused_reuse2 = masselin_poutre * v.kgco2_elimi_profilmetal  # [kgco2/m]
+        #  Env. Impact AVOIDED of  steel profiles elimination  [kgco2/m]
+        impact_EVITE_elimi_metalreused_reuse2 = masselin_poutre * v.kgco2_elimi_profilmetal
 
-    # IMPACTS SPECIAUX POUR SYSTEMS 2 AVEC PROFILES DANS LE PLAN DU BETON
-    # -> RAJOUTER LA PROD ET LE TP DU BETON DANS LES PROFILES!
+    # SPECIFIC IMPACTS FOR SYSTEM 2 as functin beam position (currently only beamposition=1 is used)
+
     if beamposition == 1:  # belowconcrete
         impact_prod_betonnew_reuse2 = 0
         impact_tp_betonnew_reuse2 = 0
@@ -1025,7 +1024,7 @@ def calculate_impact_system_2(
         impact_prod_betonnew_reuse2 = masse_betonremplissage_tot * v.kgco2_prod_beton
         impact_tp_betonnew_reuse2 = masse_betonremplissage_tot / 1000 * v.kgco2_tp_camion3240t * v.tpdist_beton
 
-    # impact réemploi
+    # Env. impact reused
     impactreuse2 = (
         impact_tp_etais_reuse2
         + impact_levageetdepose_etais_reuse2
@@ -1056,7 +1055,7 @@ def calculate_impact_system_2(
         + impact_tp_betonnew_reuse2
     )
 
-    # impact neuf
+    # Env. impact new
     impactnew = (
         impactnew_prod
         + impact_EVITE_elimi_betonreused_reuse2
@@ -1064,7 +1063,7 @@ def calculate_impact_system_2(
         + impact_EVITE_elimi_metalreused_reuse2
     )
 
-    # distribution des impacts (réemploi et new)
+    # Env. impact distribution (reused and new)
     impactreuse2_matrice = [
         impact_prod_revpulvacier_reuse2,
         impact_prod_jointpolyneuf_reuse2,
@@ -1139,21 +1138,21 @@ def processing(
     v = MyConfig(variables)
 
     # --------------------------------------------------------
-    # caractérstiques du donneur
+    # Donor caracteristics
     Fsd_armamin = define_fsd_armamin(year)
     beamposition = 1
 
-    # charge permanentes [kN/m2]
+    # Dead load [kN/m2]
     Gslab0 = hsreuse * v.massevol_BA / 100
 
-    # Inertie section par metre [mm4]
+    # Concrete inertia [mm4]
     Ibeton = ((hsreuse * 1000) ** 3) * 1000 / 12
 
     # --------------------------------------------------------
-    # caractérstiques du receveur
+    # Receiver caracteristics
     fyd = define_fyd(steelprofile_type=steelprofile_type)
 
-    # données sur les profilés pour système 2
+    #Steel profile data for system 2
     (
         profile_mass,
         profile_W,
@@ -1174,11 +1173,11 @@ def processing(
         beam_name,
     ) = get_profile_data(steelprofile_type=steelprofile_type, beamposition=beamposition, fyd=fyd)
 
-    # schéma de découpes
+    # Cutting scheme
     alpha, L_armamin, Qtotsurfacique1 = cutting_schema(Gslab0, v, q0, q1, hsreuse, Fsd_armamin)
 
-    # données coffrage et étayage pour NEW (SYSTEM 0)
-    # panneaux
+    # Data formwork for system 0
+    # formwork
     (
         massesurf_panneaux,
         masselin_coffbord,
@@ -1187,11 +1186,11 @@ def processing(
         masse_lin_etais_reuse,
     ) = calculate_masses(v)
 
-    # données LCA
+    # LCA data
     # distances
     L_alpha, kgco2_levage, kgco2_sciage_beton = calculate_LCA_data(v, l0, alpha)
 
-    # Impact new (SYSTEM 0)
+    # Env. impact new (SYSTEM 0)
     (impactnew_prod, dict_impact_new0) = calculate_impact_system_0(
         v, l1, massesurf_panneaux, masselin_coffbord, massesurf_poutrelles, masse_lin_etais, kgco2_levage
     )
