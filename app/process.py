@@ -43,7 +43,8 @@ def define_fsd_armamin(year: int) -> int:
 
 
 def define_fyd(steelprofile_type: int) -> float:
-    """Define the value of fyd (steel profile yield strength) according to the type of steel profile (reuse S235, new S355).
+    """Define the value of fyd (steel profile yield strength) 
+    according to the type of steel profile (reuse S235, new S355).
 
 
     Parameters
@@ -184,9 +185,9 @@ def get_profile_data(steelprofile_type: int, beamposition: int, fyd: float) -> t
     profile_unwelding = None
     profile_sandblastedsurf = None
 
-    if steelprofile_type == 1:  # new steel
-        profile_unwelding = data.iloc[:, 16]  # [m/profile] unwelding distance for reuse steel profile deconstruction == 0 
-        profile_sandblastedsurf = data.iloc[:, 17]  # [m2/m] sandblasting surface for reuse steel profile per meter == 0
+    if steelprofile_type == 1:  # newsteel
+        profile_unwelding = data.iloc[:, 16]  # [m/profile] unwelding distance for steel profile deconstruction = 0 
+        profile_sandblastedsurf = data.iloc[:, 17]  # [m2/m] sandblasting surface for steel profile per meter = 0
 
     if steelprofile_type == 2:  # reusedsteel
         profile_unwelding = data.iloc[:, 8] # [m/profilé] unwelding distance for reuse steel profile deconstruction
