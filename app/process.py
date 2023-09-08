@@ -352,7 +352,8 @@ def calculate_masses(v: object) -> tuple:
         v.h_coffbord * v.h_panneaux * v.n_coffbord * v.massevol_panneaux
     )  # [kg/m] weights of side support formwork
     quantite_poutrelles = 1 / 0.75 + 1 / 2.5  # [m/m2] quantity of temporary beam supports per m2 of formwork
-    massesurf_poutrelles = v.masseline_1poutrelle * quantite_poutrelles  # [kg/m2] weights of temporary beam supports per m2 of formwork
+    # [kg/m2] weights of temporary beam supports per m2 of formwork
+    massesurf_poutrelles = v.masseline_1poutrelle * quantite_poutrelles
     masse_lin_etais = v.poidsunit_etai / v.portee_etai  # shore weight [kg/m2]
     masse_lin_etais_reuse = v.poidsunit_etai / v.portee_etai_reuse  # shore weight for reuse [kg/m2]
 
@@ -497,10 +498,11 @@ def calculate_impact_system_1(
     # IMPACT SYSTEM 1 - only simply-supported slabs d (zone 1 and 3)
 
     # quantity of reused concrete
-    masselin_beton_reuse1 = l1 * hsreuse * v.massevol_BA  # reinforced-concrete weigth of the reused slab per meter [kg/m]
+    # reinforced-concrete weigth of the reused slab per meter [kg/m]
+    masselin_beton_reuse1 = l1 * hsreuse * v.massevol_BA
 
     # environmental impact of transport of steel shores
-    # quanitiy of steel shores for donor structure per linear meter of the new structure [kg/m] 
+    # quanitiy of steel shores for donor structure per linear meter of the new structure [kg/m]
     masse_etais_reuse1 = (
         masse_lin_etais_reuse * l1
     )
@@ -514,7 +516,7 @@ def calculate_impact_system_1(
     n_bloc_reuse1 = 1 / v.largcamion
     # surface of concrete sawing per linear meter [m2/m]
     surfsciage_reuse1 = ((n_bloc_reuse1 * l1) + 1) * 2 * hsreuse
-   
+    
     # neglect that one linear cut could potentially be used in two reused-concrete elements # [kgco2/m]
     impact_sciage_betonreused_reuse1 = kgco2_sciage_beton * surfsciage_reuse1
 
@@ -550,7 +552,7 @@ def calculate_impact_system_1(
     # par corner [m3/m/corner]
     n_cor = 2
     # corner length per linear meter of support (hypothesis) [m cornière /m]
-    qcorniere = 0.4 
+    qcorniere = 0.4
 
     # Volumer of steel corners per linear meter [m3/m]
     voltotcormetal = volcormetal * n_cor * qcorniere
@@ -560,7 +562,6 @@ def calculate_impact_system_1(
     # env. impact of the production of steel corner
     impact_prod_metalneuf_corn_reuse1 = massemetalcorn_reuse1 * v.kgco2_prod_profilmetal
 
-    
     # New steel plates and bolts [m3/plaque]
     vol_1plaque = 0.25 * 0.15 * 0.008 + 3.14 * 0.008**2 * hsreuse * 4
     
@@ -570,7 +571,7 @@ def calculate_impact_system_1(
     # linear weigth of steel plates[kg/m]
     massemetalplaque_reuse1 = (
         vol_1plaque * n_plaque_reuse1 * v.massevol_metal
-    ) 
+    )
     # env. impact of steel plate production [kgco2/m]
     impact_prod_metalneuf_plaque_reuse1 = massemetalplaque_reuse1 * v.kgco2_prod_profilmetal
 
