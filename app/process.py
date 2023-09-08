@@ -43,7 +43,8 @@ def define_fsd_armamin(year: int) -> int:
 
 
 def define_fyd(steelprofile_type: int) -> float:
-    """Define the value of fyd (profile resistance) according to the type of steel profile.
+    """Define the value of fyd (steel profile yield strength) according to the type of steel profile (reuse S235, new S355).
+
 
     Parameters
     ----------
@@ -60,11 +61,11 @@ def define_fyd(steelprofile_type: int) -> float:
     float
         fyd value.
     """
-    # résistance profilé [N/mm2]
+    # New steel profile yield strength [N/mm2]
     if steelprofile_type == 1:
         fyd = 355 / 1.05
 
-    # Résistance profilé de réemploi (pas acier de la meilleure qualité) [N/mm2]
+    # Reuse steel profile yield strength (conservative asumption of low yield strength) [N/mm2]
     elif steelprofile_type == 2:
         fyd = 235 / 1.05
     else:
@@ -74,7 +75,7 @@ def define_fyd(steelprofile_type: int) -> float:
 
 
 def read_data_beams() -> pd.DataFrame:
-    """Read data from excel file.
+    """Read data from Excel file with Swiss steel profiles.
 
     Parameters
     ----------
@@ -102,8 +103,7 @@ def read_data_beams() -> pd.DataFrame:
 
 
 def get_beam_name(row_id: int) -> str:
-    """Return beam name from the configuration Excel file.
-
+    """Return steel-profile name from the Excel file.
     Parameters
     ----------
     row_id : int
@@ -119,8 +119,7 @@ def get_beam_name(row_id: int) -> str:
 
 
 def get_profile_data(steelprofile_type: int, beamposition: int, fyd: float) -> tuple:
-    """Return profile data from the configuration Excel file chosen according to the steel profile type.
-    Données sur les profilés pour système 2
+    """Return steel profile data from the configuration Excel file chosen according to the steel profile type.
 
     Parameters
     ----------
@@ -129,7 +128,7 @@ def get_profile_data(steelprofile_type: int, beamposition: int, fyd: float) -> t
     beamposition : int
         Beam position.
     fyd : float
-        ?
+        Steel yield strength based on steel profile type
 
     Returns
     -------
@@ -144,62 +143,62 @@ def get_profile_data(steelprofile_type: int, beamposition: int, fyd: float) -> t
 
     beam_name = data.iloc[:, 0]
 
-    # masse linéaire des profilés utilisés dans les poutres[kN/m]
+    # Linear mass of steel profiles[kN/m]
     profile_mass = data.iloc[:, 3] * 10**-3
 
-    # Calculate profile_W - Wy des profilés utilisés dans les poutres [mm^3]
+    # Plastic section modulus W of steel profiles [mm^3]
     profile_W = data.iloc[:, 4] * 10**3
 
-    # Calculate profile_I - I des profilés utilisés dans les poutres [mm^4]
+    # Inertia Iy of steel profiles [mm^4]
     profile_I = data.iloc[:, 5] * 10**6
 
-    # Extract profile_hauteur - hauteur du profilé [mm]
+    # Height of steel profiles [mm]
     profile_hauteur = data.iloc[:, 2]
 
-    # Extract profile_largeurtot - Largeur totale du profilé [mm]
+    # Width of steel profiles [mm]
     profile_largeurtot = data.iloc[:, 6]
 
-    # Extract profile_degreasedsurf - [m^2/m] surface dégraissée et repeintre par mètre
-    # de poutre de réemploi -> PAS AUSSI LES NEUVES? VOIR Brütting et al.
+    # Surface to degrease and paint of steel profiles per linear meter [m^2/m]
+    # Warning: only for reused steel profiles !!
     profile_degreasedsurf = data.iloc[:, 12]
 
-    # Extract beam_sol - numero de poutres telles que listées dans "selection profiles.xls"
+    # Steel profile number listed in "selection profiles.xls"
     beam_sol = data.iloc[:, 1]
 
-    # Extract beam_vol_betonremplissage - aire du profilé [m^3/m]
+    # Concrete volume to fill voids per beam meter  [m^3/m]
     beam_vol_betonremplissage = data.iloc[:, 14]
 
-    # Extract beam_welding - [m/m] mètre de soudure par mètre de poutre
+    # Welding distance per beam meter [m/m]
     beam_welding = data.iloc[:, 13]
 
-    # Extract beam_largeurentrepiece - [mm]
+    # Distance between pieces - [mm]
     beam_largeurentrepiece = data.iloc[:, 15]
 
-    # Extract beam_caoutchoucwidth - [mm]
+    # Caoutchouc width per steel profile [mm]
     beam_caoutchoucwidth = data.iloc[:, 18]
 
-    # Extract supportingplates_mass  - masse de la plaque en acier pour les profilés de moins de 200mm de large [kN/m]
+    # Steel support place for steel profile width smaller than 200 mm [kN/m]
     supportingplates_mass = data.iloc[:, 11] * 10**-3
 
     beam_selfweight = None
     profile_unwelding = None
     profile_sandblastedsurf = None
 
-    if steelprofile_type == 1:  # recycledsteel
-        profile_unwelding = data.iloc[:, 16]  # [m/profilé] mètre à dé-souder pour démonter un profilé
-        profile_sandblastedsurf = data.iloc[:, 17]  # [m2/m] surface sandblastée par mètre de profilé de réemploi
+    if steelprofile_type == 1:  # new steel
+        profile_unwelding = data.iloc[:, 16]  # [m/profile] unwelding distance for reuse steel profile deconstruction == 0 
+        profile_sandblastedsurf = data.iloc[:, 17]  # [m2/m] sandblasting surface for reuse steel profile per meter == 0
 
     if steelprofile_type == 2:  # reusedsteel
-        profile_unwelding = data.iloc[:, 8]  # [m/profilé] mètre à dé-souder pour démonter un profilé
-        profile_sandblastedsurf = data.iloc[:, 9]  # [m2/m] surface sandblastée par mètre de profilé de réemploi
+        profile_unwelding = data.iloc[:, 8] # [m/profilé] unwelding distance for reuse steel profile deconstruction
+        profile_sandblastedsurf = data.iloc[:, 9]  # [m2/m] ssandblasting surface for reuse steel profile per meter
 
-    if beamposition == 1:  # belowconcrete
-        beam_selfweight = 1.03  # facteur à rajouter à la charge sur les poutres liées à leur poids propre
+    if beamposition == 1:   # 1 means below concrete
+        beam_selfweight = 1.03  # additional weight factor
 
-    if beamposition == 2:  # concreteplane
-        beam_selfweight = 1.1  # facteur à rajouter à la charge sur les poutres liées à leur poids propre
+    if beamposition == 2:  # 2 means concrete plane
+        beam_selfweight = 1.1  # additional weight factor
 
-    profile_MRd = 0.7 * profile_W * fyd / 10**6  # MRd profilé kNm
+    profile_MRd = 0.7 * profile_W * fyd / 10**6   # Steel profile bending resistance MRd kNm
 
     # Return the calculated profile properties
     return (
@@ -224,65 +223,65 @@ def get_profile_data(steelprofile_type: int, beamposition: int, fyd: float) -> t
 
 
 def cutting_schema(Gslab0: float, v: object, q0: float, q1: float, hsreuse: float, Fsd_armamin: float) -> tuple:
-    """Define the cutting schema
-    schéma de découpes
-    L_alpha, alpha*L0 doit grantir que Mrd_armamin0 > Med_1
-
+    """Define the cutting scheme
+    must ensure that  Mrd_min_reinforcement_0 > Med_1
+    Indice 0 are for the donor element and indice 1 is for the new structure
+    
     Parameters
     ----------
     Gslab0 : float
-        charge permanentes [kN/m2]
+        dead loads [kN/m2]
     v : object
         Variables object.
     q0 : float
-        Donor-structure design use
+         Donor-structure live load
     q1 : float
-        New-design use
+        New-design live load
     hsreuse : float
-        _description_
+        reused-concrete element depth
     Fsd_armamin : float
-        Résistance de l'acier selon tableau 8 de la SIA 269.2 [kN/m2]
+        Rebar yield strength based on tab. 8 SIA 269.2 [kN/m2]
 
     Returns
     -------
     tuple
         alpha : float
-            _description_
+            maximum ratio between donor span and new span that can be cut
         r_barremin : float
-            _description_
+            rebar minimum radius
         Qtotsurfacique1 : float
-            _description_
+            total distributed load on new structure
 
     """
 
-    # Calculate Qtotsurfacique1 - charge surfacique receveur [kN/m^2]
+    # Calculate Qtotsurfacique1 - total distributed load on new structure (indice 1) [kN/m^2]
     Qtotsurfacique1 = v.y_Gslab1 * Gslab0 + v.y_rev1 * v.Grev1 + v.y_Q1 * q1
 
-    # Calculate Qtotsurfacique0 - charge surfacique donneur [kN/m^2]
+    # Calculate Qtotsurfacique0 - total distributed load on donor structure (indice 0) [kN/m^2]
     Qtotsurfacique0 = v.y_Gslab0 * Gslab0 + v.y_rev0 * v.Grev0 + v.y_Q0 * q0
 
     # Calculate alpha
     alpha = (Qtotsurfacique0 / Qtotsurfacique1 / 3) ** (1 / 2)
 
-    # Calculate r_barremin - rayon d'une barre d'armature minimum [m]
+    # Calculate r_barremin - minimum rebar radius based on the donor slab depth [m]
     if hsreuse < 0.18:
         r_barremin = 4 / 1000
     else:
         r_barremin = 5 / 1000
 
-    # Calculate Aire_barremin - aire d'une barre d'armature minimum [m^2]
+    # Calculate Aire_barremin -rebar minimum area [m^2]
     Aire_barremin = math.pi * r_barremin**2
 
-    # Calculate espa_barremin - espacement entre les barres d'armature minimum [m]
+    # Calculate espa_barremin - minimum spacing between rebars (hypothesis) [m]
     espa_barremin = 0.150
 
-    # Calculate n_barremin - nombre de barre d'armature par mètre linéaire [n/m]
+    # Calculate n_barremin - rebar number per meter [n/m]
     n_barremin = 1 / espa_barremin
 
-    # Calculate Aire_armamin - aire de toutes les barres d'armatures par mètre [m^2]
+    # Calculate Aire_armamin - arebar area per meter [m^2]
     Aire_armamin = Aire_barremin * n_barremin
 
-    # Calculate Mrd_armamin - moment résistant apporté par les armatures minimums et le béton [m^3]
+    # Calculate Mrd_armamin - Minimum bending resistance of donor slab [kNm]
     Mrd_armamin = Aire_armamin * Fsd_armamin * 0.81 * hsreuse
 
     # Calculate L_armamin
@@ -297,32 +296,31 @@ def calculate_LCA_data(v: object, l0: float, alpha: float) -> tuple:
     Parameters
     ----------
     v : object
-        _description_
+         Variables object
     l0 : float
-        _description_
+        Donor span
     alpha : float
-        _description_
-
+        maximum ratio between donor span and new span that can be cut
+        
     Returns
     -------
     tuple
         _description_
     """
-    # calculs pour impact levage selon la GRAVITE
+    # Calulate impact lifting with crane
     energrue_levage1kg1m = (
         v.ener_levage1kg1m / v.efficacitegrue
-    )  # énergie utilisée par une grue pour lever 1 kg de 1m [J/m/kg]
+    )  Energy needed for a crane to lift up 1 kg énergie utilisée par une grue pour lever 1 kg de 1m [J/m/kg]
     energrue_levage1kg = (
         energrue_levage1kg1m * v.hlevage / 1000000
-    )  # énergie utilisée par une grue pour lever 1kg (inclut conversion de J à MJ) [MJ/kg]
-
-    # calculs pour impact sciage
+    )  # Energy used to lift up 1 kg (include conversion J to MJ) [MJ/kg]
+    # Calculate impact sawing
     kgco2_prodetelimi_disque = (
         v.vol_1disque * v.massevol_metal * v.kgco2_prodetelimi_acier
-    ) / v.surfsciable_1disque  # kgco2/m2 liée à l'usure du disque
+    ) / v.surfsciable_1disque  # kgco2/m2 from disc wear
     kgco2_prodetelimi_machine = (
         v.masse_1machine * v.kgco2_prod_machine * (1 + v.facteur_elimi_machine)
-    ) / v.surfsciable_1machine  # kgco2/m2 lié à l'usure de la machine
+    ) / v.surfsciable_1machine  # kgco2/m2 from machine wear
 
     # impacts carbone unitaires
     kgco2_levage = (
