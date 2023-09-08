@@ -309,7 +309,7 @@ def calculate_LCA_data(v: object, l0: float, alpha: float) -> tuple:
     # Calulate impact lifting with crane
     energrue_levage1kg1m = (
         v.ener_levage1kg1m / v.efficacitegrue
-    )  # Energy needed for a crane to lift up 1 kg énergie utilisée par une grue pour lever 1 kg de 1m [J/m/kg]
+    )  # Energy needed for a crane to lift up 1 kg of 1m [J/m/kg]
     energrue_levage1kg = (
         energrue_levage1kg1m * v.hlevage / 1000000
     )  # Energy used to lift up 1 kg (include conversion J to MJ) [MJ/kg]
@@ -335,7 +335,7 @@ def calculate_LCA_data(v: object, l0: float, alpha: float) -> tuple:
 
 
 def calculate_masses(v: object) -> tuple:
-    """Calculate the masses
+    """Calculate the element weights
 
     Parameters
     ----------
@@ -347,14 +347,14 @@ def calculate_masses(v: object) -> tuple:
     tuple
         _description_
     """
-    massesurf_panneaux = v.massevol_panneaux * v.h_panneaux  # [kg/m2] poids des panneaux horizontaux
+    massesurf_panneaux = v.massevol_panneaux * v.h_panneaux  # [kg/m2] weights of horizontal support formwork
     masselin_coffbord = (
         v.h_coffbord * v.h_panneaux * v.n_coffbord * v.massevol_panneaux
-    )  # [kg/m] poids des panneaux de bord
-    quantite_poutrelles = 1 / 0.75 + 1 / 2.5  # [m/m2] quantité de poutrelles par m2 coffré --> A VERIFIER
-    massesurf_poutrelles = v.masseline_1poutrelle * quantite_poutrelles  # [kg/m2] poids des poutrelles par m2 coffré
-    masse_lin_etais = v.poidsunit_etai / v.portee_etai  # [kg/m2]
-    masse_lin_etais_reuse = v.poidsunit_etai / v.portee_etai_reuse  # [kg/m2]
+    )  # [kg/m] weights of side support formwork
+    quantite_poutrelles = 1 / 0.75 + 1 / 2.5  # [m/m2] quantity of temporary beam supports per m2 of formwork
+    massesurf_poutrelles = v.masseline_1poutrelle * quantite_poutrelles  # [kg/m2] weights of temporary beam supports per m2 of formwork
+    masse_lin_etais = v.poidsunit_etai / v.portee_etai  # shore weight [kg/m2]
+    masse_lin_etais_reuse = v.poidsunit_etai / v.portee_etai_reuse  # shore weight for reuse [kg/m2]
 
     return massesurf_panneaux, masselin_coffbord, massesurf_poutrelles, masse_lin_etais, masse_lin_etais_reuse
 
@@ -362,24 +362,24 @@ def calculate_masses(v: object) -> tuple:
 def calculate_impact_system_0(
     v, l1, massesurf_panneaux, masselin_coffbord, massesurf_poutrelles, masse_lin_etais, kgco2_levage
 ):
-    """Calculate the impact system 0 (new slab)
+    """Calculate the LCA of the new slab (System 0)
 
     Parameters
     ----------
     v : _type_
         _description_
-    l1 : _type_
-        _description_
-    massesurf_panneaux : _type_
-        _description_
-    masselin_coffbord : _type_
-        _description_
-    massesurf_poutrelles : _type_
-        _description_
-    masse_lin_etais : _type_
-        _description_
-    kgco2_levage : _type_
-        _description_
+    l1 : float
+        new structure span
+    massesurf_panneaux : float
+        _surface weight of formwork
+    masselin_coffbord : float
+        _linear weight of side formwork
+    massesurf_poutrelles : float
+        _surface wieght of temporary beam supports
+    masse_lin_etais : float
+        _ linear weight of steel shores
+    kgco2_levage : float
+        _impact lifting
 
     Returns
     -------
@@ -478,11 +478,11 @@ def calculate_impact_system_1(
     v : _type_
         _description_
     masse_lin_etais_reuse : _type_
-        _description_
+        Linear weight of steel shores
     kgco2_levage : _type_
-        _description_
+        environmental impacts of lifting
     kgco2_sciage_beton : _type_
-        _description_
+        environmental impacts of concrete sawing
 
     Returns
     -------
@@ -494,38 +494,41 @@ def calculate_impact_system_1(
     ValueError
         _description_
     """
-    # IMPACT SYSTEM 1 - dalles simples uniquement (zones 1 et 3)
+    # IMPACT SYSTEM 1 - only simply-supported slabs d (zone 1 and 3)
 
-    # quantité béton armé de réemploi
-    masselin_beton_reuse1 = l1 * hsreuse * v.massevol_BA  # masse BA dalle de réemploi par m [kg/m]
+    # quantity of reused concrete
+    masselin_beton_reuse1 = l1 * hsreuse * v.massevol_BA  # reinforced-concrete weigth of the reused slab per meter [kg/m]
 
-    # impact du transport des étais pour le donneur
+    # environmental impact of transport of steel shores
+    # quanitiy of steel shores for donor structure per linear meter of the new structure [kg/m] 
     masse_etais_reuse1 = (
         masse_lin_etais_reuse * l1
-    )  # [kg/m] quantité étais pour découpe donneur par mètre linéaire receveur
+    )
     impact_tp_etai_reuse1 = masse_etais_reuse1 / 1000 * v.tpdist_coffrageetayage * v.kgco2_tp_camion3240t  # [kgco2/m]
 
-    # impact du levage et de la dépose des étais pour le donneur
-    impact_levageeetdepose_etais_reuse1 = kgco2_levage * 2 * masse_etais_reuse1  # [kgco2/m]
+    # env. impact of lifting reused-concrete element and placing on the shores [kgco2/m]
+    impact_levageeetdepose_etais_reuse1 = kgco2_levage * 2 * masse_etais_reuse1
 
-    # impact du sciage du béton
-    n_bloc_reuse1 = 1 / v.largcamion  # nombre de bloc de béton par mètre linéaire [n/m]
-    surfsciage_reuse1 = ((n_bloc_reuse1 * l1) + 1) * 2 * hsreuse  # surface de béton sciée par mètre linéaire [m2/m]
-    # --> ne prend pas en compte les économies possibles liées au fait que
-    # un trait de coupe puisse servir à deux blocs
-    impact_sciage_betonreused_reuse1 = kgco2_sciage_beton * surfsciage_reuse1  # [kgco2/m]
+    # env. impact of concrete sawing
+    # number of concrete element per linear meter [n/m]
+    n_bloc_reuse1 = 1 / v.largcamion
+    # surface of concrete sawing per linear meter [m2/m]
+    surfsciage_reuse1 = ((n_bloc_reuse1 * l1) + 1) * 2 * hsreuse
+   
+    # neglect that one linear cut could potentially be used in two reused-concrete elements # [kgco2/m]
+    impact_sciage_betonreused_reuse1 = kgco2_sciage_beton * surfsciage_reuse1
 
-    # impact de la dépose du béton
-    impact_depose_betonreused_reuse1 = kgco2_levage * masselin_beton_reuse1  # [kgco2/m]
+    # env. impact of removing (lifting) reused-concrete elements from donor structure [kgco2/m]
+    impact_depose_betonreused_reuse1 = kgco2_levage * masselin_beton_reuse1
 
-    # impact du transport du béton
+    # env. impact of transportation of reused-concrete elements [kgco2/m]
     impact_tp_betonreused_reuse1 = (
         masselin_beton_reuse1 / 1000 * tpdist_beton_reuse * v.kgco2_tp_camion3240t
-    )  # [kgco2/m]
+    )
 
-    # impact de la production des cornières métalliques
+    # env. impact of the production of the steel corners
     if hsreuse == 0.14:
-        epaisseurcorn = 0.013  # épaisseur de la cornière selon la table des LNP (cornière la plus fine)
+        epaisseurcorn = 0.013  #  thickness of the steel corners LNP (from SZS table)
         hcorn = hsreuse
     elif hsreuse == 0.16:
         epaisseurcorn = 0.015
@@ -542,49 +545,58 @@ def calculate_impact_system_1(
     else:
         raise ValueError("hsreuse doit être 0.14, 0.16, 0.18, 0.20 ou 0.22")
 
-    # volcormetal=hcorn*2*epaisseurcorn; %volume linéaire par cornière [m3/m/corniere]
-    volcormetal = hcorn * 2 * epaisseurcorn  # volume linéaire
-    # par cornière [m3/m/corniere]
+    # Volume of steel corners per meter [m3/m/corner]
+    volcormetal = hcorn * 2 * epaisseurcorn
+    # par corner [m3/m/corner]
     n_cor = 2
-    qcorniere = 0.4  # longueur de cornière par mètre linéaire d'appui
-    # [m cornière /m] --> peut aussi être traité comme une variable
-    voltotcormetal = volcormetal * n_cor * qcorniere  # volume linéaire de métal pour les cornières [m3/m]
-    # masse linéaire de métal pour les cornières [kg/m]
+    # corner length per linear meter of support (hypothesis) [m cornière /m]
+    qcorniere = 0.4 
+
+    # Volumer of steel corners per linear meter [m3/m]
+    voltotcormetal = volcormetal * n_cor * qcorniere
+    # linear weight of steel corners per meter [kg/m]
     massemetalcorn_reuse1 = voltotcormetal * v.massevol_metal
 
-    impact_prod_metalneuf_corn_reuse1 = massemetalcorn_reuse1 * v.kgco2_prod_profilmetal  # [kgco2/m]
+    # env. impact of the production of steel corner
+    impact_prod_metalneuf_corn_reuse1 = massemetalcorn_reuse1 * v.kgco2_prod_profilmetal
 
-    # impact de la production des plaques métalliques
+    
+    # New steel plates and bolts [m3/plaque]
     vol_1plaque = 0.25 * 0.15 * 0.008 + 3.14 * 0.008**2 * hsreuse * 4
-    # volume par plaque avec boulons [m3/plaque]
+    
+    # number of plates (hypothesis plates every 1.5 meters over the span and min two plates)[plate/m]
     n_plaque_reuse1 = (2 + math.ceil(l1 / 2)) / v.largcamion  # nombre de plaque par mètre linéaire [plaque/m]
-    # (avec une plaque tous les 1,5 mètes min sur la longueur, et 2 plaques
-    #  aux appuis de chaque plaque de chaque côté
+    
+    # linear weigth of steel plates[kg/m]
     massemetalplaque_reuse1 = (
         vol_1plaque * n_plaque_reuse1 * v.massevol_metal
-    )  # volume linéaire de métal pour les plaques [kg/m]
-    impact_prod_metalneuf_plaque_reuse1 = massemetalplaque_reuse1 * v.kgco2_prod_profilmetal  # [kgco2/m]
+    ) 
+    # env. impact of steel plate production [kgco2/m]
+    impact_prod_metalneuf_plaque_reuse1 = massemetalplaque_reuse1 * v.kgco2_prod_profilmetal
 
-    # impact du transport des cornières métalliques
+    # env. impact of transportation of steel corners [kgco2/m]
     impact_tp_metalneuf_corn_reuse1 = (
         massemetalcorn_reuse1 / 1000 * v.tpdist_metal * v.kgco2_tp_camion3240t
-    )  # [kgco2/m]
+    )
 
-    # impact du transport des plaques métalliques
+    #  env. impact of transportation of steel plates [kgco2/m]
     impact_tp_metalneuf_plaque_reuse1 = (
         massemetalplaque_reuse1 / 1000 * v.tpdist_metal * v.kgco2_tp_camion3240t
-    )  # [kgco2/m]
+    )
 
-    # impact de la production de la peinture protectrice
-    surfacepeintparcorn = hcorn  # surface à peindre par m de cornière [m2/m]
+    # env. impact of protective painting [kgco2/m]
+    # surface to paint per meter of corners [m2/m]
+    surfacepeintparcorn = hcorn
     surfacepeinttot_reuse1 = (
         surfacepeintparcorn * n_cor * qcorniere
-    )  # surface linéaire à peindre pour les cornières [m2/m]
-    impact_prod_revpulvacier_reuse1 = v.kgco2_prod_revpulvacier * surfacepeinttot_reuse1  # [kgco2/m]
+    )
+     # env. impact of protective painting production [kgco2/m]
+    impact_prod_revpulvacier_reuse1 = v.kgco2_prod_revpulvacier * surfacepeinttot_reuse1
 
     # impact de la production du caoutchouc
+    
     surfacecaoutchoucparcorn = (
-        hcorn  # surface à peindre par m de cornière = surface à doubler par caoutchouc par m de cornière [m2/m]
+        hcorn
     )
     volumecaoutchouctot_reuse1 = (
         surfacecaoutchoucparcorn * v.epaisseur_caoutchouc * n_cor * qcorniere
