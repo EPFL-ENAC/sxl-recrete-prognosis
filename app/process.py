@@ -227,7 +227,6 @@ def cutting_schema(Gslab0: float, v: object, q0: float, q1: float, hsreuse: floa
     """Define the cutting scheme
     must ensure that  Mrd_min_reinforcement_0 > Med_1
     Indice 0 are for the donor element and indice 1 is for the new structure
-    
     Parameters
     ----------
     Gslab0 : float
@@ -301,8 +300,7 @@ def calculate_LCA_data(v: object, l0: float, alpha: float) -> tuple:
     l0 : float
         Donor span
     alpha : float
-        maximum ratio between donor span and new span that can be cut
-        
+        maximum ratio between donor span and new span that can be cut   
     Returns
     -------
     tuple
@@ -311,7 +309,7 @@ def calculate_LCA_data(v: object, l0: float, alpha: float) -> tuple:
     # Calulate impact lifting with crane
     energrue_levage1kg1m = (
         v.ener_levage1kg1m / v.efficacitegrue
-    )  Energy needed for a crane to lift up 1 kg énergie utilisée par une grue pour lever 1 kg de 1m [J/m/kg]
+    )  # Energy needed for a crane to lift up 1 kg énergie utilisée par une grue pour lever 1 kg de 1m [J/m/kg]
     energrue_levage1kg = (
         energrue_levage1kg1m * v.hlevage / 1000000
     )  # Energy used to lift up 1 kg (include conversion J to MJ) [MJ/kg]
