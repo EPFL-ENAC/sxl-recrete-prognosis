@@ -322,13 +322,13 @@ def calculate_LCA_data(v: object, l0: float, alpha: float) -> tuple:
         v.masse_1machine * v.kgco2_prod_machine * (1 + v.facteur_elimi_machine)
     ) / v.surfsciable_1machine  # kgco2/m2 from machine wear
 
-    # impacts carbone unitaires
+    # impacts unitary carbon
     kgco2_levage = (
         energrue_levage1kg * v.kgco2_energiegrue
-    )  # kgCO2/kg de matériel levé à la hauteur de construction selon GRAVITE -> néglige l'usure de la grue
+    )  # kgCO2/kg of material lift up (crane wear is neglected )
     kgco2_sciage_beton = (
         kgco2_prodetelimi_disque + kgco2_prodetelimi_machine + v.kgco2_prodenergie_sciage
-    )  # kgCO2/m2 pour le sciage du béton
+    )  # kgCO2/m2 for concrete sawing
 
     L_alpha = l0 * alpha
 
