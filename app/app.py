@@ -140,6 +140,8 @@ def display_results(simulation_result: list) -> None:
         List of the results of the simulation.
     """
 
+    print(simulation_result)
+
     # Add columns titles
     col0, col1, col2, col3 = st.columns(4)
     columns_title = ["", "<b>Design 1</b>", "<b>Design 2</b>", "<b>Design 3</b>"]
@@ -166,13 +168,25 @@ def display_results(simulation_result: list) -> None:
 
         if line == 1:
             for simulation_id, column in enumerate([col1, col2, col3]):
+                system_id = simulation_result[simulation_id][-1]
                 drawing_parameters = simulation_result[simulation_id][1]
+
+                number_part = drawing_parameters.get("number_part")
+
+                if system_id == 1:
+                    beam_height = 0
+                    length = drawing_parameters.get("l1") / 2 # FIXME is this correct?
+                else:
+                    beam_height = drawing_parameters.get("h")
+                    length = drawing_parameters.get("l0")
+
                 fig1 = slab_drawing.plot_transverse_section(
-                    length=drawing_parameters.get("l0"),
+                    length=length,
                     height=drawing_parameters.get("h"),
-                    number_part=drawing_parameters.get("number_part"),
-                    beam_length=drawing_parameters.get("h"),
-                    beam_height=drawing_parameters.get("h"),
+                    number_part=number_part,
+                    beam_length=beam_height,
+                    beam_height=beam_height,
+                    system_id=system_id,
                 )
                 column.pyplot(fig1, use_container_width=True)
                 fig1.clf()
@@ -181,19 +195,23 @@ def display_results(simulation_result: list) -> None:
             for simulation_id, column in enumerate([col1, col2, col3]):
                 system_id = simulation_result[simulation_id][-1]
                 drawing_parameters = simulation_result[simulation_id][1]
+
                 number_part = math.ceil(drawing_parameters.get("l1") / 2.5)
-                lenght = drawing_parameters.get("l1") / number_part
 
                 if system_id == 1:
                     beam_height = 0
+                    number_part = 1
+                    length = drawing_parameters.get("l1")
                 else:
                     beam_height = drawing_parameters.get("h")
+                    length = drawing_parameters.get("l1") / number_part
 
                 fig1 = slab_drawing.plot_longitudinal_section(
-                    length=lenght,
+                    length=length,
                     height=drawing_parameters.get("h"),
                     number_part=number_part,
                     beam_height=beam_height,
+                    system_id=system_id,
                 )
                 column.pyplot(fig1, use_container_width=True)
                 fig1.clf()
