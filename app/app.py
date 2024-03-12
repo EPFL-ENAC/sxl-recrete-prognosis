@@ -8,6 +8,7 @@ import pie_chart
 import slab_drawing
 import streamlit as st
 import yaml
+from style import css
 from about import about_section
 from alias import alias
 from conact import contact_section
@@ -17,7 +18,10 @@ from process import processing
 from utils.add_html import html_text
 
 # Define page layout
-st.set_page_config(layout="wide")
+st.set_page_config(
+    page_title="Flo:RE Calculator",
+    layout="wide"
+)
 
 
 LOCAL_FOLDER_PATH = os.path.dirname(__file__)
@@ -27,7 +31,6 @@ with open(os.path.join(LOCAL_FOLDER_PATH, "app_layout_config.yml")) as f:
     config = yaml.safe_load(f)
 
 PAGE_THEME_COLOR = f"#{config.get('page_color')}"
-
 
 def selectbox_input(
     parameter_name: str, parmater_description: str, options: tuple, result: list, index: int = 0, on_change=None
@@ -255,6 +258,8 @@ def display_results(simulation_result: list) -> None:
 def main_part():
     """This part contains the main part of the app (parameters selection and results display)"""
 
+    st.write("<div class='mobile'>Mobile screen not supported</div>",unsafe_allow_html=True)
+    
     col0, col1, col2, col3 = st.columns(4)
     columns_title = ["", "<b>Design 1</b>", "<b>Design 2</b>", "<b>Design 3</b>"]
 
@@ -399,6 +404,8 @@ def header():
     """
     This function creates the header of the app.
     """
+    st.write(css,unsafe_allow_html=True)
+    
     col0, col1, col2 = st.columns([10, 1, 1])
     with col0:
         col0.markdown("#")
@@ -480,10 +487,7 @@ def page():
         contact_section()
 
     footer()
-
-    # with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "style.css")) as f:
-    #     st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-
+    
 
 if __name__ == "__main__":
     page()
