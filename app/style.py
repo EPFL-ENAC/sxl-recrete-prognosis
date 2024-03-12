@@ -1,4 +1,4 @@
-css = '''
+css = """
 <style>
 div.mobile {
   color: #721c24;
@@ -16,4 +16,4 @@ div.mobile {
   }
 }
 </style>
-'''
+"""

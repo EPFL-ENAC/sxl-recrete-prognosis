@@ -17,7 +17,7 @@ BEAM_MARKER_SIZE = 5
 
 
 def plot_transverse_section(
-    length: float, height: float, number_part: int = 1, 
+    length: float, height: float, number_part: int = 1,
     beam_length: float = 0.0, beam_height: float = 0.0, system_id = 2
 ) -> object:
     """Create a transversal section matplotlib plot
@@ -106,7 +106,7 @@ def plot_transverse_section(
     x = slab_dim_x_min + slab_x_dimension / 2
     y = (height / 2) + SLAB_TEXT_DIMENSION_Y_OFFSET
     text_length = round(length, 2)
-    ax.text(x, y, f"cut-piece {'width' if system_id == 1 else 'length'} : {text_length} m", 
+    ax.text(x, y, f"cut-piece {'width' if system_id == 1 else 'length'} : {text_length} m",
             fontsize=TEXT_DIMENSION_SIZE, ha="center", va="center")
 
     # Draw beam
@@ -153,7 +153,7 @@ def plot_transverse_section(
     return plt
 
 
-def plot_longitudinal_section(length: float, height: float, number_part: int = 1, 
+def plot_longitudinal_section(length: float, height: float, number_part: int = 1,
                               beam_height: float = 0.5, system_id = 2) -> object:
     """Create a longitudinal section matplotlib plot
 
@@ -284,7 +284,7 @@ def plot_longitudinal_section(length: float, height: float, number_part: int = 1
     x = slab_dim_x_min + slab_x_dimension / 2
     y = slab_dim_y + (slab_x_max / 40)
     text_length = round(length, 2)
-    ax.text(x, y, f"cut-piece {'length' if system_id == 1 else 'width'}: {text_length} m", 
+    ax.text(x, y, f"cut-piece {'length' if system_id == 1 else 'width'}: {text_length} m",
             fontsize=TEXT_DIMENSION_SIZE, ha="center", va="center")
 
     # Set axis limits

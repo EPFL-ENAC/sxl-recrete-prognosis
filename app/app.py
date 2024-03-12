@@ -259,7 +259,7 @@ def main_part():
     """This part contains the main part of the app (parameters selection and results display)"""
 
     st.write("<div class='mobile'>Mobile screen not supported</div>",unsafe_allow_html=True)
-    
+
     col0, col1, col2, col3 = st.columns(4)
     columns_title = ["", "<b>Design 1</b>", "<b>Design 2</b>", "<b>Design 3</b>"]
 
@@ -405,7 +405,7 @@ def header():
     This function creates the header of the app.
     """
     st.write(css,unsafe_allow_html=True)
-    
+
     col0, col1, col2 = st.columns([10, 1, 1])
     with col0:
         col0.markdown("#")
@@ -487,7 +487,6 @@ def page():
         contact_section()
 
     footer()
-    
 
 if __name__ == "__main__":
     page()
