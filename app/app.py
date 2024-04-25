@@ -410,10 +410,10 @@ def header():
     with col0:
         col0.markdown("#")
 
-        html_text(text="<b>Flo:RE Calculator <b>", color="#010302", font_size="30", text_align="Left", column=False)
+        html_text(text="<b>Reused-concrete floor calculator <b>", color="#010302", font_size="30", text_align="Left", column=False)
         html_text(
             text=(
-                "Flo:RE Calculator is an  Automated Pre-design and Embodied-carbon Tool for Floors made of REused cut"
+                "Reused-concrete floor calculator is an  Automated Pre-design and Embodied-carbon Tool for Floors made of REused cut"
                 " concrete pieces"
             ),
             color=PAGE_THEME_COLOR,

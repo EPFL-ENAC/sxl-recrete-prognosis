@@ -23,7 +23,7 @@ def about_section():
     with st.container():
         html_text(
             text="""
-            <br> <b>About Flor:RE</b><br>
+            <br> <b>About the floor systems</b><br>
             """,
             font_size="18",
             text_align="Left",
