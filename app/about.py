@@ -37,25 +37,43 @@ def about_section():
             st.image(Image.open(image_path))
 
         html_text(
-            text="""Flo:RE and Flo :RE Calculator are new construction systems for floors made of reused cut
-            concrete elements developped at EPFL. Depending on the the design project,
-            Flo:RE solutions only reuse concrete cut from existing slabs or combine it
+            text="""At EPFL, we developed a new construction systems for floors made of reused cut
+            concrete elements. Depending on the the design project,
+            the floor systems only reuse concrete cut from existing slabs or combine it
             with either new or reused steel profiles.""",
             font_size="18",
             text_align="Left",
             column=False,
         )
-        image_path = os.path.join(LOCAL_FOLDER_PATH, "static", "slab_donor_2_new.png")
+        image_path = os.path.join(LOCAL_FOLDER_PATH, "static", "reused_steel_profile.png")
 
         if os.path.exists(image_path):
             st.image(Image.open(image_path))
 
         html_text(
             text="""
-            APEC is an automated tool to Pre-design Flo:RE that match the specificities
-            of your new design and of your concrete or steel donor structure.
-            Enter your design and donor-structure specificities and APEC will
-            suggest an adapted Flo:RE system and provides its embodied carbon.
+            The simulation calculator is an automated tool to pre-design floor systems that match the specificities of your new design and of your concrete or steel donor structure. Enter your design and donor-structure specificities and the calculator will suggest a floor system and estimate its embodied carbon.
+More details on the in our peer-reviewed paper: Küpfer, Bertola & Fivet (2024). Reuse of cut concrete slabs in new buildings for circular ultra-low-carbon floor designs. Journal of Cleaner Production, 448, 141566. <a href="https://doi.org/10.1016/j.jclepro.2024.141566"> Doi : 10.1016/j.jclepro.2024.141566</a>
+            """,
+            font_size="18",
+            text_align="Left",
+            column=False,
+        )
+
+        html_text(
+            text="""
+            <br> <b>Ressource diagnostic of concrete structures</b><br>
+            """,
+            font_size="18",
+            text_align="Left",
+            column=False,
+            color=PAGE_THEME_COLOR,
+        )
+
+        html_text(
+            text="""
+            At the Structural Xploration, we developped a protocol for the ressource diagnostic of concrete structures. Check our peer-reviewed journal paper for more details : Devènes, Bastien-Masse & Fivet (2024). Reusability assessment of reinforced concrete components prior to deconstruction from obsolete buildings. Journal of Building Engineering, 84, 108584.
+            <a href="https://doi.org/10.1016/j.jobe.2024.108584"> Doi : 10.1016/j.jobe.2024.108584</a>
             """,
             font_size="18",
             text_align="Left",
@@ -74,11 +92,11 @@ def about_section():
 
         html_text(
             text="""
-            APEC never replaces the work of a civil engineer and is only
-            conceived an early pre-design stage supporting tool. <br>
-            No composite action between concrete and steel is assumed. <br>
+            The calculator never replaces the work of a civil engineer and is only conceived as an early pre-design stage supporting tool. <br>
+            No composite action between concrete and steel is assumed. <br />
             Donor structures are assumed in good condition and designed based
-            on Swiss standards at the time of constuction. <br>
+            on Swiss standards at the time of constuction. <br />
+            All material properties must be verified with appropriate testing methods. <br/>
             Concrete slabs are assumed to be flat, unprestressed,
             with unidirectional continuous reinforcement.
             """,

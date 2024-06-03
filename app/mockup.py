@@ -15,7 +15,7 @@ def mockup_section():
     with st.container():
         html_text(
             text="""
-                <br> <b>New FLO :RE mock-up : we built it!</b><br>
+                <br> <b>New FLO:RE mock-up: we built it!</b><br>
                 """,
             font_size="18",
             text_align="Left",
