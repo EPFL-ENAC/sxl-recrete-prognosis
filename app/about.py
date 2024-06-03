@@ -18,8 +18,6 @@ def about_section():
     #     html_content = f.read()
     # st.components.v1.html(html_content, width=None, height=300, scrolling=False)
 
-    # st.components.v1.iframe("static/header.html", height=200, scrolling=False)
-
     with st.container():
         html_text(
             text="""

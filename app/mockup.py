@@ -4,6 +4,7 @@ import streamlit as st
 import yaml
 from utils.add_html import html_text
 from PIL import Image
+from streamlit_carousel import carousel
 
 LOCAL_FOLDER_PATH = os.path.dirname(__file__)
 with open(os.path.join(LOCAL_FOLDER_PATH, "app_layout_config.yml")) as f:
@@ -42,10 +43,26 @@ def mockup_section():
             text_align="Left",
             column=False,
         )
-        image_path = os.path.join(LOCAL_FOLDER_PATH, "static", "a_FLORE04.jpg.webp")
 
-        if os.path.exists(image_path):
-            st.image(Image.open(image_path), caption="Figure 1: © EPFL", use_column_width=True)
+        images = [
+            "https://enacit4r-cdn.epfl.ch/sxl-recrete-prognosis/2024-04-23/a_FLORE04.jpg.webp",
+            "https://enacit4r-cdn.epfl.ch/sxl-recrete-prognosis/2024-04-23/b_FLORE32.jpg.webp",
+            "https://enacit4r-cdn.epfl.ch/sxl-recrete-prognosis/2024-04-23/c_FLORE03.png.webp",
+            "https://enacit4r-cdn.epfl.ch/sxl-recrete-prognosis/2024-04-23/d_FLORE33.jpg.webp",
+            "https://enacit4r-cdn.epfl.ch/sxl-recrete-prognosis/2024-04-23/e_FLORE10.jpg.webp",
+            "https://enacit4r-cdn.epfl.ch/sxl-recrete-prognosis/2024-04-23/f_FLORE11.jpg.webp",
+            "https://enacit4r-cdn.epfl.ch/sxl-recrete-prognosis/2024-04-23/g_FLORE14.jpg.webp",
+            "https://enacit4r-cdn.epfl.ch/sxl-recrete-prognosis/2024-04-23/h_FLORE24.jpg.webp",
+            "https://enacit4r-cdn.epfl.ch/sxl-recrete-prognosis/2024-04-23/i_FLORE26.jpg.webp"
+        ]
+        
+        test_items = [
+            dict(title="", text="© EPFL", img=image,
+                 interval=None)
+            for image in images
+                     ]
+
+        carousel(items=test_items, width=1)
 
         html_text(
             text="""
