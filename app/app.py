@@ -507,7 +507,7 @@ def page():
     header()
 
     tab1, tab2, tab3, tab4, tab5 = st.tabs(
-        ["Simulations", "About the floor systems", "Journal paper", "New FLO:RE mock-up : we built it!", "Contact"]
+        ["Simulations", "About the floor systems", "Journal paper", "New FLO\:RE mock-up\: we built it!", "Contact"]
     )
     with tab1:
         main_part()

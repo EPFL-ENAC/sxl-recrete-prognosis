@@ -82,7 +82,7 @@ More details on the in our peer-reviewed paper: Küpfer, Bertola & Fivet (2024).
 
         html_text(
             text="""
-            <br> <b>Disclaimer</b><br>
+            <br><b>Disclaimer</b><br>
             """,
             font_size="18",
             text_align="Left",
