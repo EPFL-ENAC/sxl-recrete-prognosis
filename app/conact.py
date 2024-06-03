@@ -27,6 +27,7 @@ def contact_section():
             text="""
                 Got questions or feedback? We're here to help! <br>
                 Feel free to reach out to us: <a href="https://people.epfl.ch/celia.kupfer">Célia Küpfer</a>
+                or <a href="https://www.epfl.ch/labs/sxl/contact/">SXL lab</a> <br>
                 """,
             font_size="18",
             text_align="Left",

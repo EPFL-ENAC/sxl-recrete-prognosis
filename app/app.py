@@ -13,15 +13,13 @@ from about import about_section
 from alias import alias
 from conact import contact_section
 from paper import paper_section
+from mockup import mockup_section
 from PIL import Image
 from process import processing
 from utils.add_html import html_text
 
 # Define page layout
-st.set_page_config(
-    page_title="Flo:RE Calculator",
-    layout="wide"
-)
+st.set_page_config(page_title="Flo:RE Calculator", layout="wide")
 
 
 LOCAL_FOLDER_PATH = os.path.dirname(__file__)
@@ -31,6 +29,7 @@ with open(os.path.join(LOCAL_FOLDER_PATH, "app_layout_config.yml")) as f:
     config = yaml.safe_load(f)
 
 PAGE_THEME_COLOR = f"#{config.get('page_color')}"
+
 
 def selectbox_input(
     parameter_name: str, parmater_description: str, options: tuple, result: list, index: int = 0, on_change=None
@@ -178,7 +177,7 @@ def display_results(simulation_result: list) -> None:
 
                 if system_id == 1:
                     beam_height = 0
-                    length = drawing_parameters.get("l1") / 2 # FIXME is this correct?
+                    length = drawing_parameters.get("l1") / 2  # FIXME is this correct?
                 else:
                     beam_height = drawing_parameters.get("h")
                     length = drawing_parameters.get("l0")
@@ -258,7 +257,7 @@ def display_results(simulation_result: list) -> None:
 def main_part():
     """This part contains the main part of the app (parameters selection and results display)"""
 
-    st.write("<div class='mobile'>Mobile screen not supported</div>",unsafe_allow_html=True)
+    st.write("<div class='mobile'>Mobile screen not supported</div>", unsafe_allow_html=True)
 
     col0, col1, col2, col3 = st.columns(4)
     columns_title = ["", "<b>Design 1</b>", "<b>Design 2</b>", "<b>Design 3</b>"]
@@ -404,17 +403,24 @@ def header():
     """
     This function creates the header of the app.
     """
-    st.write(css,unsafe_allow_html=True)
+    st.write(css, unsafe_allow_html=True)
 
-    col0, col1, col2 = st.columns([10, 1, 1])
+    col0, col1, col2, col3 = st.columns([9, 1, 1, 1])
     with col0:
         col0.markdown("#")
 
-        html_text(text="<b>Reused-concrete floor calculator <b>", color="#010302", font_size="30", text_align="Left", column=False)
+        html_text(
+            text="<b>Reused-concrete floor calculator <b>",
+            color="#010302",
+            font_size="30",
+            text_align="Left",
+            column=False,
+        )
         html_text(
             text=(
-                "Reused-concrete floor calculator is an  Automated Pre-design and Embodied-carbon Tool for Floors made of REused cut"
-                " concrete pieces"
+                "The calculator is an automated tool for "
+                "the pre-design and embodied carbon calculation for "
+                "floors made of saw-cut reinforcement concrete elements"
             ),
             color=PAGE_THEME_COLOR,
             font_size="22",
@@ -426,14 +432,17 @@ def header():
         col1.markdown("#")
         html_text(
             text="""
+                <a href='https://www.epfl.ch/en/'>
                 <img decoding="async"  height="100"
-                src="https://www.epfl.ch/about/overview/wp-content/uploads/2020/07/logo-epfl-1024x576.png"
+                src="./app/static/logo-epfl-1024x576.png"
                 class="attachment-full size-full" alt="EPFL" loading="lazy" data-recalc-dims="1">
+                </a>
                 """,
             color=PAGE_THEME_COLOR,
             font_size="22",
             text_align="Left",
             column=False,
+            unsafe_allow_html=True
         )
 
     with col2:
@@ -451,6 +460,20 @@ def header():
             column=False,
         )
 
+    with col3:
+        col3.markdown("#")
+        html_text(
+            text="""
+                <a href="https://sxl.epfl.ch/">
+                <img decoding="async" width="100" height="100"
+                src="https://github.blog/wp-content/uploads/2008/12/forkme_right_red_aa0000.png?resize=149%2C149"
+                class="attachment-full size-full" alt="Fork me on GitHub" loading="lazy" data-recalc-dims="1"></a>
+                """,
+            color=PAGE_THEME_COLOR,
+            font_size="22",
+            text_align="Left",
+            column=False,
+        )
 
 def footer():
     """
@@ -474,7 +497,9 @@ def page():
     """
     header()
 
-    tab1, tab2, tab3, tab4 = st.tabs(["Simulations", "About Flo\\:RE", "Journal paper", "Contact"])
+    tab1, tab2, tab3, tab4, tab5 = st.tabs(
+        ["Simulations", "About Flo\\:RE", "Journal paper", "New FLO :RE mock-up : we built it!", "Contact"]
+    )
     with tab1:
         main_part()
     with tab2:
@@ -484,9 +509,13 @@ def page():
         paper_section()
 
     with tab4:
+        mockup_section()
+
+    with tab5:
         contact_section()
 
     footer()
+
 
 if __name__ == "__main__":
     page()
