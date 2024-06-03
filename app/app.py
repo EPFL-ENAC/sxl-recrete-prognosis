@@ -259,6 +259,14 @@ def main_part():
 
     st.write("<div class='mobile'>Mobile screen not supported</div>", unsafe_allow_html=True)
 
+    st.html(
+        """<p>
+        <b>Enter</b> your new design and donor structure characteristics.<br/>
+<b>Click</b> on the Run simulations button.<br/>
+<b>Scroll down</b> to discover the simulated pre-design options and their upfront embodied carbon.<br/>
+You can compare up to three new design-donor combinations at the same time.
+</p>"""
+    )
     col0, col1, col2, col3 = st.columns(4)
     columns_title = ["", "<b>Design 1</b>", "<b>Design 2</b>", "<b>Design 3</b>"]
 
@@ -405,7 +413,7 @@ def header():
     """
     st.write(css, unsafe_allow_html=True)
 
-    col0, col1, col2, col3 = st.columns([9, 1, 1, 1])
+    col0, col1, col2, col3 = st.columns([8, 1, 2, 1])
     with col0:
         col0.markdown("#")
 
@@ -441,31 +449,24 @@ def header():
             color=PAGE_THEME_COLOR,
             font_size="22",
             text_align="Left",
-            column=False,
-            unsafe_allow_html=True
+            column=False
         )
 
     with col2:
         col2.markdown("#")
-        html_text(
-            text="""
-                <a href="https://github.com/EPFL-ENAC/sxl-recrete-prognosis">
-                <img decoding="async" width="100" height="100"
-                src="https://github.blog/wp-content/uploads/2008/12/forkme_right_red_aa0000.png?resize=149%2C149"
-                class="attachment-full size-full" alt="Fork me on GitHub" loading="lazy" data-recalc-dims="1"></a>
-                """,
-            color=PAGE_THEME_COLOR,
-            font_size="22",
-            text_align="Left",
-            column=False,
-        )
+        st.markdown("""
+                <a href="https://sxl.epfl.ch/">
+                <img decoding="async"  width="auto" height="100"
+                src="./app/static/sxl-epfl.png"
+                class="attachment-full size-full" alt="Structural Exploration Lab" loading="lazy" data-recalc-dims="1"></a>
+                """, unsafe_allow_html=True)
 
     with col3:
         col3.markdown("#")
         html_text(
             text="""
-                <a href="https://sxl.epfl.ch/">
-                <img decoding="async" width="100" height="100"
+                <a href="https://github.com/EPFL-ENAC/sxl-recrete-prognosis">
+                <img decoding="async" width="100" height="auto"
                 src="https://github.blog/wp-content/uploads/2008/12/forkme_right_red_aa0000.png?resize=149%2C149"
                 class="attachment-full size-full" alt="Fork me on GitHub" loading="lazy" data-recalc-dims="1"></a>
                 """,
@@ -475,20 +476,28 @@ def header():
             column=False,
         )
 
+
 def footer():
     """
     This function creates the footer of the app.
     """
+
     st.markdown("---")
-    html_text(
-        text=(
-            "©EPFL, 2023 // Küpfer, C., Bertola, N., Fivet, C., [under review]. [insert final paper title]. [insert"
-            " link to article]"
-        ),
-        font_size="18",
-        text_align="Left",
-        column=False,
-    )
+    col0, col1 = st.columns([11, 1])
+    with col0:
+        html_text(
+            text=(
+                "© EPFL, 2023 // Küpfer, Bertola & Fivet (2024). Reuse of cut concrete slabs in new"
+                " buildings for circular ultra-low-carbon floor designs. Journal of Cleaner Production"
+                ", 448, 141566."
+            ),
+            font_size="18",
+            text_align="Left",
+            column=False,
+        )
+        st.page_link("https://doi.org/10.1016/j.jclepro.2024.141566", label="Doi: 10.1016/j.jclepro.2024.141566", icon="📚")
+    with col1:
+        st.page_link("https://sxl.epfl.ch", label="sxl.epfl.ch")
 
 
 def page():

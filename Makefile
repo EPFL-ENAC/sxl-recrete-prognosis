@@ -9,6 +9,12 @@ generate-selfsigned-cert-win:
 	copy NUL certificate.key && \
 	docker compose up --remove-orphans
 
+install:
+	pip install -r requirements.txt
+
+dev:
+	streamlit run  app/app.py
+
 run:
 	docker compose down --remove-orphans
 	docker compose build --pull

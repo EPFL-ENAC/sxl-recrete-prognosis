@@ -27,7 +27,7 @@ def paper_section():
             text="""
                 More details on the floor systems and the design procedure are available in our Journal Paper published in the Journal of Cleaner Production:
 <br>
-Küpfer, Bertola & Fivet  (2024). Reuse of cut concrete slabs in new buildings for circular ultra-low-carbon floor designs. Journal of Cleaner Production, 448, 141566. Doi: 10.1016/j.jclepro.2024.141566
+Küpfer, Bertola & Fivet  (2024). Reuse of cut concrete slabs in new buildings for circular ultra-low-carbon floor designs. Journal of Cleaner Production, 448, 141566. <a href="https://doi.org/10.1016/j.jclepro.2022.141566" target="_blank">Doi: 10.1016/j.jclepro.2024.141566</a>
 <br>
                 """,
             font_size="18",
@@ -52,7 +52,7 @@ Küpfer, Bertola & Fivet  (2024). Reuse of cut concrete slabs in new buildings f
             <li>New load-bearing floor systems made of reused as-cut concrete pieces are introduced</li>
             <li>A procedure determines the allowable span for concrete pieces reused in bending</li>
             <li>A parametric study shows upfront greenhouse gas emissions as low as 5 kgCO2e/m2</li>
-            <li>On average, embodied carbon is reduced by 80 % compared to a traditional concrete slab”</li>
+            <li>On average, embodied carbon is reduced by 80 % compared to a traditional concrete slab</li>
         </ul>
                 """,
             font_size="18",
@@ -77,4 +77,23 @@ Küpfer, Bertola & Fivet  (2024). Reuse of cut concrete slabs in new buildings f
             text_align="Left",
             column=False,
         )
+
+        html_text(
+            text="""
+                <a href='https://www.snf.ch/en'>
+                <img decoding="async"  height="100"
+                src="./app/static/snsf.png"
+                class="attachment-full size-full" alt="snf.ch" loading="lazy" data-recalc-dims="1">
+                </a>
+                <a href='https://www.epfl.ch/schools/enac/sustainability-challenges/clusters/enac-interdisciplinary-cluster-grants-en/'>
+                <img decoding="async"  height="100"
+                src="./app/static/logo-epfl-1024x576.png"
+                class="attachment-full size-full" alt="EPFL" loading="lazy" data-recalc-dims="1">
+                </a>
+                """,
+            font_size="18",
+            text_align="Left",
+            column=False,
+        )
+
 
